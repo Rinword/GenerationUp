@@ -1,0 +1,45 @@
+
+.icon {
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  width: 16px;
+  height: 16px;
+  background-size: 16px;
+
+  &_food {
+    background-image: url('/static/icons/food.svg');
+  }
+  &_training {
+    background-image: url('/static/icons/training.svg');
+  }
+  &_statistic {
+    background-image: url('/static/icons/statistic.svg');
+  }
+  &_key {
+    background-image: url('/static/icons/key.png');
+  }
+  &_edit {
+    background-image: url('/static/icons/edit.svg');
+  }
+
+  @mixin bg-size($size) {
+    &_bg-size_#{$size} {
+      background-size: (#{$size}px);
+    }
+  }
+
+  @mixin size($size) {
+    &_size_#{$size} {
+      width: (#{$size}px);
+      height: (#{$size}px);
+    }
+  }
+
+  @for $i from 8 to 64 {
+    .icon {
+      @include size($i);
+      @include bg-size($i);
+    }
+  }
+}

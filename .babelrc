@@ -1,0 +1,23 @@
+{
+  "presets": ["env", "react", "stage-0"],
+  "plugins": [
+    "transform-runtime",
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "uxBox": "./js/uxComponent",
+        "styles": "./styles"
+      }
+    }]
+  ],
+  
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-runtime",
+        "transform-decorators-legacy",
+        "transform-class-properties"
+      ]
+    }
+  }
+}
