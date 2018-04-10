@@ -7,22 +7,6 @@
   height: 16px;
   background-size: 16px;
 
-  &_food {
-    background-image: url('/static/icons/food.svg');
-  }
-  &_training {
-    background-image: url('/static/icons/training.svg');
-  }
-  &_statistic {
-    background-image: url('/static/icons/statistic.svg');
-  }
-  &_key {
-    background-image: url('/static/icons/key.png');
-  }
-  &_edit {
-    background-image: url('/static/icons/edit.svg');
-  }
-
   @mixin bg-size($size) {
     &_bg-size_#{$size} {
       background-size: (#{$size}px);

@@ -5,8 +5,7 @@
     ["module-resolver", {
       "root": ["./src"],
       "alias": {
-        "uxBox": "./js/uxComponent",
-        "styles": "./styles"
+        "uxBox": "./app/uxComponent",
       }
     }]
   ],

@@ -1,0 +1,85 @@
+$main-blue: #147cbd;
+
+.ux-btn {
+  transition: .3s all;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 0;
+  font-size: 16px;
+  background-color: $main-blue;
+  text-transform: uppercase;
+  color: white;
+  border: 1px solid $main-blue;
+  padding: 0.4em 1em;
+  margin: 0 5px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    opacity: 0.8;
+  }
+  &_active {
+    box-shadow: none;
+    font-weight: 700;
+    &::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      font-size: 18px;
+      width: 24px;
+      height: 3px;
+      right: calc(50% - 12px);
+      top: 37px;
+      background-color: transparent;
+      z-index: inherit;
+    }
+  }
+
+  &_alt {
+    border: 1px solid white !important;
+    background-color: transparent;
+    color: white;
+  }
+
+  &__inner-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 0.5em;
+    margin-top: 1px;
+  }
+
+  &_empty {
+    background-color: transparent;
+    color: $main-blue;
+    border: 1px solid $main-blue;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &_type_circle {
+    border-radius: 50%;
+    padding: 0.4em;
+  }
+
+  &_size {
+    &_m {
+      width: 240px;
+    }
+  }
+}
