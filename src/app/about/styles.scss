@@ -1,0 +1,16 @@
+.about {
+  padding: 20px 40px;
+  width: 100%;
+
+  &__title {
+
+  }
+
+  &__desc {
+    p {
+      text-align: left;
+      margin-bottom: 0;
+      width: 30em;
+    }
+  }
+}

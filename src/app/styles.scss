@@ -1,0 +1,86 @@
+.main {
+  min-height: 100vh;
+  margin: auto;
+
+  &__body {
+    margin-top: 40px;
+    color: white;
+  }
+
+  &__header {
+    position: fixed !important;
+    z-index: 600;
+    //background: linear-gradient(to bottom, #595959, #282834);
+    padding: 5px;
+    border-bottom: 1px solid white;
+  }
+
+  &__logo {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    width: 300px !important;
+    letter-spacing: 4px;
+    cursor: pointer;
+    a {
+      color: white;
+      //text-decoration: none;
+    }
+  }
+
+  &__link {
+    position: relative;
+    text-decoration: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0 1em;
+    cursor: pointer;
+    text-shadow: 0 0 1px #fff;
+    color: white;
+    font-weight: 400;
+    transition: 0.28s all;
+    &:hover {
+      //background: lighten(grey,40%);
+      text-shadow: 0 0 1px #fff, 0 0 4px #97d2ff, 0 0 6px #3dc0ff, 0 0 24px #808586;
+    }
+    &_active {
+      transition: all .3s;
+      &:after {
+        content: " ";
+        display: block;
+        position: absolute;
+        font-size: 18px;
+        width: 60px;
+        height: 2px;
+        top: -12px;
+        //bottom: -5px;
+        //left: calc(50% - 12px);
+        //left: 0;
+        left: calc(50% - 30px);
+        background-color: white;
+        box-shadow: 0 0 16px 4px;
+        z-index: inherit;
+
+      }
+    }
+  }
+
+  &__footer {
+    position: relative !important;
+    //width: 100%;
+    color: white;
+    left: 0;
+    bottom: 0;
+    border-top: 1px solid grey;
+    z-index: 600;
+    background: linear-gradient(to top, #595959, #282834);
+    * {
+      color: white;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+}
