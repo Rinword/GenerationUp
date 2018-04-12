@@ -17,6 +17,8 @@
     "body-parser": "^1.18.2",
     "classnames": "^2.2.5",
     "cookie-parser": "^1.4.3",
+    "createjs": "^1.0.1",
+    "createjs-easeljs": "^0.8.2",
     "ejs": "^2.5.7",
     "formsy-react": "^1.1.4",
     "history": "^4.7.2",
