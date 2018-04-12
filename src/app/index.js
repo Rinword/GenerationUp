@@ -37,6 +37,7 @@ class App extends React.Component {
                 <Row className="main__body" overflow="auto" minHeight="calc(100vh - 120px)">
                     <Switch>
                         <Route exact path='/' component={Game} />
+                        <Route path='/game' component={Game} />
                         <Route path='/about' component={About} />
                         <Route component={NoPage} />
                     </Switch>

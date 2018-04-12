@@ -16,7 +16,7 @@ class Game extends React.PureComponent {
     render() {
         return (
             <div className={cx('game', this.props.className)}>
-                <div />
+                <div>Game</div>
             </div>
         );
     }
