@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+import axios from 'axios';
 
 import Game from './GameView';
 
@@ -10,7 +11,9 @@ class GamePanel extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            gameLoading: true
+        };
 
         this.getCanvas = canvas => {
             if(!this.canvas) {
@@ -19,10 +22,18 @@ class GamePanel extends React.PureComponent {
         }
     }
 
+    componentWillMount() {
+
+    }
+
     componentDidMount() {
-        const options = {};
-        this.game = new Game(this.canvas, options);
-        this.game.refresh();
+        axios( `api/game/default`).then((options) => {
+            this.game = new Game(this.canvas, options.data);
+            this.game.refresh();
+        }).catch(err => {
+            console.log('ERROR', err)
+        })
+
     }
 
     render() {

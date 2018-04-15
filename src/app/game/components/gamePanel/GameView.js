@@ -8,7 +8,8 @@ const BACKBONE_VIEWS_REFRESH_TICK = 30; //частота обновления и
 const GAME_LANGUAGE = 'ru'; //язык формируемых сервером данных для отображения на фронте
 
 export default class Game {
-    constructor(context, options){
+    constructor(context, config, updateData){
+        console.log(config);
         this.mainStage = new createjs.Stage(context);
         // let mapCells = new createjs.Container();
         this.mainStage.children.length = 0;
