@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-// import Game from './GameView';
+import Game from './GameView';
 
 import './styles.scss';
 
@@ -12,13 +12,15 @@ class GamePanel extends React.PureComponent {
 
         this.state = {};
 
-        this.getCanvas = canvas => this.canvas = canvas;
+        this.getCanvas = canvas => {
+            if(!this.canvas) {
+                this.canvas = canvas;
+            }
+        }
     }
 
     componentDidMount() {
-        console.log(this.getCanvas())
-        // this.game = new Game(this.getCanvas());
-
+        this.game = new Game(this.canvas);
     }
 
     render() {
