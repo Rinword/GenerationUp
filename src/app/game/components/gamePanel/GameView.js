@@ -8,8 +8,7 @@ const BACKBONE_VIEWS_REFRESH_TICK = 30; //частота обновления и
 const GAME_LANGUAGE = 'ru'; //язык формируемых сервером данных для отображения на фронте
 
 export default class Game {
-    constructor(context){
-        console.log('context', context);
+    constructor(context, options){
         this.mainStage = new createjs.Stage(context);
         // let mapCells = new createjs.Container();
         this.mainStage.children.length = 0;
@@ -48,7 +47,7 @@ export default class Game {
     }
 
     renderCellGrid(cellBasis) {
-        let mapCells = new createjs.Container(); //TODO рендер клеток здесь, потому что капризный easel не хочет рисовать сетку в CanvasView
+        let mapCells = new createjs.Container();
 
         let xLines = Math.floor(this.mapSize.y / cellBasis);
         let yLines = Math.floor(this.mapSize.x / cellBasis);
@@ -107,7 +106,7 @@ export default class Game {
             wayGrid[i][width - 1].walkable = false;
             let rect = new createjs.Shape();
             rect.graphics.beginFill("#606060").drawRect(1, i * (me.mapGridCellSize) + 1, me.mapGridCellSize - 1, me.mapGridCellSize - 1);
-            rect.graphics.beginFill("#606060").drawRect( width * (me.mapGridCellSize - 1) + 15, i * (me.mapGridCellSize) + 1, me.mapGridCellSize - 1, me.mapGridCellSize - 1 );
+            rect.graphics.beginFill("#606060").drawRect( width * (me.mapGridCellSize - 1) + 1, i * (me.mapGridCellSize) + 1, me.mapGridCellSize - 1, me.mapGridCellSize - 1 );
             wallRender.addChild(rect);
         }
 
@@ -115,10 +114,9 @@ export default class Game {
             if(i != 3) {
                 cell.walkable = false;
                 let rect = new createjs.Shape();
-                rect.graphics.beginFill("#606060").drawRect(i * me.mapGridCellSize + 1, 5 * me.mapGridCellSize, me.mapGridCellSize - 1, me.mapGridCellSize - 1);
+                rect.graphics.beginFill("#606060").drawRect(i * me.mapGridCellSize + 1, 5 * me.mapGridCellSize + 1, me.mapGridCellSize - 1, me.mapGridCellSize - 1);
                 wallRender.addChild(rect);
             }
-
         });
 
 

@@ -20,7 +20,9 @@ class GamePanel extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.game = new Game(this.canvas);
+        const options = {};
+        this.game = new Game(this.canvas, options);
+        this.game.refresh();
     }
 
     render() {
