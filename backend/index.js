@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path')
 const router = require('./router');
+const Game = require('./modules/game');
 
 console.log('-----------N-O-D-E--J-S-----------');
 
@@ -52,6 +53,7 @@ app.set('port', port);
 
 
 router(app);
+// new Game({app});
 
 app.listen(port, () => {
     console.log('server has started on :' + port);
@@ -108,4 +110,4 @@ function onError(error) {
         default:
             throw error;
     }
-};
+}
