@@ -1,6 +1,6 @@
 import spriteResolver from './spriteResolver';
-
-const CELL_SIZE = 30;
+import set from 'lodash/set';
+const CELL_SIZE = 40;
 const BOT_ENUM = 20;
 const RENDER_CELL_GRID_MAP = true; //отображать клетки карты
 const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
@@ -55,9 +55,12 @@ export default class Game {
         cell_canvas.set({x: cell.position.x * cellBasis, y: cell.position.y * cellBasis})
 
         const rect = new createjs.Shape();
-        rect.graphics.beginFill(spriteResolver.getSprite(cell.icon))
-            .drawRect(1, 1, cellBasis - 1, cellBasis - 1);
+        rect.graphics.beginFill(spriteResolver.getBgColor(cell.texture))
+            .drawRect(1, 1, cellBasis, cellBasis);
         cell_canvas.addChild(rect);
+        // const sprite = spriteResolver.getBitMap(cell.texture);
+        // const texture = new createjs.Bitmap(sprite.source);
+        // cell_canvas.addChild(texture);
 
         return cell_canvas;
     }

@@ -10,7 +10,7 @@ class Game {
         // langDict.setLang(GAME_LANGUAGE);
 
         this.frameCap = 0; //отсчет тактов игры, помогает настроить частоту синхронизации данных с фронтом
-        this.mapSize = {x: 30, y: 20}; //размер карты (не экрана)
+        this.mapSize = {x: 23, y: 15}; //размер карты (не экрана)
         this.startColorNum = 0; //количество цветов ботов после инициализации (для масштабирования прогресс-баров)
         this.currentSelectObj = null; //текущий выбранный бот, инфа по которому будет динамически пробрасываться на фронт
 
@@ -37,8 +37,8 @@ class Game {
             for(let j = 0; j < height; j++) {
                 const cell = {
                     position: {x: i, y: j},
-                    type: 'terrain',
-                    icon: 'grass1',
+                    texture: 'grass1',
+                    bitmaps: [],
                     inside: null,
                     loot: null,
                     sources: null,
@@ -62,30 +62,30 @@ class Game {
         for(let i = 0; i < width; i++) {
             //top
             ways.nodes[i][0].walkable = false;
-            grid[i][0].type = 'border';
-            grid[i][0].icon = 'wall';
+            grid[i][0].texture = 'wall1';
+            // grid[i][0].icons = 'wall';
             //bottom
             ways.nodes[i][height - 1].walkable = false;
-            grid[i][height - 1].type = 'border';
-            grid[i][height - 1].icon = 'wall';
+            grid[i][height - 1].texture = 'wall1';
+            // grid[i][height - 1].icons = 'wall';
         }
 
         for(let j = 0; j < height; j++) {
             //left
             ways.nodes[0][j].walkable = false;
-            grid[0][j].type = 'border';
-            grid[0][j].icon = 'wall';
+            grid[0][j].texture = 'wall1';
+            // grid[0][j].icon = 'wall';
             //right
             ways.nodes[width - 1][j].walkable = false;
-            grid[width - 1][j].type = 'border';
-            grid[width - 1][j].icon = 'wall';
+            grid[width - 1][j].texture = 'wall1';
+            // grid[width - 1][j].icon = 'wall';
         }
 
         ways.nodes[5].forEach( (cell, i)  => {
             if(i != 3) {
                 cell.walkable = false;
-                grid[i][5].type = 'border';
-                grid[i][5].icon = 'wall';
+                grid[i][5].texture = 'wall1';
+                // grid[i][5].icon = 'wall';
             }
         });
     }

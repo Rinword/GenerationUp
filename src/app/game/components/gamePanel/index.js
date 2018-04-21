@@ -5,6 +5,8 @@ import axios from 'axios';
 
 import Game from './GameView';
 
+import spriteResolver from './spriteResolver';
+
 import './styles.scss';
 
 class GamePanel extends React.PureComponent {
@@ -39,7 +41,10 @@ class GamePanel extends React.PureComponent {
     render() {
         return (
             <div className={cx('game-panel', this.props.className)}>
-                <canvas className="main-panel__canvas" height='600' width='900' id='mainCanvas' ref={this.getCanvas} />
+                <div className="game-panel__sources">
+                    {spriteResolver.getSources().map(i => <img key={i} src={i} alt="" />)}
+                </div>
+                <canvas className="game-panel__canvas" height='600' width='900' id='mainCanvas' ref={this.getCanvas} />
             </div>
         );
     }
