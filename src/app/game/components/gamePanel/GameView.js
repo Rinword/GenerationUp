@@ -1,10 +1,13 @@
 import spriteResolver from './spriteResolver';
 import set from 'lodash/set';
+import UnitRenderer from './renders/units';
+
 const CELL_SIZE = 40;
-const BOT_ENUM = 20;
 const RENDER_CELL_GRID_MAP = true; //отображать клетки карты
 const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
 const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
+
+const unitRenderer = new UnitRenderer({cellSize: CELL_SIZE});
 
 export default class Game {
     constructor(context, config, updateData){
@@ -21,12 +24,14 @@ export default class Game {
             mapSize: {x: config.map.ways.width, y: config.map.ways.height}
         }
 
+        //визуальная отрисовка сетки для контроля
+        if(RENDER_CELL_GRID_MAP) this.renderCellBorders();
+
         //создание по размеру карты и размеру клетки общего объекта карты, в котором будут храниться положения объектов и ссылки на них
         this.renderMap();
 
         //создание гридовой карты, пока что все поля доступны
-        //визуальная отрисовка сетки для контроля
-        if(RENDER_CELL_GRID_MAP) this.renderCellBorders();
+
         // this.mapWayGrid = this.generatePathFindingGrid(this.mapSize.x, this.mapSize.y , this.mapGridCellSize); //массив с клетками для поиска путей
         //нужно обновлять его при смене позиции каждым объектом, считаемым препятсвием, а также перепрокладывать марштуты, шедшие через эти точки
 
@@ -58,6 +63,10 @@ export default class Game {
         rect.graphics.beginFill(spriteResolver.getBgColor(cell.texture))
             .drawRect(1, 1, cellBasis, cellBasis);
         cell_canvas.addChild(rect);
+
+        if(cell.inside) {
+            cell_canvas.addChild(unitRenderer.renderItem(cell.inside))
+        }
         // const sprite = spriteResolver.getBitMap(cell.texture);
         // const texture = new createjs.Bitmap(sprite.source);
         // cell_canvas.addChild(texture);
@@ -85,7 +94,7 @@ export default class Game {
         }
 
         this.mainStage.addChild(mapCells);
-        // this.mainStage.setChildIndex( mapCells, 0);
+        // this.mainStage.setChildIndex(mapCells, 1);
     }
 
     refresh() {

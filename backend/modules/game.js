@@ -1,5 +1,5 @@
 const PF = require('pathfinding');
-const BOT_ENUM = 20;
+const BOT_ENUM = 5;
 
 const helpers = require('./helpers');
 
@@ -69,13 +69,14 @@ class Game {
         const map = this.data.map;
         while(bots.length < num) { //TODO все равно часть ботов некорректно рендерится в углу, причина пока неизвестна
             const name = 'bot' + bots.length;
-            const x = helpers.randomInteger(1, map.ways.width - 1);
-            const y = helpers.randomInteger(1, map.ways.height - 1);
-            if(map.ways.nodes[y][x].walkable) {
-                if(!map.grid[x][y]) {
+            const x = helpers.randomInteger(1, map.ways.height - 1);
+            const y = helpers.randomInteger(1, map.ways.width - 1);
+            if(map.ways.nodes[x][y].walkable) {
+                if(!map.grid[x][y].inside) {
                     const bot = new BotUnit(name, x, y);
                     bots.push(bot);
-                    (map.grid[x][y] || {}).inside = bot;
+                    map.grid[x][y].inside = bot;
+                    map.ways.nodes[x][y].walkable = false;
                 }
             }
         }

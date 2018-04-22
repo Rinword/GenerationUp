@@ -53,7 +53,6 @@ app.set('port', port);
 
 
 router(app);
-// new Game({app});
 
 app.listen(port, () => {
     console.log('server has started on :' + port);
