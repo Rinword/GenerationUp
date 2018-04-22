@@ -1,13 +1,10 @@
-import spriteResolver from './spriteResolver';
-import set from 'lodash/set';
 import UnitRenderer from './renders/units';
+import MapRenderer from './renders/map';
 
 const CELL_SIZE = 40;
 const RENDER_CELL_GRID_MAP = true; //отображать клетки карты
 const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
 const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
-
-const unitRenderer = new UnitRenderer({cellSize: CELL_SIZE});
 
 export default class Game {
     constructor(context, config, updateData){
@@ -21,16 +18,22 @@ export default class Game {
 
         this.data = {
             map: config.map,
-            mapSize: {x: config.map.ways.width, y: config.map.ways.height}
+            mapSize: {x: config.map.ways.height, y: config.map.ways.width}
         }
+
+        this.renders = {
+            map: new MapRenderer({cellSize: CELL_SIZE, mapSize: this.data.mapSize}),
+            unit: new UnitRenderer({cellSize: CELL_SIZE}),
+        }
+
+        //рендер карты. Объекты в ссылках (например юниты) не рендерятся.
+        this.renderMap();
 
         //визуальная отрисовка сетки для контроля
         if(RENDER_CELL_GRID_MAP) this.renderCellBorders();
 
-        //создание по размеру карты и размеру клетки общего объекта карты, в котором будут храниться положения объектов и ссылки на них
-        this.renderMap();
-
-        //создание гридовой карты, пока что все поля доступны
+        //рендер динамических структур. Здесь это боты
+        this.renderUnits();
 
         // this.mapWayGrid = this.generatePathFindingGrid(this.mapSize.x, this.mapSize.y , this.mapGridCellSize); //массив с клетками для поиска путей
         //нужно обновлять его при смене позиции каждым объектом, считаемым препятсвием, а также перепрокладывать марштуты, шедшие через эти точки
@@ -42,59 +45,30 @@ export default class Game {
 
     renderMap() {
        const map_canvas = new createjs.Container();
+       map_canvas.name = 'Map';
        const map = this.data.map.grid;
-       // console.log(map);
+
        map.forEach(row => {
            row.forEach(cell => {
-               const cell_canvas = this.renderCell(this.mapGridCellSize, cell);
+               const cell_canvas = this.renders.map.renderItem(cell);
                map_canvas.addChild(cell_canvas);
            })
        });
 
        this.mainStage.addChild(map_canvas);
-       this.mainStage.setChildIndex(map_canvas, 0);
-    }
-
-    renderCell(cellBasis, cell) {
-        const cell_canvas = new createjs.Container();
-        cell_canvas.set({x: cell.position.x * cellBasis, y: cell.position.y * cellBasis})
-
-        const rect = new createjs.Shape();
-        rect.graphics.beginFill(spriteResolver.getBgColor(cell.texture))
-            .drawRect(1, 1, cellBasis, cellBasis);
-        cell_canvas.addChild(rect);
-
-        if(cell.inside) {
-            cell_canvas.addChild(unitRenderer.renderItem(cell.inside))
-        }
-        // const sprite = spriteResolver.getBitMap(cell.texture);
-        // const texture = new createjs.Bitmap(sprite.source);
-        // cell_canvas.addChild(texture);
-
-        return cell_canvas;
     }
 
     renderCellBorders() {
-        const cellBasis = this.mapGridCellSize;
-        let mapCells = new createjs.Container();
+        const borders = this.renders.map.renderCellBorders();
+        borders.name = 'MapCellsBorders';
+        this.mainStage.addChild(borders);
+    }
 
-        let xLines = this.data.mapSize.x;
-        let yLines = this.data.mapSize.y;
-
-        for(let i = 1; i < xLines; i++) {
-            let rect = new createjs.Shape();
-            rect.graphics.beginFill("#cecece").drawRect(0, i * cellBasis, yLines * this.mapGridCellSize, 1);
-            mapCells.addChild(rect);
-        }
-
-        for(let i = 1; i < yLines; i++) {
-            let rect = new createjs.Shape();
-            rect.graphics.beginFill("#cecece").drawRect(i * cellBasis, 0, 1, xLines * this.mapGridCellSize);
-            mapCells.addChild(rect);
-        }
-
-        this.mainStage.addChild(mapCells);
-        // this.mainStage.setChildIndex(mapCells, 1);
+    renderUnits() {
+        // const units = this.renders.units.renderItem();
+        // units.name = 'Units_bots';
+        // this.mainStage.addChild(units);
+        // this.mainStage.setChildIndex(units, 0);
     }
 
     refresh() {
