@@ -14,7 +14,7 @@ export default class Renders {
         switch(inside.type) {
             case 'unit':
                 obj.addChild(this.renderUnit(inside.color))
-                obj.addChild(this.renderUnitInterface(inside.name, inside.data.className, randomInteger(1, 100)))
+                obj.addChild(this.renderUnitInterface(inside))
                 break;
 
             default:
@@ -24,7 +24,7 @@ export default class Renders {
         return obj;
     }
 
-    renderUnitInterface (name = 'Default', className = 'noClass', hp = 100) {
+    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData}) {
         const obj = new createjs.Container();
         //надпись
         const text = new createjs.Text(name, "16px Arial", "#180401");
@@ -34,7 +34,7 @@ export default class Renders {
         text.textBaseline = "alphabetic";
         text.textAlign = 'center';
 
-        const classNameLabel = new createjs.Text(className, "12px Arial", "#180401");
+        const classNameLabel = new createjs.Text(data.className, "12px Arial", "#180401");
         classNameLabel.name = 'objClass';
         classNameLabel.x = obj.x + this.cellSize / 2;
         classNameLabel.y = obj.y - 5;
@@ -47,6 +47,19 @@ export default class Renders {
         hpLabel.y = obj.y + this.cellSize / 2 + 6;
         hpLabel.textBaseline = "alphabetic";
         hpLabel.textAlign = 'center';
+
+        //TODO временная отрисовка маршрута
+        console.log(movingData);
+        let wayRender = new createjs.Container();
+        movingData.wayArr.forEach(cell => {
+            let rect = new createjs.Shape();
+            rect.graphics.beginFill("#000").drawRect(
+                (cell[0] * this.cellSize + this.cellSize / 3),
+                (cell[1] * this.cellSize +this.cellSize / 3),
+                this.cellSize / 3,
+                this.cellSize / 3);
+            wayRender.addChild(rect);
+        });
 
         //перенесено в castAnimate
         // const castState = new createjs.Container();

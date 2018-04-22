@@ -10,7 +10,6 @@ const path = require('path')
 const socketIO = require('socket.io')
 
 const router = require('./router');
-const Game = require('./modules/game');
 
 console.log('-----------N-O-D-E--J-S-----------');
 

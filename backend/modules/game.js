@@ -30,6 +30,7 @@ class Game {
         this.generateBots = this.generateBots.bind(this);
         this.main = this.main.bind(this);
         this.update = this.update.bind(this);
+        this.updateUnits = this.updateUnits.bind(this);
         this.registerSockets = this.registerSockets.bind(this);
 
         this.main();
@@ -53,9 +54,17 @@ class Game {
     }
 
     update() {
-        if(this.frameCap > 1000) {
+        if(this.frameCap > 100) {
             this.isGameOver = true;
         }
+
+        this.updateUnits();
+    }
+
+    updateUnits() {
+        this.data.units.forEach(unit => {
+            unit.update();
+        })
     }
 
     registerSockets() {
@@ -109,13 +118,13 @@ class Game {
     generateBots(num) {
         const bots = [];
         const map = this.data.map;
-        while(bots.length < num) { //TODO все равно часть ботов некорректно рендерится в углу, причина пока неизвестна
+        while(bots.length < num) {
             const name = 'bot' + bots.length;
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
-            console.log(x, y);
+
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y);
+                const bot = new BotUnit(name, x, y, map.ways);
                 bots.push(bot);
                 map.grid[x][y].inside = bot;
                 map.ways.nodes[x][y].walkable = false;
