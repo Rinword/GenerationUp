@@ -72,12 +72,10 @@ class Game {
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
             if(map.ways.nodes[x][y].walkable) {
-                if(!map.grid[x][y].inside) {
-                    const bot = new BotUnit(name, x, y);
-                    bots.push(bot);
-                    map.grid[x][y].inside = bot;
-                    map.ways.nodes[x][y].walkable = false;
-                }
+                const bot = new BotUnit(name, x, y);
+                bots.push(bot);
+                map.grid[x][y].inside = bot;
+                map.ways.nodes[x][y].walkable = false;
             }
         }
 
@@ -112,7 +110,7 @@ class Game {
 
         ways.nodes[5].forEach( (cell, i)  => {
             if(i != 3) {
-                cell.walkable = false;
+                ways.nodes[i][5].walkable = false;
                 grid[i][5].texture = 'wall1';
                 // grid[i][5].icon = 'wall';
             }
