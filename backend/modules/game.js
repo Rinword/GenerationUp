@@ -1,13 +1,16 @@
 const PF = require('pathfinding');
-const BOT_ENUM = 5;
-
 const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
+const BOT_ENUM = 2;
+const SYNC_EVERY_FRAME = 50;
+const FPS = 60;
+
 class Game {
     constructor(props) {
         this.app = props.app;
+        this.socket = props.socket;
 
         this.isGameOver = false;
         this.isGamePause = false;
@@ -28,10 +31,33 @@ class Game {
         this.getData = this.getData.bind(this);
         this.generateMap = this.generateMap.bind(this);
         this.generateBots = this.generateBots.bind(this);
+        this.main = this.main.bind(this);
+        this.update = this.update.bind(this);
+
+        this.main();
     }
 
     getData() {
         return this.data || null;
+    }
+
+    main() {
+        this.frameCap++;
+        this.update(); //обновление логики
+        if(this.frameCap % SYNC_EVERY_FRAME === 0) {
+            // console.log('--updateFront, frame', this.frameCap);
+            this.socket.emit('update_units', {cap: this.frameCap})
+        }
+
+        if(!this.isGameOver && !this.isGamePause) {
+            setTimeout(this.main, 1000 / FPS);
+        }
+    }
+
+    update() {
+        if(this.frameCap > 1000) {
+            this.isGameOver = true;
+        }
     }
 
     generateMap(options) {

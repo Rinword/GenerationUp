@@ -7,12 +7,27 @@ const port = 3001;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const path = require('path')
+const socketIO = require('socket.io')
+
 const router = require('./router');
 const Game = require('./modules/game');
 
 console.log('-----------N-O-D-E--J-S-----------');
 
 const app = express();
+
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on('connection', socket => {
+    console.log('IO: User connected')
+    router(app, socket);
+
+    socket.on('disconnect', () => {
+        console.log('IO: user disconnected')
+    })
+})
+
 app.use(bodyParser.json());
 
 app.use(logger('dev'));
@@ -51,12 +66,7 @@ app.set('port', port);
 //     // database.close();
 // })
 
-
-router(app);
-
-app.listen(port, () => {
-    console.log('server has started on :' + port);
-});
+server.listen(port, () => console.log(`Listening on port ${port}`))
 
 app.on('error', onError);
 app.on('listening', onListening);

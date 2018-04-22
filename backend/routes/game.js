@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const url = require('url');
+// const url = require('url');
 const Game = require('../modules/game')
 
 /* GET users listing. */
-module.exports = function(url, app) {
-    const game = new Game({app});
+module.exports = function(url, app, socket) {
+    const game = new Game({app, socket});
+    console.log('Create game')
 
     app.get(`${url}/default`, (req, res) => {
 
