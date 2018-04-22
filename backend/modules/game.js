@@ -1,4 +1,9 @@
 const PF = require('pathfinding');
+const BOT_ENUM = 20;
+
+const helpers = require('./helpers');
+
+const BotUnit = require('./objects/units/BotUnit');
 
 class Game {
     constructor(props) {
@@ -18,7 +23,11 @@ class Game {
             map: this.generateMap({borders: true}),
         }
 
+        this.data.units = this.generateBots(BOT_ENUM);
+
         this.get = this.get.bind(this);
+        this.generateMap = this.generateMap.bind(this);
+        this.generateBots = this.generateBots.bind(this);
     }
 
     get(prop) {
@@ -53,6 +62,25 @@ class Game {
         }
 
         return {ways, grid};
+    }
+
+    generateBots(num) {
+        const bots = [];
+        const map = this.data.map;
+        while(bots.length < num) { //TODO все равно часть ботов некорректно рендерится в углу, причина пока неизвестна
+            const name = 'bot' + bots.length;
+            const x = helpers.randomInteger(1, map.ways.width - 1);
+            const y = helpers.randomInteger(1, map.ways.height - 1);
+            if(map.ways.nodes[y][x].walkable) {
+                if(!map.grid[x][y]) {
+                    const bot = new BotUnit(name, x, y);
+                    bots.push(bot);
+                    (map.grid[x][y] || {}).inside = bot;
+                }
+            }
+        }
+
+        return bots;
     }
 
     setWalls(ways, grid){
