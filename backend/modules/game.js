@@ -11,16 +11,13 @@ class Game {
     constructor(props) {
         this.app = props.app;
         this.socket = props.socket;
+        this.registerSockets()
 
         this.isGameOver = false;
         this.isGamePause = false;
 
-        // langDict.setLang(GAME_LANGUAGE);
-
         this.frameCap = 0; //отсчет тактов игры, помогает настроить частоту синхронизации данных с фронтом
         this.mapSize = {x: 23, y: 15}; //размер карты (не экрана)
-        this.startColorNum = 0; //количество цветов ботов после инициализации (для масштабирования прогресс-баров)
-        this.currentSelectObj = null; //текущий выбранный бот, инфа по которому будет динамически пробрасываться на фронт
 
         this.data = {
             map: this.generateMap({borders: true}),
@@ -33,6 +30,7 @@ class Game {
         this.generateBots = this.generateBots.bind(this);
         this.main = this.main.bind(this);
         this.update = this.update.bind(this);
+        this.registerSockets = this.registerSockets.bind(this);
 
         this.main();
     }
@@ -45,8 +43,8 @@ class Game {
         this.frameCap++;
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
-            // console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap})
+            console.log('--updateFront, frame', this.frameCap);
+            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units})
         }
 
         if(!this.isGameOver && !this.isGamePause) {
@@ -58,6 +56,24 @@ class Game {
         if(this.frameCap > 1000) {
             this.isGameOver = true;
         }
+    }
+
+    registerSockets() {
+        this.socket.on('game_control', data => {
+            switch (data.action) {
+                case 'pause':
+                    this.isGamePause = !this.isGamePause;
+                    this.main();
+                    break;
+                case 'start_again':
+                    this.frameCap = 0;
+                    this.isGamePause = true;
+                    this.data.units = this.generateBots(BOT_ENUM);
+                    this.isGamePause = false;
+                    this.isGameOver = false;
+                    this.main();
+            }
+        })
     }
 
     generateMap(options) {
@@ -97,6 +113,7 @@ class Game {
             const name = 'bot' + bots.length;
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
+            console.log(x, y);
             if(map.ways.nodes[x][y].walkable) {
                 const bot = new BotUnit(name, x, y);
                 bots.push(bot);

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
+import { Btn, Row } from 'ui/UxBox';
+
 import socket from 'app/io';
 
 import './styles.scss';
@@ -15,6 +17,11 @@ class RightPanel extends React.PureComponent {
         };
     }
 
+    onControlClick(event) {
+        const action = event.target.dataset.control;
+        socket.getSocket().emit('game_control', { action, params: {} })
+    }
+
     componentDidMount() {
         socket.getSocket().on('update_units', data => {
             this.setState({cap: data.cap})
@@ -26,6 +33,10 @@ class RightPanel extends React.PureComponent {
             <div className={cx('right-panel', this.props.className)}>
                 <div>rightPanel</div>
                 <div>Cap: {this.state.cap}</div>
+                <Row margin="10px">
+                    <Btn data-control="pause" onClick={this.onControlClick}>Пауза</Btn>
+                    <Btn data-control="start_again" onClick={this.onControlClick}>Начать заново</Btn>
+                </Row>
             </div>
         );
     }

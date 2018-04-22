@@ -7,6 +7,8 @@ import Game from './GameView';
 
 import spriteResolver from './spriteResolver';
 
+import socket from 'app/io';
+
 import './styles.scss';
 
 class GamePanel extends React.PureComponent {
@@ -30,7 +32,7 @@ class GamePanel extends React.PureComponent {
 
     componentDidMount() {
         axios( `api/game/default`).then((options) => {
-            this.game = new Game(this.canvas, options.data);
+            this.game = new Game(this.canvas, options.data, socket.getSocket());
             this.game.refresh();
         }).catch(err => {
             console.log('ERROR', err)

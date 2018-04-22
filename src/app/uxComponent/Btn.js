@@ -19,9 +19,10 @@ class Btn extends React.Component {
         )
     }
 
-    render(){
+    render() {
+        const {className, ...params} = this.props;
         return (
-            <button className={"ux-btn " + (this.props.className? this.props.className : '')} onClick={this.onClick}>
+            <button className={"ux-btn " + (this.props.className? this.props.className : '')} onClick={this.onClick} {...params}>
                 {this.props.children}
                 {this.props.innerIconName && this.renderInnerIcon()}
             </button>

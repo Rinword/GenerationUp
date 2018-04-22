@@ -7,10 +7,11 @@ const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих �
 const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
 
 export default class Game {
-    constructor(context, config, updateData){
+    constructor(context, config, socket){
         // console.log(config);
         this.mainStage = new createjs.Stage(context);
         this.mainStage.children.length = 0;
+        this.socket = socket;
         // input.init(); //регистрация событий клавиатуры
         this.isGameOver = false;
         this.isGamePause = false;
@@ -35,12 +36,23 @@ export default class Game {
         //рендер динамических структур. Здесь это боты
         this.renderUnits();
 
+        this.regSockets()
+
         // this.mapWayGrid = this.generatePathFindingGrid(this.mapSize.x, this.mapSize.y , this.mapGridCellSize); //массив с клетками для поиска путей
         //нужно обновлять его при смене позиции каждым объектом, считаемым препятсвием, а также перепрокладывать марштуты, шедшие через эти точки
 
         // this.wayRender = new createjs.Container();
         // this.wayRender.name = 'Way';
         // this.mainStage.addChild(this.wayRender);
+    }
+
+    regSockets() {
+        this.socket.on('update_units', data => {
+            this.data.units = data.units;
+            this.mainStage.removeChild(this.mainStage.getChildByName('Units_bots')); //TODO need update, not remove
+            this.renderUnits();
+            this.refresh();
+        })
     }
 
     renderMap() {
@@ -73,15 +85,9 @@ export default class Game {
         })
 
         this.mainStage.addChild(units_bots_canvas);
-        // this.mainStage.setChildIndex(units_bots_canvas, 0);
     }
 
     refresh() {
-        //по хорошему здесь получать все данные из объекта игры, и вносить изменения перед update
         this.mainStage.update();
-    }
-
-    setGame(game) {
-        this.game = game;
     }
 }
