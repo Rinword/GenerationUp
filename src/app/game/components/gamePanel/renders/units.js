@@ -7,9 +7,13 @@ export default class Renders {
 
     renderItem(inside) {
         const obj = new createjs.Container();
+
+        obj.x = inside.baseGeometry.curX * this.cellSize;
+        obj.y = inside.baseGeometry.curY * this.cellSize;
+
         switch(inside.type) {
             case 'unit':
-                obj.addChild(this.renderUnit(inside.baseGeometry.curX, inside.baseGeometry.curY, inside.color))
+                obj.addChild(this.renderUnit(inside.color))
                 obj.addChild(this.renderUnitInterface(inside.name, inside.data.className, randomInteger(1, 100)))
                 break;
 
@@ -58,7 +62,7 @@ export default class Renders {
         return obj;
     }
 
-    renderUnit(x, y, color) {
+    renderUnit(color) {
         const shape = new createjs.Shape();
         shape.name = 'body';
         let fillObj = shape.graphics.beginFill(color).command;

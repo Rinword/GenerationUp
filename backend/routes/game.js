@@ -9,7 +9,7 @@ module.exports = function(url, app) {
 
     app.get(`${url}/default`, (req, res) => {
 
-        res.send({ map: game.get('map'), name: 'default' });
+        res.send({ data: game.getData(), name: 'default' });
     });
 
     app.get(`${url}/*`, (req, res) => {

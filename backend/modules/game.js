@@ -25,13 +25,13 @@ class Game {
 
         this.data.units = this.generateBots(BOT_ENUM);
 
-        this.get = this.get.bind(this);
+        this.getData = this.getData.bind(this);
         this.generateMap = this.generateMap.bind(this);
         this.generateBots = this.generateBots.bind(this);
     }
 
-    get(prop) {
-        return this.data[prop] || null;
+    getData() {
+        return this.data || null;
     }
 
     generateMap(options) {

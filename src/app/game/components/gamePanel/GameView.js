@@ -17,8 +17,8 @@ export default class Game {
         this.mapGridCellSize = CELL_SIZE;
 
         this.data = {
-            map: config.map,
-            mapSize: {x: config.map.ways.height, y: config.map.ways.width}
+            ...config.data,
+            mapSize: {x: config.data.map.ways.height, y: config.data.map.ways.width}
         }
 
         this.renders = {
@@ -65,10 +65,15 @@ export default class Game {
     }
 
     renderUnits() {
-        // const units = this.renders.units.renderItem();
-        // units.name = 'Units_bots';
-        // this.mainStage.addChild(units);
-        // this.mainStage.setChildIndex(units, 0);
+        const units_bots_canvas = new createjs.Container();
+        units_bots_canvas.name = 'Units_bots';
+        const units = this.data.units;
+        units.forEach(unit => {
+            units_bots_canvas.addChild(this.renders.unit.renderItem(unit));
+        })
+
+        this.mainStage.addChild(units_bots_canvas);
+        // this.mainStage.setChildIndex(units_bots_canvas, 0);
     }
 
     refresh() {
