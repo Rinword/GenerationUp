@@ -3,8 +3,8 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 2;
-const SYNC_EVERY_FRAME = 50;
+const BOT_ENUM = 1;
+const SYNC_EVERY_FRAME = 30;
 const FPS = 60;
 
 class Game {
@@ -54,7 +54,7 @@ class Game {
     }
 
     update() {
-        if(this.frameCap > 50) {
+        if(this.frameCap > 150) {
             this.isGameOver = true;
         }
 
