@@ -34,6 +34,9 @@ class BaseUnit extends BaseObject {
         this.data = {
             ...this.generateUnitClass(),
         }
+
+        this.isWalkable = this.isWalkable.bind(this);
+        this.getFreeCell = this.getFreeCell.bind(this);
     }
 
     generateUnitClass(code1, code2) {
@@ -55,15 +58,8 @@ class BaseUnit extends BaseObject {
         if(!this.movingData.isBusyNow) {
             let cellX = this.baseGeometry.curX;
             let cellY = this.baseGeometry.curY;
-            let x = helpers.randomInteger(1,3);
-            let y = helpers.randomInteger(1,3);
-            if(helpers.randomInteger(0,1) === 0) x = -x;
-            if(helpers.randomInteger(0,1) === 0) y = -y;
-
-            cellX += x;
-            cellY += y;
-
-            this.moveTo(cellX, cellY);
+            const { x, y } = this.getFreeCell(cellX, cellY);
+            this.moveTo(x, y);
             this.movingData.isBusyNow = true;
             this.movingData.currTimeLength = 0;
 
@@ -71,6 +67,28 @@ class BaseUnit extends BaseObject {
         }
 
         this.move();
+    }
+
+    isWalkable(x, y) {
+        // try {
+        if(!this.wayGrid.nodes[x] || !this.wayGrid.nodes[x][y] ) {
+            return false;
+        }
+
+        return this.wayGrid.nodes[x][y].walkable;
+    }
+
+    getFreeCell(curX, curY, range = 3) {
+        while(1) {
+            let dx = helpers.randomInteger(1, range);
+            let dy = helpers.randomInteger(1, range);
+            if(helpers.randomInteger(0,1) === 0) dx = -dx;
+            if(helpers.randomInteger(0,1) === 0) dy = -dy;
+
+            if(this.isWalkable(curX + dx, curY + dy)) {
+                return {x: curX + dx, y: curY + dy};
+            }
+        }
     }
 
     move() {
@@ -105,7 +123,7 @@ class BaseUnit extends BaseObject {
         let startPoint = { x: this.baseGeometry.curX, y: this.baseGeometry.curY };
         //построить путь либой
         let grid = this.wayGrid.clone();
-        const wayArr = [];
+        let wayArr = [];
 
         if(approachMode) {
             // grid.nodes[y][x].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
@@ -113,12 +131,11 @@ class BaseUnit extends BaseObject {
             // wayArr.pop(); //убираем последнюю точку маршрута, потому что там целевой бот
         } else {
             try {
-                const wayArr = finder.findPath(startPoint.y, startPoint.x, this.movingData.finalTargetPoint.y, this.movingData.finalTargetPoint.x, grid);
+                wayArr = finder.findPath(startPoint.y, startPoint.x, this.movingData.finalTargetPoint.y, this.movingData.finalTargetPoint.x, grid);
             } catch(err) {
                 console.warn(err);
                 console.log('....', startPoint, this.movingData.finalTargetPoint, grid);
             }
-
         }
         this.movingData.wayArr = wayArr;
         this.movingData.wayCounter = 0;

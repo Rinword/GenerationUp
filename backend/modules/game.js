@@ -54,7 +54,7 @@ class Game {
     }
 
     update() {
-        if(this.frameCap > 100) {
+        if(this.frameCap > 50) {
             this.isGameOver = true;
         }
 
@@ -160,13 +160,13 @@ class Game {
             // grid[width - 1][j].icon = 'wall';
         }
 
-        ways.nodes[5].forEach( (cell, i)  => {
-            if(i != 3) {
-                ways.nodes[i][5].walkable = false;
-                grid[i][5].texture = 'wall1';
-                // grid[i][5].icon = 'wall';
-            }
-        });
+        // ways.nodes[5].forEach( (cell, i)  => {
+        //     if(i != 3) {
+        //         ways.nodes[i][5].walkable = false;
+        //         grid[i][5].texture = 'wall1';
+        //         // grid[i][5].icon = 'wall';
+        //     }
+        // });
     }
 }
 

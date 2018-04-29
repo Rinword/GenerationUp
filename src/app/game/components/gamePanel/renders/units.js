@@ -24,7 +24,7 @@ export default class Renders {
         return obj;
     }
 
-    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData}) {
+    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry}) {
         const obj = new createjs.Container();
         //надпись
         const text = new createjs.Text(name, "16px Arial", "#180401");
@@ -49,13 +49,13 @@ export default class Renders {
         hpLabel.textAlign = 'center';
 
         //TODO временная отрисовка маршрута
-        console.log(movingData);
+        const { curX, curY } = baseGeometry;
         let wayRender = new createjs.Container();
         movingData.wayArr.forEach(cell => {
             let rect = new createjs.Shape();
             rect.graphics.beginFill("#000").drawRect(
-                (cell[0] * this.cellSize + this.cellSize / 3),
-                (cell[1] * this.cellSize +this.cellSize / 3),
+                ((cell[0] - curY)  * this.cellSize + this.cellSize / 3),
+                ((cell[1] - curX) * this.cellSize + this.cellSize / 3),
                 this.cellSize / 3,
                 this.cellSize / 3);
             wayRender.addChild(rect);
@@ -69,6 +69,7 @@ export default class Renders {
         obj.addChild(classNameLabel);
         obj.setChildIndex(classNameLabel, 0);
         obj.addChild(hpLabel);
+        obj.addChild(wayRender);
         // obj.addChild(castState);
         // obj.addChild(damageLabel);
 
