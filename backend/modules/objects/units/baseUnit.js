@@ -4,6 +4,8 @@ const PF = require('pathfinding');
 const classResolver = require('../../dataToDB/classResolver');
 const helpers =  require('../../helpers');
 
+const finder = new PF.AStarFinder();
+
 class BaseUnit extends BaseObject {
     constructor(x, y, grid) {
         super();
@@ -32,13 +34,6 @@ class BaseUnit extends BaseObject {
         this.data = {
             ...this.generateUnitClass(),
         }
-
-        // this.baseGeometry.bounds = {
-        //     x: 0 - this.baseGeometry.baseSize,
-        //     y: 0 - this.baseGeometry.baseSize,
-        //     height: 2 * this.baseGeometry.baseSize,
-        //     width: 2 * this.baseGeometry.baseSize
-        // };
     }
 
     generateUnitClass(code1, code2) {
@@ -58,8 +53,6 @@ class BaseUnit extends BaseObject {
 
     update() {
         if(!this.movingData.isBusyNow) {
-            // if(helpers.randomInteger(0,1000) < 1) {
-                // this.wayTracker();
             let cellX = this.baseGeometry.curX;
             let cellY = this.baseGeometry.curY;
             let x = helpers.randomInteger(1,3);
@@ -73,15 +66,21 @@ class BaseUnit extends BaseObject {
             this.moveTo(cellX, cellY);
             this.movingData.isBusyNow = true;
             this.movingData.currTimeLength = 0;
-            // }
+
+            return;
         }
 
-        // this.move();
+        this.move();
     }
 
     move() {
-        // if(this.movingData.isBusyNow) {
-        //     return;
+        if(this.movingData.isBusyNow) {
+            this.movingData.currTimeLength++;
+            // this.movingData.curX += this.baseGeometry.curX;
+            // this.movingData.curY += this.baseGeometry.curY;
+            // this.wayTracker();
+
+        }
         // } else {
         //     this.movingData.currTimeLength++;
         //     // this.updateWayGrid() //проверка занятости клетки. Как только бот достигает границы следующей клетки - меняем walkable
@@ -108,15 +107,18 @@ class BaseUnit extends BaseObject {
         let grid = this.wayGrid.clone();
         const wayArr = [];
 
-        let finder = new PF.AStarFinder();
         if(approachMode) {
             // grid.nodes[y][x].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
             // wayArr = finder.findPath(startPoint.x, startPoint.y, this.movingData.finalTargetPoint.x, this.movingData.finalTargetPoint.y, grid);
             // wayArr.pop(); //убираем последнюю точку маршрута, потому что там целевой бот
         } else {
-            console.log('AAA', startPoint, this.movingData.finalTargetPoint);
-            const wayArr = finder.findPath(startPoint.x, startPoint.y, this.movingData.finalTargetPoint.x, this.movingData.finalTargetPoint.y, grid);
-            console.log('VVV', wayArr);
+            try {
+                const wayArr = finder.findPath(startPoint.y, startPoint.x, this.movingData.finalTargetPoint.y, this.movingData.finalTargetPoint.x, grid);
+            } catch(err) {
+                console.warn(err);
+                console.log('....', startPoint, this.movingData.finalTargetPoint, grid);
+            }
+
         }
         this.movingData.wayArr = wayArr;
         this.movingData.wayCounter = 0;
@@ -125,7 +127,7 @@ class BaseUnit extends BaseObject {
     wayTracker() {
         //по текущей целевой точке определить направление для перемещения юнита, обработать коллизии
         this.movingData.direction = this.getDirectionBy2Cells(this.baseGeometry, this.movingData.currTargetPoint);
-        // console.log(this.movingData.direction);
+        console.log('direction', this.movingData.direction);
 
         //в момент совпадения currCell и currTargetPoint вернется 0 направления, тогда назначаем следующую точку
         if(!this.movingData.direction) {
