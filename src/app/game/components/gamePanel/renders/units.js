@@ -11,6 +11,8 @@ export default class Renders {
         obj.x = inside.baseGeometry.curX * this.cellSize;
         obj.y = inside.baseGeometry.curY * this.cellSize;
 
+        console.log(inside.name, inside.baseGeometry.curX, inside.baseGeometry.curY);
+
         switch(inside.type) {
             case 'unit':
                 obj.addChild(this.renderUnit(inside.color))

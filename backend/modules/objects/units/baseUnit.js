@@ -21,14 +21,11 @@ class BaseUnit extends BaseObject {
         this.movingData = {
             direction: null,
             currTimeLength: 0,
-            lastTimeMoveStamp: 0,
-            lastTimeMoveWay: 0,
             wayArr: [],
-            wayCounter: 0,
             finalTargetPoint: null,
             currTargetPoint: null,
             isBusyNow: false,
-            speed: 120, // 2 клетки в секунду
+            speed: 4, // 4 клетки в секунду
         };
 
         this.data = {
@@ -95,7 +92,8 @@ class BaseUnit extends BaseObject {
         if(this.movingData.isBusyNow) {
             this.wayTracker();
             this.movingData.currTimeLength++;
-
+        } else {
+            console.log('SHIT!');
         }
     }
 
@@ -112,7 +110,9 @@ class BaseUnit extends BaseObject {
 
         //определить в каком квадрате грида находится сейчас объект
         let startPoint = { x: this.baseGeometry.curX, y: this.baseGeometry.curY };
-        //построить путь либой
+
+        console.log('START', startPoint.x, startPoint.y, '->', x, y);
+
         let grid = this.wayGrid.clone();
         let wayArr = [];
 
@@ -133,37 +133,51 @@ class BaseUnit extends BaseObject {
     }
 
     wayTracker() {
+
         //чекнуть на занятость клетку в которую напраляется бот
         const md = this.movingData;
         const bg = this.baseGeometry;
         const currTargetCell = md.wayArr[0];
 
-        console.log(currTargetCell);
-
-        if(!this.isWalkable(currTargetCell[0], currTargetCell[1])) {
-            console.log('Занято, маршрут прерван');
-            this.clearMovingData()
-            md.isBusyNow = false;
+        if(!md.wayArr.length) {
+            console.log('FRAME', md.currTimeLength)
+            console.warn('машрут окончен досрочно', this.name);
             return;
         }
 
-        if(md.currTimeLength === md.speed / 2) {
+        // if(!this.isWalkable(currTargetCell[1], currTargetCell[0])) {
+        //     console.log('Занято, маршрут прерван');
+        //     this.clearMovingData()
+        //     md.isBusyNow = false;
+        //     return;
+        // }
+
+        if(md.currTimeLength === +((60 / md.speed / 2).toFixed(0))) {
+            console.log('FRAME', md.currTimeLength)
+            console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
             //сменить текущую занятую клетку на новую
-            bg.curX = currTargetCell[0];
-            bg.curY = currTargetCell[1];
-            console.log('-- смена занятой клетки')
+            bg.curX = currTargetCell[1];
+            bg.curY = currTargetCell[0];
         }
 
-        if(md.currTimeLength === md.speed || md.currTimeLength === 0) {
+        if(md.currTimeLength === +((60 / md.speed).toFixed(0)) || md.currTimeLength === 0) {
             //если это был последний - закончить маршрут и очистить moving data
+            console.log('FRAME', md.currTimeLength)
+            md.wayArr.shift();
+
             if(!md.wayArr.length) {
-                console.log('машрут окончен', this.name);
+                console.log('МАРШРУТ ОКОНЧЕН', this.name, currTargetCell[1], currTargetCell[0]);
+                md.currTimeLength = 0;
+                this.clearMovingData();
                 return;
             }
-            md.wayArr.shift();
+
+            console.log('||Точка достигнута', currTargetCell[1], currTargetCell[0]);
+
             const newTargetCell = md.wayArr[0];
-            const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[0], y: newTargetCell[1]});
+            const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
             console.log('Направление', direction);
+            md.currTimeLength = 1;
         }
 
         //по текущей целевой точке определить направление для перемещения юнита, обработать коллизии
@@ -201,12 +215,10 @@ class BaseUnit extends BaseObject {
 
     clearMovingData() {
         this.movingData = {
-            direction: 0,
+            ...this.movingData,
+            direction: null,
             currTimeLength: 0,
-            lastTimeMoveStamp: 0,
-            lastTimeMoveWay: 0,
             wayArr: [],
-            wayCounter: 0,
             finalTargetPoint: null,
             currTargetPoint: null,
             isBusyNow: false

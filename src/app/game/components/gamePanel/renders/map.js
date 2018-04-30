@@ -15,6 +15,14 @@ export default class Renders {
             .drawRect(1, 1, this.cellSize, this.cellSize);
         cell_canvas.addChild(rect);
 
+        const text = new createjs.Text(`${item.position.x},${item.position.y}`, "10px Arial", "#180401");
+        text.name = 'coords';
+        text.x = 2;
+        text.y = this.cellSize - 2;
+        text.textBaseline = "alphabetic";
+
+        cell_canvas.addChild(text);
+
         // const sprite = spriteResolver.getBitMap(cell.texture);
         // const texture = new createjs.Bitmap(sprite.source);
         // cell_canvas.addChild(texture);

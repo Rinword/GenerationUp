@@ -54,7 +54,7 @@ class Game {
     }
 
     update() {
-        if(this.frameCap > 150) {
+        if(this.frameCap > 300) {
             this.isGameOver = true;
         }
 
