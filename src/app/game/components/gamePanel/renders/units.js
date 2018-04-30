@@ -11,7 +11,7 @@ export default class Renders {
         obj.x = inside.baseGeometry.curX * this.cellSize;
         obj.y = inside.baseGeometry.curY * this.cellSize;
 
-        console.log(inside.name, inside.baseGeometry.curX, inside.baseGeometry.curY);
+        // console.log(inside.name, inside.baseGeometry.curX, inside.baseGeometry.curY);
 
         switch(inside.type) {
             case 'unit':
@@ -56,8 +56,8 @@ export default class Renders {
         movingData.wayArr.forEach(cell => {
             let rect = new createjs.Shape();
             rect.graphics.beginFill("#000").drawRect(
-                ((cell[0] - curY)  * this.cellSize + this.cellSize / 3),
                 ((cell[1] - curX) * this.cellSize + this.cellSize / 3),
+                ((cell[0] - curY)  * this.cellSize + this.cellSize / 3),
                 this.cellSize / 3,
                 this.cellSize / 3);
             wayRender.addChild(rect);

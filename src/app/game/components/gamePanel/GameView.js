@@ -6,6 +6,8 @@ const RENDER_CELL_GRID_MAP = true; //отображать клетки карт�
 const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
 const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
 
+createjs.Ticker.setFPS(60);
+
 export default class Game {
     constructor(context, config, socket){
         // console.log(config);
@@ -36,7 +38,12 @@ export default class Game {
         //рендер динамических структур. Здесь это боты
         this.renderUnits();
 
-        this.regSockets()
+        this.regSockets();
+
+        this.mainStage.on('stagemousedown',  evt => {
+            const {x, y} = this.getGridCellByCoords(evt.rawX, evt.rawY);
+            this.socket.emit('game_click-on-stage', { action: 'moveTo', params: {x, y} })
+        });
 
         // this.mapWayGrid = this.generatePathFindingGrid(this.mapSize.x, this.mapSize.y , this.mapGridCellSize); //массив с клетками для поиска путей
         //нужно обновлять его при смене позиции каждым объектом, считаемым препятсвием, а также перепрокладывать марштуты, шедшие через эти точки
@@ -85,6 +92,10 @@ export default class Game {
         })
 
         this.mainStage.addChild(units_bots_canvas);
+    }
+
+    getGridCellByCoords(x, y) {
+        return {x: +((Math.floor(x / CELL_SIZE)).toFixed(0)), y:+(Math.floor(y / CELL_SIZE).toFixed(0))};
     }
 
     refresh() {

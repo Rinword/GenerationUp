@@ -3,8 +3,8 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 1;
-const SYNC_EVERY_FRAME = 30;
+const BOT_ENUM = 5;
+const SYNC_EVERY_FRAME = 15;
 const FPS = 60;
 
 class Game {
@@ -48,14 +48,14 @@ class Game {
             this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units})
         }
 
-        if(!this.isGameOver && !this.isGamePause) {
+        if(!(this.isGameOver || this.isGamePause)) {
             setTimeout(this.main, 1000 / FPS);
         }
     }
 
     update() {
-        if(this.frameCap > 300) {
-            this.isGameOver = true;
+        if(this.frameCap === 300 && !this.isGamePause) {
+            this.isGamePause = true;
         }
 
         this.updateUnits();
@@ -71,16 +71,28 @@ class Game {
         this.socket.on('game_control', data => {
             switch (data.action) {
                 case 'pause':
-                    this.isGamePause = !this.isGamePause;
-                    this.main();
+                    if(this.isGamePause) {
+                        this.isGamePause = false;
+                        this.frameCap++;
+                        this.main();
+                    } else {
+                        this.isGamePause = true;
+                    }
                     break;
                 case 'start_again':
                     this.frameCap = 0;
-                    this.isGamePause = true;
                     this.data.units = this.generateBots(BOT_ENUM);
-                    this.isGamePause = false;
                     this.isGameOver = false;
                     this.main();
+            }
+        })
+
+        this.socket.on('game_click-on-stage', data => {
+            switch (data.action) {
+                case 'moveTo':
+                    this.data.units.forEach(unit => {
+                        unit.moveTo(data.params.x, data.params.y)
+                    })
             }
         })
     }
