@@ -1,8 +1,9 @@
 import UnitRenderer from './renders/units';
 import MapRenderer from './renders/map';
 
+import { deepExtend } from 'ui/helpers';
+
 const CELL_SIZE = 40;
-const RENDER_CELL_GRID_MAP = true; //отображать клетки карты
 const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
 const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
 
@@ -19,21 +20,27 @@ export default class Game {
         this.isGamePause = false;
         this.mapGridCellSize = CELL_SIZE;
 
+        this.settings = {
+            mapSettings: {
+                displayGridCells: true,
+                displayGridCoords: true,
+                displayCurrentWays: true,
+                displayNoWalkable: false,
+            },
+        }
+
         this.data = {
             ...config.data,
             mapSize: {x: config.data.map.ways.height, y: config.data.map.ways.width}
         }
 
         this.renders = {
-            map: new MapRenderer({cellSize: CELL_SIZE, mapSize: this.data.mapSize}),
-            unit: new UnitRenderer({cellSize: CELL_SIZE}),
+            map: new MapRenderer(this, {cellSize: CELL_SIZE, mapSize: this.data.mapSize, settings: this.settings}),
+            unit: new UnitRenderer(this, {cellSize: CELL_SIZE, settings: this.settings}),
         }
 
         //рендер карты. Объекты в ссылках (например юниты) не рендерятся.
         this.renderMap();
-
-        //визуальная отрисовка сетки для контроля
-        if(RENDER_CELL_GRID_MAP) this.renderCellBorders();
 
         //рендер динамических структур. Здесь это боты
         this.renderUnits();
@@ -45,12 +52,16 @@ export default class Game {
             this.socket.emit('game_click-on-stage', { action: 'moveTo', params: {x, y} })
         });
 
+
         // this.mapWayGrid = this.generatePathFindingGrid(this.mapSize.x, this.mapSize.y , this.mapGridCellSize); //массив с клетками для поиска путей
         //нужно обновлять его при смене позиции каждым объектом, считаемым препятсвием, а также перепрокладывать марштуты, шедшие через эти точки
 
         // this.wayRender = new createjs.Container();
         // this.wayRender.name = 'Way';
         // this.mainStage.addChild(this.wayRender);
+
+        this.applySettings = this.applySettings.bind(this);
+        this.renderMap = this.renderMap.bind(this);
     }
 
     regSockets() {
@@ -75,12 +86,16 @@ export default class Game {
        });
 
        this.mainStage.addChild(map_canvas);
+
+       if(this.settings.mapSettings.displayGridCells) this.renderCellBorders();
     }
 
     renderCellBorders() {
         const borders = this.renders.map.renderCellBorders();
         borders.name = 'MapCellsBorders';
         this.mainStage.addChild(borders);
+        // this.mainStage.setChildIndex(borders, 0);
+        this.mainStage.setChildIndex(borders, this.mainStage.getNumChildren()-1);
     }
 
     renderUnits() {
@@ -96,6 +111,18 @@ export default class Game {
 
     getGridCellByCoords(x, y) {
         return {x: +((Math.floor(x / CELL_SIZE)).toFixed(0)), y:+(Math.floor(y / CELL_SIZE).toFixed(0))};
+    }
+
+    applySettings(settings) {
+        this.settings = deepExtend(this.settings, settings);
+
+        for(let i in this.renders) {
+            this.renders[i].updateSettings(this.settings);
+        }
+
+        this.renderMap();
+
+        this.refresh();
     }
 
     refresh() {

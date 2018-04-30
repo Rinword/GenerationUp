@@ -1,8 +1,17 @@
 import { randomInteger } from 'ui/helpers'
 
 export default class Renders {
-    constructor({cellSize = 40}) {
+    constructor(gameView, {cellSize = 40, settings}) {
+        this.stage = gameView.stage;
         this.cellSize = cellSize;
+        this.settings = settings;
+
+        this.updateSettings = newSettings => {
+            this.settings = {...this.settings, ...newSettings}
+        }
+
+        this.renderItem = this.renderItem.bind(this);
+        this.renderUnitInterface = this.renderUnitInterface.bind(this);
     }
 
     renderItem(inside) {
@@ -10,8 +19,6 @@ export default class Renders {
 
         obj.x = inside.baseGeometry.curX * this.cellSize;
         obj.y = inside.baseGeometry.curY * this.cellSize;
-
-        // console.log(inside.name, inside.baseGeometry.curX, inside.baseGeometry.curY);
 
         switch(inside.type) {
             case 'unit':
@@ -26,7 +33,7 @@ export default class Renders {
         return obj;
     }
 
-    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry}) {
+    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry, color}) {
         const obj = new createjs.Container();
         //надпись
         const text = new createjs.Text(name, "16px Arial", "#180401");
@@ -50,18 +57,21 @@ export default class Renders {
         hpLabel.textBaseline = "alphabetic";
         hpLabel.textAlign = 'center';
 
-        //TODO временная отрисовка маршрута
-        const { curX, curY } = baseGeometry;
-        let wayRender = new createjs.Container();
-        movingData.wayArr.forEach(cell => {
-            let rect = new createjs.Shape();
-            rect.graphics.beginFill("#000").drawRect(
-                ((cell[1] - curX) * this.cellSize + this.cellSize / 3),
-                ((cell[0] - curY)  * this.cellSize + this.cellSize / 3),
-                this.cellSize / 3,
-                this.cellSize / 3);
-            wayRender.addChild(rect);
-        });
+        if(this.settings.mapSettings.displayCurrentWays) {
+            const { curX, curY } = baseGeometry;
+            let wayRender = new createjs.Container();
+            movingData.wayArr.forEach(cell => {
+                let rect = new createjs.Shape();
+                rect.graphics.beginFill(color).drawRect(
+                    ((cell[1] - curX) * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                    ((cell[0] - curY)  * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                    this.cellSize / 6,
+                    this.cellSize / 6);
+                wayRender.addChild(rect);
+            });
+            obj.addChild(wayRender);
+        }
+
 
         //перенесено в castAnimate
         // const castState = new createjs.Container();
@@ -71,7 +81,6 @@ export default class Renders {
         obj.addChild(classNameLabel);
         obj.setChildIndex(classNameLabel, 0);
         obj.addChild(hpLabel);
-        obj.addChild(wayRender);
         // obj.addChild(castState);
         // obj.addChild(damageLabel);
 

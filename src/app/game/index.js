@@ -14,15 +14,23 @@ class Game extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            mapSettings: {}
+        };
+
+        this.onMapSettinsChange = this.onMapSettinsChange.bind(this);
+    }
+
+    onMapSettinsChange(setting) {
+        this.setState({mapSettings: {...this.state.mapSettings, ...setting }})
     }
 
     render() {
         return (
             <Column className={cx('game', this.props.className)}>
                 <Row className="game__main-panel" ai="stretch">
-                    <GamePanel/>
-                    <RightPanel/>
+                    <GamePanel settings={this.state} />
+                    <RightPanel onMapSettinsChange={this.onMapSettinsChange}/>
                 </Row>
                 <Row className="game__bottom-panel">
                     <BottomPanel />

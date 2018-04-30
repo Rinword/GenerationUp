@@ -1,9 +1,16 @@
 import spriteResolver from '../spriteResolver';
 
 export default class Renders {
-    constructor({cellSize = 40, mapSize = {x: 0, y: 0}}) {
+    constructor(gameView, {cellSize = 40, mapSize = {x: 0, y: 0}, settings}) {
+        this.stage = gameView.stage;
         this.cellSize = cellSize;
         this.mapSize = mapSize;
+        this.settings = settings;
+
+        this.updateSettings = newSettings => {
+            this.settings = {...this.settings, ...newSettings}
+        }
+
     }
 
     renderItem(item) {
@@ -15,13 +22,15 @@ export default class Renders {
             .drawRect(1, 1, this.cellSize, this.cellSize);
         cell_canvas.addChild(rect);
 
-        const text = new createjs.Text(`${item.position.x},${item.position.y}`, "10px Arial", "#180401");
-        text.name = 'coords';
-        text.x = 2;
-        text.y = this.cellSize - 2;
-        text.textBaseline = "alphabetic";
+        if(this.settings.mapSettings.displayGridCoords) {
+            const text = new createjs.Text(`${item.position.x},${item.position.y}`, "10px Arial", "#180401");
+            text.name = 'coords';
+            text.x = 2;
+            text.y = this.cellSize - 2;
+            text.textBaseline = "alphabetic";
 
-        cell_canvas.addChild(text);
+            cell_canvas.addChild(text);
+        }
 
         // const sprite = spriteResolver.getBitMap(cell.texture);
         // const texture = new createjs.Bitmap(sprite.source);
