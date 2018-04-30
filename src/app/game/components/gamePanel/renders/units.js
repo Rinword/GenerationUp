@@ -12,10 +12,18 @@ export default class Renders {
 
         this.renderItem = this.renderItem.bind(this);
         this.renderUnitInterface = this.renderUnitInterface.bind(this);
+        this.calculateDelta = this.calculateDelta.bind(this);
     }
 
     renderItem(inside) {
         const obj = new createjs.Container();
+        const {dx, dy} = this.calculateDelta(inside);
+        obj.addEventListener("tick", animateMoving.bind(obj, dx));
+
+        function animateMoving(dx) {
+            console.log(this.x);
+            this.x += dx;
+        }
 
         obj.x = inside.baseGeometry.curX * this.cellSize;
         obj.y = inside.baseGeometry.curY * this.cellSize;
@@ -95,5 +103,13 @@ export default class Renders {
         shape.graphics.drawCircle(radius, radius, radius);
 
         return shape;
+    }
+
+    calculateDelta(inside) {
+        const viewVelocity = inside.movingData.speed * this.cellSize / 60;
+        const dx = viewVelocity;
+        const dy = viewVelocity;
+
+        return {dx, dy}
     }
 }

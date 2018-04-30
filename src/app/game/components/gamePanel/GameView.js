@@ -4,8 +4,6 @@ import MapRenderer from './renders/map';
 import { deepExtend } from 'ui/helpers';
 
 const CELL_SIZE = 40;
-const HIGHLIGHT_NO_WALKABLE_CELLS = false; //подсветка текущих занятых клеток
-const VIEWS_REFRESH_STEP = 30; //частота обновления информации во вьюхах (1 раз в 30 тиков или раз в 0,5сек)
 
 createjs.Ticker.setFPS(60);
 
@@ -62,6 +60,10 @@ export default class Game {
 
         this.applySettings = this.applySettings.bind(this);
         this.renderMap = this.renderMap.bind(this);
+
+        // setInterval(() => {
+        //     this.refresh();
+        // }, 1000/60)
     }
 
     regSockets() {
@@ -94,8 +96,6 @@ export default class Game {
         const borders = this.renders.map.renderCellBorders();
         borders.name = 'MapCellsBorders';
         this.mainStage.addChild(borders);
-        // this.mainStage.setChildIndex(borders, 0);
-        this.mainStage.setChildIndex(borders, this.mainStage.getNumChildren()-1);
     }
 
     renderUnits() {
