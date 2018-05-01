@@ -148,7 +148,7 @@ class BaseUnit extends BaseObject {
 
         if(md.currTimeLength === +((60 / md.speed / 2).toFixed(0))) {
             // console.log('FRAME', md.currTimeLength)
-            // console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
+            console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
             //сменить текущую занятую клетку на новую
             if(!this.isWalkable(currTargetCell[1], currTargetCell[0])) {
                 console.log('Следующая клетка занята, маршрут прерван', this.name);
@@ -175,7 +175,8 @@ class BaseUnit extends BaseObject {
 
             const newTargetCell = md.wayArr[0];
             const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
-            // console.log('Направление', direction);
+            console.log(direction);
+            md.direction = direction;
             md.currTimeLength = 1;
         }
 
@@ -198,11 +199,11 @@ class BaseUnit extends BaseObject {
         let deltaX = finish.x - start.x;
         let deltaY = finish.y - start.y;
         if(Math.abs(deltaX)) {
-            deltaX > 0 ? direction = 'left' : direction = 'right';
+            deltaX > 0 ? direction = 'right' : direction = 'left';
         }
 
         if(Math.abs(deltaY)) {
-            deltaY > 0 ? direction = 'top' : direction = 'bottom';
+            deltaY > 0 ? direction = 'bottom' : direction = 'top';
         }
 
         if( !Math.abs(deltaX) && !Math.abs(deltaY) ) {

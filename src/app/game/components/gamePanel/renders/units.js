@@ -1,8 +1,10 @@
-import { randomInteger } from 'ui/helpers'
+import { randomInteger } from 'ui/helpers';
+import get from 'lodash/get';
 
 export default class Renders {
     constructor(gameView, {cellSize = 40, settings}) {
-        this.stage = gameView.stage;
+        this.stage = gameView.mainStage;
+        this.unitsLayer = this.stage.getChildByName('Units_bots');
         this.cellSize = cellSize;
         this.settings = settings;
 
@@ -13,17 +15,21 @@ export default class Renders {
         this.renderItem = this.renderItem.bind(this);
         this.renderUnitInterface = this.renderUnitInterface.bind(this);
         this.calculateDelta = this.calculateDelta.bind(this);
+        this.updateGameView = this.updateGameView.bind(this);
+        this._updateItem = this._updateItem.bind(this);
     }
 
     renderItem(inside) {
-        const obj = new createjs.Container();
-        const {dx, dy} = this.calculateDelta(inside);
-        obj.addEventListener("tick", animateMoving.bind(obj, dx));
-
-        function animateMoving(dx) {
-            console.log(this.x);
-            this.x += dx;
+        const rObj = this.unitsLayer && this.unitsLayer.getChildByName(inside.name);
+        if(rObj) {
+            this._updateItem(inside, rObj);
+            return rObj;
         }
+
+        console.log('RENDER');
+
+        const obj = new createjs.Container();
+        obj.name = inside.name;
 
         obj.x = inside.baseGeometry.curX * this.cellSize;
         obj.y = inside.baseGeometry.curY * this.cellSize;
@@ -43,6 +49,7 @@ export default class Renders {
 
     renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry, color}) {
         const obj = new createjs.Container();
+        obj.name = 'bot_interface';
         //надпись
         const text = new createjs.Text(name, "16px Arial", "#180401");
         text.name = 'objLabel';
@@ -105,11 +112,75 @@ export default class Renders {
         return shape;
     }
 
+    updateGameView(gameView) {
+        this.stage = gameView.mainStage;
+    }
+
+    _updateItem(inside, obj) {
+        const {dx, dy} = this.calculateDelta(inside);
+
+        if(!obj) {
+            obj = this.stage.getChildByName('Units_bots').getChildByName(inside.name);
+        }
+
+        // obj.removeEventListener("tick", animateMoving);
+        function animateMoving() {
+            this.x += dx;
+            this.y += dy;
+        }
+        obj.removeAllEventListeners();
+
+        const deltaX = obj.x - inside.baseGeometry.curX * this.cellSize;
+        const deltaY = obj.y - inside.baseGeometry.curY * this.cellSize;
+        // console.log(`(${deltaX}, ${deltaY})`);
+
+        // if(deltaX >= this.cellSize || deltaY >= this.cellSize) {
+            obj.x = inside.baseGeometry.curX * this.cellSize;
+            obj.y = inside.baseGeometry.curY * this.cellSize;
+        // }
+
+
+        // obj.addEventListener("tick", animateMoving.bind(obj));
+
+        switch(inside.type) {
+            case 'unit':
+                this._updateUnit(inside.color, obj)
+                this._updateUnitInterface(inside, obj)
+                break;
+
+            default:
+                console.warn('No update for', inside.type, 'check it!')
+        }
+    }
+
     calculateDelta(inside) {
         const viewVelocity = inside.movingData.speed * this.cellSize / 60;
-        const dx = viewVelocity;
-        const dy = viewVelocity;
+        let dx = 0;
+        let dy = 0;
+        switch (inside.movingData.direction) {
+            case 'top':
+                dx = -viewVelocity;
+                break;
+            case 'left':
+                dy = -viewVelocity;
+                break;
+            case 'bottom':
+                dx = viewVelocity;
+                break;
+            case 'right':
+                dy = viewVelocity;
+                break;
+        }
 
         return {dx, dy}
+    }
+
+    _updateUnit(color, obj) {
+        // console.log(obj.getChildByName('body'))
+    }
+
+    _updateUnitInterface(inside, obj) {
+        const unitHP = obj.getChildByName('bot_interface').getChildByName('unitHP');
+        unitHP.text = 10;
     }
 }

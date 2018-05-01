@@ -61,15 +61,14 @@ export default class Game {
         this.applySettings = this.applySettings.bind(this);
         this.renderMap = this.renderMap.bind(this);
 
-        // setInterval(() => {
-        //     this.refresh();
-        // }, 1000/60)
+        setInterval(() => {
+            this.refresh();
+        }, 1000/60)
     }
 
     regSockets() {
         this.socket.on('update_units', data => {
             this.data.units = data.units;
-            this.mainStage.removeChild(this.mainStage.getChildByName('Units_bots')); //TODO need update, not remove
             this.renderUnits();
             this.refresh();
         })
@@ -99,14 +98,28 @@ export default class Game {
     }
 
     renderUnits() {
-        const units_bots_canvas = new createjs.Container();
-        units_bots_canvas.name = 'Units_bots';
+        let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
         const units = this.data.units;
+
+        if(!units_bots_canvas) {
+            units_bots_canvas = new createjs.Container();
+            units_bots_canvas.name = 'Units_bots';
+
+
+            units.forEach(unit => {
+                units_bots_canvas.addChild(this.renders.unit.renderItem(unit));
+            })
+
+            this.mainStage.addChild(units_bots_canvas);
+        }
+        this.renders.unit.updateGameView(this);
+
         units.forEach(unit => {
-            units_bots_canvas.addChild(this.renders.unit.renderItem(unit));
+            this.renders.unit._updateItem(unit);
         })
 
-        this.mainStage.addChild(units_bots_canvas);
+
+
     }
 
     getGridCellByCoords(x, y) {
