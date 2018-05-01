@@ -72,22 +72,6 @@ export default class Renders {
         hpLabel.textBaseline = "alphabetic";
         hpLabel.textAlign = 'center';
 
-        if(this.settings.mapSettings.displayCurrentWays) {
-            const { curX, curY } = baseGeometry;
-            let wayRender = new createjs.Container();
-            movingData.wayArr.forEach(cell => {
-                let rect = new createjs.Shape();
-                rect.graphics.beginFill(color).drawRect(
-                    ((cell[1] - curX) * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
-                    ((cell[0] - curY)  * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
-                    this.cellSize / 6,
-                    this.cellSize / 6);
-                wayRender.addChild(rect);
-            });
-            obj.addChild(wayRender);
-        }
-
-
         //перенесено в castAnimate
         // const castState = new createjs.Container();
         // castState.name = 'castState';

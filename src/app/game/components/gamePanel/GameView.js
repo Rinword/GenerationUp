@@ -88,14 +88,29 @@ export default class Game {
 
        this.mainStage.addChild(map_canvas);
 
-       if(this.settings.mapSettings.displayGridCells) this.renderCellBorders();
+       this.renderCellBorders();
+       this.renderCellCoords();
+       this.renderCurrentWays();
     }
 
     renderCellBorders() {
         const borders = this.renders.map.renderCellBorders();
-        borders.name = 'MapCellsBorders';
+        borders.name = 'Map_cells';
         this.mainStage.addChild(borders);
     }
+
+    renderCurrentWays() {
+        const unitWays = new createjs.Container();
+        unitWays.name = 'Units_ways';
+        this.mainStage.addChild(unitWays);
+    }
+
+    renderCellCoords() {
+        const coords = this.renders.map.renderCellsCoords();
+        coords.name = 'Map_coords';
+        this.mainStage.addChild(coords);
+    }
+
 
     renderUnits() {
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
@@ -118,8 +133,7 @@ export default class Game {
             this.renders.unit._updateItem(unit);
         })
 
-
-
+        this.renders.map.renderWays(units);
     }
 
     getGridCellByCoords(x, y) {
@@ -133,8 +147,13 @@ export default class Game {
             this.renders[i].updateSettings(this.settings);
         }
 
-        this.renderMap();
-
+        const cells = this.mainStage.getChildByName('Map_cells');
+        const ways = this.mainStage.getChildByName('Units_ways');
+        const coords = this.mainStage.getChildByName('Map_coords');
+        cells.visible = this.settings.mapSettings.displayGridCells;
+        ways.visible = this.settings.mapSettings.displayCurrentWays;
+        coords.visible = this.settings.mapSettings.displayGridCoords;
+        // this.renderMap();
         this.refresh();
     }
 

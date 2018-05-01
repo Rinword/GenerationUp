@@ -2,7 +2,7 @@ import spriteResolver from '../spriteResolver';
 
 export default class Renders {
     constructor(gameView, {cellSize = 40, mapSize = {x: 0, y: 0}, settings}) {
-        this.stage = gameView.stage;
+        this.stage = gameView.mainStage;
         this.cellSize = cellSize;
         this.mapSize = mapSize;
         this.settings = settings;
@@ -10,6 +10,8 @@ export default class Renders {
         this.updateSettings = newSettings => {
             this.settings = {...this.settings, ...newSettings}
         }
+
+        this.renderWays = this.renderWays.bind(this);
 
     }
 
@@ -21,16 +23,6 @@ export default class Renders {
         rect.graphics.beginFill(spriteResolver.getBgColor(item.texture))
             .drawRect(1, 1, this.cellSize, this.cellSize);
         cell_canvas.addChild(rect);
-
-        if(this.settings.mapSettings.displayGridCoords) {
-            const text = new createjs.Text(`${item.position.x},${item.position.y}`, "10px Arial", "#180401");
-            text.name = 'coords';
-            text.x = 2;
-            text.y = this.cellSize - 2;
-            text.textBaseline = "alphabetic";
-
-            cell_canvas.addChild(text);
-        }
 
         // const sprite = spriteResolver.getBitMap(cell.texture);
         // const texture = new createjs.Bitmap(sprite.source);
@@ -58,5 +50,45 @@ export default class Renders {
         }
 
         return mapCells;
+    }
+
+    renderCellsCoords() {
+        let coords = new createjs.Container();
+
+        let xLines = this.mapSize.x;
+        let yLines = this.mapSize.y;
+
+        for(let i = 0; i < xLines; i++) {
+            for(let j = 0; j < yLines; j++) {
+                const text = new createjs.Text(`${i},${j}`, "10px Arial", "#180401");
+                text.x = this.cellSize * i + 2;
+                text.y = this.cellSize * j - 2;
+                text.textBaseline = "alphabetic";
+
+                coords.addChild(text);
+            }
+        }
+
+        return coords;
+    }
+
+    renderWays(units) {
+        const ways = this.stage.getChildByName('Units_ways');
+        ways.removeAllChildren();
+        units.forEach( unit => {
+            const wayArr = unit.movingData.wayArr;
+            const color = unit.color || 'black';
+            if(wayArr.length) {
+                wayArr.forEach(cell => {
+                    let rect = new createjs.Shape();
+                    rect.graphics.beginFill(color).drawRect(
+                        ((cell[1]) * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                        ((cell[0])  * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                        this.cellSize / 6,
+                        this.cellSize / 6);
+                    ways.addChild(rect);
+                });
+            }
+        });
     }
 }
