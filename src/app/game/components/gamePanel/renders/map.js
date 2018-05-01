@@ -62,7 +62,7 @@ export default class Renders {
             for(let j = 0; j < yLines; j++) {
                 const text = new createjs.Text(`${i},${j}`, "10px Arial", "#180401");
                 text.x = this.cellSize * i + 2;
-                text.y = this.cellSize * j - 2;
+                text.y = this.cellSize * (j + 1) - 2;
                 text.textBaseline = "alphabetic";
 
                 coords.addChild(text);

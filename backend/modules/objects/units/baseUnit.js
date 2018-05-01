@@ -26,7 +26,7 @@ class BaseUnit extends BaseObject {
             finalTargetPoint: null,
             currTargetPoint: null,
             isBusyNow: false,
-            speed: 4, // 4 клетки в секунду
+            speed: 2, // 4 клетки в секунду
         };
 
         this.data = {
@@ -99,7 +99,7 @@ class BaseUnit extends BaseObject {
             this.wayTracker();
             this.movingData.currTimeLength++;
         } else {
-
+            this.movingData.currTimeLength = 0;
         }
     }
 
@@ -177,7 +177,7 @@ class BaseUnit extends BaseObject {
             const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
             console.log(direction);
             md.direction = direction;
-            md.currTimeLength = 1;
+            md.currTimeLength = 0;
         }
 
         //по текущей целевой точке определить направление для перемещения юнита, обработать коллизии

@@ -107,24 +107,21 @@ export default class Renders {
             obj = this.stage.getChildByName('Units_bots').getChildByName(inside.name);
         }
 
-        // obj.removeEventListener("tick", animateMoving);
         function animateMoving() {
             this.x += dx;
             this.y += dy;
         }
         obj.removeAllEventListeners();
 
-        const deltaX = obj.x - inside.baseGeometry.curX * this.cellSize;
-        const deltaY = obj.y - inside.baseGeometry.curY * this.cellSize;
-        // console.log(`(${deltaX}, ${deltaY})`);
+        console.log(inside.movingData.currTimeLength);
 
-        // if(deltaX >= this.cellSize || deltaY >= this.cellSize) {
+        if(inside.movingData.currTimeLength % +((60 / inside.movingData.speed).toFixed(0)) <= 1) {
             obj.x = inside.baseGeometry.curX * this.cellSize;
             obj.y = inside.baseGeometry.curY * this.cellSize;
-        // }
+        }
 
 
-        // obj.addEventListener("tick", animateMoving.bind(obj));
+        obj.addEventListener("tick", animateMoving.bind(obj));
 
         switch(inside.type) {
             case 'unit':
@@ -143,16 +140,16 @@ export default class Renders {
         let dy = 0;
         switch (inside.movingData.direction) {
             case 'top':
-                dx = -viewVelocity;
-                break;
-            case 'left':
                 dy = -viewVelocity;
                 break;
+            case 'left':
+                dx = -viewVelocity;
+                break;
             case 'bottom':
-                dx = viewVelocity;
+                dy = viewVelocity;
                 break;
             case 'right':
-                dy = viewVelocity;
+                dx = viewVelocity;
                 break;
         }
 
