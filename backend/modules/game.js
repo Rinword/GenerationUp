@@ -3,8 +3,8 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 1;
-const SYNC_EVERY_FRAME = 15;
+const BOT_ENUM = 2;
+const SYNC_EVERY_FRAME = 5;
 const FPS = 60;
 
 class Game {

@@ -101,25 +101,33 @@ export default class Renders {
     }
 
     _updateItem(inside, obj) {
-        const {dx, dy} = this.calculateDelta(inside);
+        const calculateDelta = this.calculateDelta;
+        let {dx, dy} = calculateDelta(inside);
 
         if(!obj) {
             obj = this.stage.getChildByName('Units_bots').getChildByName(inside.name);
         }
 
+        const ticksPerCell = +((60 / inside.movingData.speed).toFixed(0));
+
         function animateMoving() {
-            this.x += dx;
-            this.y += dy;
+            this.currTime++;
+            if(this.currTime <= ticksPerCell) {
+                this.x += dx;
+                this.y += dy;
+            } else {
+                this.removeAllEventListeners();
+            }
         }
+
         obj.removeAllEventListeners();
 
-        console.log(inside.movingData.currTimeLength);
-
-        if(inside.movingData.currTimeLength % +((60 / inside.movingData.speed).toFixed(0)) <= 1) {
+        if(inside.movingData.currTimeLength % ticksPerCell <= 1) {
             obj.x = inside.baseGeometry.curX * this.cellSize;
             obj.y = inside.baseGeometry.curY * this.cellSize;
         }
 
+        obj.currTime = inside.movingData.currTimeLength;
 
         obj.addEventListener("tick", animateMoving.bind(obj));
 

@@ -21,7 +21,7 @@ export default class Game {
         this.settings = {
             mapSettings: {
                 displayGridCells: true,
-                displayGridCoords: true,
+                displayGridCoords: false,
                 displayCurrentWays: true,
                 displayNoWalkable: false,
             },
@@ -96,18 +96,21 @@ export default class Game {
     renderCellBorders() {
         const borders = this.renders.map.renderCellBorders();
         borders.name = 'Map_cells';
+        borders.visible = this.settings.mapSettings.displayGridCells;
         this.mainStage.addChild(borders);
     }
 
     renderCurrentWays() {
         const unitWays = new createjs.Container();
         unitWays.name = 'Units_ways';
+        unitWays.visible = this.settings.mapSettings.displayCurrentWays;
         this.mainStage.addChild(unitWays);
     }
 
     renderCellCoords() {
         const coords = this.renders.map.renderCellsCoords();
         coords.name = 'Map_coords';
+        coords.visible = this.settings.mapSettings.displayGridCoords;
         this.mainStage.addChild(coords);
     }
 
@@ -153,7 +156,7 @@ export default class Game {
         cells.visible = this.settings.mapSettings.displayGridCells;
         ways.visible = this.settings.mapSettings.displayCurrentWays;
         coords.visible = this.settings.mapSettings.displayGridCoords;
-        // this.renderMap();
+
         this.refresh();
     }
 
