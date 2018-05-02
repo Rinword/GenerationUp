@@ -57,7 +57,7 @@ class RightPanel extends React.PureComponent {
                         </Row>
                         <Row margin="5px 0">
                             <input type="checkbox" id="displayNoWalkable" onChange={this.onMapSettingsChange} />
-                            <label htmlFor="displayNoWalkable">Показать недоступные клетки</label>
+                            <label htmlFor="displayNoWalkable">Скрыть недоступные клетки</label>
                         </Row>
                         <Row margin="5px 0">
                             <input type="checkbox" id="displayCurrentWays" onChange={this.onMapSettingsChange} />

@@ -23,7 +23,7 @@ export default class Game {
                 displayGridCells: true,
                 displayGridCoords: false,
                 displayCurrentWays: true,
-                displayNoWalkable: false,
+                displayNoWalkable: true,
             },
         }
 
@@ -69,7 +69,12 @@ export default class Game {
     regSockets() {
         this.socket.on('update_units', data => {
             this.data.units = data.units;
+            this.data.map = data.map;
+
             this.renderUnits();
+
+            this.renders.map.renderWays(this.data.units);
+            this.renders.map.renderNoWalkableCells(this.data.map.ways);
             this.refresh();
         })
     }
@@ -91,6 +96,7 @@ export default class Game {
        this.renderCellBorders();
        this.renderCellCoords();
        this.renderCurrentWays();
+       this.renderNoWalkableCells();
     }
 
     renderCellBorders() {
@@ -104,6 +110,13 @@ export default class Game {
         const unitWays = new createjs.Container();
         unitWays.name = 'Units_ways';
         unitWays.visible = this.settings.mapSettings.displayCurrentWays;
+        this.mainStage.addChild(unitWays);
+    }
+
+    renderNoWalkableCells() {
+        const unitWays = new createjs.Container();
+        unitWays.name = 'Map_no-walkable';
+        unitWays.visible = this.settings.mapSettings.displayNoWalkable;
         this.mainStage.addChild(unitWays);
     }
 
@@ -136,7 +149,6 @@ export default class Game {
             this.renders.unit._updateItem(unit);
         })
 
-        this.renders.map.renderWays(units);
     }
 
     getGridCellByCoords(x, y) {
@@ -153,8 +165,10 @@ export default class Game {
         const cells = this.mainStage.getChildByName('Map_cells');
         const ways = this.mainStage.getChildByName('Units_ways');
         const coords = this.mainStage.getChildByName('Map_coords');
+        const noWalkable = this.mainStage.getChildByName('Map_no-walkable');
         cells.visible = this.settings.mapSettings.displayGridCells;
         ways.visible = this.settings.mapSettings.displayCurrentWays;
+        noWalkable.visible = this.settings.mapSettings.displayNoWalkable;
         coords.visible = this.settings.mapSettings.displayGridCoords;
 
         this.refresh();

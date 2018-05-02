@@ -72,6 +72,27 @@ export default class Renders {
         return coords;
     }
 
+    renderNoWalkableCells(map) {
+        const nowWalkable = this.stage.getChildByName('Map_no-walkable');
+        nowWalkable.removeAllChildren();
+
+        let xLines = this.mapSize.x;
+        let yLines = this.mapSize.y;
+
+        map.nodes.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if(!cell.walkable) {
+                    const text = new createjs.Text(`X`, "24px Arial", "orange");
+                    text.x = this.cellSize * (i + 0.25);
+                    text.y = this.cellSize * (j + 0.75);
+                    text.textBaseline = "alphabetic";
+
+                    nowWalkable.addChild(text);
+                }
+            })
+        })
+    }
+
     renderWays(units) {
         const ways = this.stage.getChildByName('Units_ways');
         ways.removeAllChildren();

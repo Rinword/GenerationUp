@@ -3,7 +3,7 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 2;
+const BOT_ENUM = 12;
 const SYNC_EVERY_FRAME = 5;
 const FPS = 60;
 
@@ -44,8 +44,8 @@ class Game {
         this.frameCap++;
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
-            console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units})
+            // console.log('--updateFront, frame', this.frameCap);
+            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
         }
 
         if(!(this.isGameOver || this.isGamePause)) {

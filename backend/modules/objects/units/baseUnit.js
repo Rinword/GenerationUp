@@ -26,7 +26,7 @@ class BaseUnit extends BaseObject {
             finalTargetPoint: null,
             currTargetPoint: null,
             isBusyNow: false,
-            speed: 2, // 4 клетки в секунду
+            speed: helpers.randomInteger(1, 4), // 4 клетки в секунду
         };
 
         this.data = {
@@ -34,6 +34,7 @@ class BaseUnit extends BaseObject {
         }
 
         this.isWalkable = this.isWalkable.bind(this);
+        this.updateNoWalkable = this.updateNoWalkable.bind(this);
         this.getFreeCell = this.getFreeCell.bind(this);
     }
 
@@ -78,7 +79,13 @@ class BaseUnit extends BaseObject {
             return false;
         }
 
+
         return this.wayGrid.nodes[x][y].walkable;
+    }
+
+    updateNoWalkable(current, newNode) {
+        this.wayGrid.setWalkableAt(current.curY, current.curX, true);
+        this.wayGrid.setWalkableAt(newNode[0], newNode[1], false);
     }
 
     getFreeCell(curX, curY, range = 3) {
@@ -148,13 +155,14 @@ class BaseUnit extends BaseObject {
 
         if(md.currTimeLength === +((60 / md.speed / 2).toFixed(0))) {
             // console.log('FRAME', md.currTimeLength)
-            console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
+            // console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
             //сменить текущую занятую клетку на новую
             if(!this.isWalkable(currTargetCell[1], currTargetCell[0])) {
                 console.log('Следующая клетка занята, маршрут прерван', this.name);
                 this.clearMovingData();
                 return;
             }
+            this.updateNoWalkable(bg, currTargetCell);
             bg.curX = currTargetCell[1];
             bg.curY = currTargetCell[0];
         }
@@ -175,22 +183,9 @@ class BaseUnit extends BaseObject {
 
             const newTargetCell = md.wayArr[0];
             const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
-            console.log(direction);
             md.direction = direction;
             md.currTimeLength = 0;
         }
-
-        //по текущей целевой точке определить направление для перемещения юнита, обработать коллизии
-        //     //обработка коллизии, когда на следующей клетке уже что-то есть
-        //     this.movingData.currTargetPoint = {x: this.movingData.wayArr[index][0],y: me.movingData.wayArr[index][1]};
-        //     if(!this.game.mapWayGrid.nodes[this.movingData.currTargetPoint.y][this.movingData.currTargetPoint.x].walkable) {
-        //         this.clearMovingData();
-        //         // console.log('Маршрут прерван, следующая клетка теперь занята');
-        //     } else {
-        //         this.resetMapPosition(this.movingData.currTargetPoint); //обновляет нахождение бота в MapGrid, MapWayGrid и me.baseGeometry.curCell
-        //         this.movingData.direction = this.getDirectionBy2Cells(currCell, this.movingData.currTargetPoint);
-        //     }
-        // }
     }
 
     getDirectionBy2Cells(start, finish) {
