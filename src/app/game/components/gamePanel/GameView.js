@@ -4,15 +4,17 @@ import MapRenderer from './renders/map';
 import { deepExtend } from 'ui/helpers';
 
 const CELL_SIZE = 40;
+const FPS = 60;
 
-createjs.Ticker.setFPS(60);
+createjs.Ticker.setFPS(FPS);
 
 export default class Game {
     constructor(context, config, socket){
-        // console.log(config);
         this.mainStage = new createjs.Stage(context);
         this.mainStage.children.length = 0;
         this.socket = socket;
+        this.frameCap = 5;
+        this.serverFrameCap = 0;
         // input.init(); //регистрация событий клавиатуры
         this.isGameOver = false;
         this.isGamePause = false;
@@ -23,7 +25,7 @@ export default class Game {
                 displayGridCells: true,
                 displayGridCoords: false,
                 displayCurrentWays: true,
-                displayNoWalkable: true,
+                displayNoWalkable: false,
             },
         }
 
@@ -62,16 +64,20 @@ export default class Game {
         this.renderMap = this.renderMap.bind(this);
 
         setInterval(() => {
-            this.refresh();
-        }, 1000/60)
+            if(this.serverFrameCap >= this.frameCap) {
+                this.frameCap++;
+                this.refresh();
+            }
+        }, 1000/FPS)
     }
 
     regSockets() {
         this.socket.on('update_units', data => {
             this.data.units = data.units;
             this.data.map = data.map;
+            this.serverFrameCap = data.cap;
 
-            this.renderUnits();
+            this.renderUnits(this.frameCap);
 
             this.renders.map.renderWays(this.data.units);
             this.renders.map.renderNoWalkableCells(this.data.map.ways);
@@ -128,7 +134,7 @@ export default class Game {
     }
 
 
-    renderUnits() {
+    renderUnits(frameCap) {
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
         const units = this.data.units;
 
@@ -136,17 +142,17 @@ export default class Game {
             units_bots_canvas = new createjs.Container();
             units_bots_canvas.name = 'Units_bots';
 
-
             units.forEach(unit => {
                 units_bots_canvas.addChild(this.renders.unit.renderItem(unit));
             })
 
             this.mainStage.addChild(units_bots_canvas);
         }
+
         this.renders.unit.updateGameView(this);
 
         units.forEach(unit => {
-            this.renders.unit._updateItem(unit);
+            this.renders.unit._updateItem(unit, this.frameCap);
         })
 
     }

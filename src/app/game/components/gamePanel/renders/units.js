@@ -19,14 +19,12 @@ export default class Renders {
         this._updateItem = this._updateItem.bind(this);
     }
 
-    renderItem(inside) {
+    renderItem(inside, frameCup) {
         const rObj = this.unitsLayer && this.unitsLayer.getChildByName(inside.name);
         if(rObj) {
-            this._updateItem(inside, rObj);
+            this._updateItem(inside, rObj, frameCup);
             return rObj;
         }
-
-        console.log('RENDER');
 
         const obj = new createjs.Container();
         obj.name = inside.name;
@@ -100,29 +98,38 @@ export default class Renders {
         this.stage = gameView.mainStage;
     }
 
-    _updateItem(inside, obj) {
+    _updateItem(inside, frameCup) {
         const calculateDelta = this.calculateDelta;
+        const cellSize = this.cellSize;
         let {dx, dy} = calculateDelta(inside);
 
-        if(!obj) {
-            obj = this.stage.getChildByName('Units_bots').getChildByName(inside.name);
-        }
+        let viewFrame = frameCup;
+
+        const obj = this.stage.getChildByName('Units_bots').getChildByName(inside.name);
 
         const ticksPerCell = +((60 / inside.movingData.speed).toFixed(0));
 
         function animateMoving() {
             this.currTime++;
-            if(this.currTime <= ticksPerCell) {
+            viewFrame++;
+
+            if(this.currTime < ticksPerCell) {
                 this.x += dx;
                 this.y += dy;
             } else {
                 this.removeAllEventListeners();
             }
+
+            if(this.currTime % ticksPerCell === 0) {
+                this.x = inside.baseGeometry.curX * cellSize;
+                this.y = inside.baseGeometry.curY * cellSize;
+            }
+
         }
 
         obj.removeAllEventListeners();
 
-        if(inside.movingData.currTimeLength % ticksPerCell <= 1) {
+        if(inside.movingData.currTimeLength % ticksPerCell === 0) {
             obj.x = inside.baseGeometry.curX * this.cellSize;
             obj.y = inside.baseGeometry.curY * this.cellSize;
         }
