@@ -1,9 +1,18 @@
 import spriteResolver from '../spriteResolver';
 
 export default class Renders {
-    constructor({cellSize = 40, mapSize = {x: 0, y: 0}}) {
+    constructor(gameView, {cellSize = 40, mapSize = {x: 0, y: 0}, settings}) {
+        this.stage = gameView.mainStage;
         this.cellSize = cellSize;
         this.mapSize = mapSize;
+        this.settings = settings;
+
+        this.updateSettings = newSettings => {
+            this.settings = {...this.settings, ...newSettings}
+        }
+
+        this.renderWays = this.renderWays.bind(this);
+
     }
 
     renderItem(item) {
@@ -41,5 +50,66 @@ export default class Renders {
         }
 
         return mapCells;
+    }
+
+    renderCellsCoords() {
+        let coords = new createjs.Container();
+
+        let xLines = this.mapSize.x;
+        let yLines = this.mapSize.y;
+
+        for(let i = 0; i < xLines; i++) {
+            for(let j = 0; j < yLines; j++) {
+                const text = new createjs.Text(`${i},${j}`, "10px Arial", "#180401");
+                text.x = this.cellSize * i + 2;
+                text.y = this.cellSize * (j + 1) - 2;
+                text.textBaseline = "alphabetic";
+
+                coords.addChild(text);
+            }
+        }
+
+        return coords;
+    }
+
+    renderNoWalkableCells(map) {
+        const nowWalkable = this.stage.getChildByName('Map_no-walkable');
+        nowWalkable.removeAllChildren();
+
+        let xLines = this.mapSize.x;
+        let yLines = this.mapSize.y;
+
+        map.nodes.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if(!cell.walkable) {
+                    const text = new createjs.Text(`X`, "24px Arial", "orange");
+                    text.x = this.cellSize * (i + 0.25);
+                    text.y = this.cellSize * (j + 0.75);
+                    text.textBaseline = "alphabetic";
+
+                    nowWalkable.addChild(text);
+                }
+            })
+        })
+    }
+
+    renderWays(units) {
+        const ways = this.stage.getChildByName('Units_ways');
+        ways.removeAllChildren();
+        units.forEach( unit => {
+            const wayArr = unit.movingData.wayArr;
+            const color = unit.color || 'black';
+            if(wayArr.length) {
+                wayArr.forEach(cell => {
+                    let rect = new createjs.Shape();
+                    rect.graphics.beginFill(color).drawRect(
+                        ((cell[1]) * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                        ((cell[0])  * this.cellSize + this.cellSize / 2 - this.cellSize / 12),
+                        this.cellSize / 6,
+                        this.cellSize / 6);
+                    ways.addChild(rect);
+                });
+            }
+        });
     }
 }

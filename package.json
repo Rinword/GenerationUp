@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
-    "server": "nodemon ./backend/index.js"
+    "server": "nodemon --inspect ./backend/index.js"
   },
   "author": "ReactJSResources",
   "license": "MIT",

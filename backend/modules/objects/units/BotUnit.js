@@ -7,8 +7,8 @@ const HIGHLIGHT_VIEW_RADIUS = true; //подсветка радиуса обзо
 const UPDATE_DISTANCES_TICK = 30; //частота обновления окружающих объектов, каждые 15/60 кадров/сек = 4 раза в секунду
 
 class BotUnit extends BaseUnit {
-    constructor(name, x, y) {
-        super(x, y);
+    constructor(name, x, y, grid) {
+        super(x, y, grid);
 
         this.id = null;
         this.type = 'unit'; //charItem, mapItem, unit

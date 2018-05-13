@@ -37,3 +37,57 @@ export const hiperbalNormalizer = (value, freeCf) => {
 export const linealInterpolation = (x1, y1, x2, y2, value) => {
     return y1 + ( (value - x1) / (x2 - x1) * (y2 - y1) );
 }
+
+const defaultOptions = {
+    replace: true,
+    exceptionPaths: [],
+};
+
+export const deepExtend = (destination, source, options) => {
+    // Create a copy of our destination so as not to make modifications to the original
+    destination = destination instanceof Array ? destination.slice() : { ...destination };
+
+    //init props
+    if (options instanceof Object) {
+        options = { ...defaultOptions, ...options };
+    } else {
+        options = defaultOptions;
+    }
+
+    for (let property in source) {
+        // Exception property
+        if (~options.exceptionPaths.indexOf(property)) {
+            continue;
+        }
+
+        // Simple value, save to destination
+        if (destination[property] instanceof Object === false) {
+            destination[property] = source[property];
+
+            // Fail fast
+            continue;
+        }
+
+        // We're dealing with a real object, merge it recursively
+        if (destination[property] instanceof Array === false) {
+            destination[property] = destination[property] || {};
+            destination[property] = deepExtend(destination[property], source[property], options);
+            continue;
+        }
+
+        // We're dealing with an array,
+        // We'll either replace or merge, based on options.replace
+        const isEmptyArray = !(destination[property] && destination[property].length > 0);
+
+        // Replace the array with the new one
+        if (options.replace || isEmptyArray) {
+            destination[property] = source[property].slice();
+            continue;
+        }
+
+        // Merge the two arrays
+        destination[property] = destination[property].slice().concat(source[property]);
+    }
+
+    return destination;
+};

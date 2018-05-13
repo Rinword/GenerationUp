@@ -3,8 +3,8 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 2;
-const SYNC_EVERY_FRAME = 50;
+const BOT_ENUM = 12;
+const SYNC_EVERY_FRAME = 5;
 const FPS = 60;
 
 class Game {
@@ -30,6 +30,7 @@ class Game {
         this.generateBots = this.generateBots.bind(this);
         this.main = this.main.bind(this);
         this.update = this.update.bind(this);
+        this.updateUnits = this.updateUnits.bind(this);
         this.registerSockets = this.registerSockets.bind(this);
 
         this.main();
@@ -43,35 +44,55 @@ class Game {
         this.frameCap++;
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
-            console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units})
+            // console.log('--updateFront, frame', this.frameCap);
+            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
         }
 
-        if(!this.isGameOver && !this.isGamePause) {
+        if(!(this.isGameOver || this.isGamePause)) {
             setTimeout(this.main, 1000 / FPS);
         }
     }
 
     update() {
-        if(this.frameCap > 1000) {
-            this.isGameOver = true;
+        if(this.frameCap === 300 && !this.isGamePause) {
+            this.isGamePause = true;
         }
+
+        this.updateUnits();
+    }
+
+    updateUnits() {
+        this.data.units.forEach(unit => {
+            unit.update();
+        })
     }
 
     registerSockets() {
         this.socket.on('game_control', data => {
             switch (data.action) {
                 case 'pause':
-                    this.isGamePause = !this.isGamePause;
-                    this.main();
+                    if(this.isGamePause) {
+                        this.isGamePause = false;
+                        this.frameCap++;
+                        this.main();
+                    } else {
+                        this.isGamePause = true;
+                    }
                     break;
                 case 'start_again':
                     this.frameCap = 0;
-                    this.isGamePause = true;
                     this.data.units = this.generateBots(BOT_ENUM);
-                    this.isGamePause = false;
                     this.isGameOver = false;
                     this.main();
+            }
+        })
+
+        this.socket.on('game_click-on-stage', data => {
+            switch (data.action) {
+                case 'moveTo':
+                    this.data.units.forEach(unit => {
+                        unit.moveTo(data.params.x, data.params.y)
+                    })
             }
         })
     }
@@ -109,13 +130,13 @@ class Game {
     generateBots(num) {
         const bots = [];
         const map = this.data.map;
-        while(bots.length < num) { //TODO все равно часть ботов некорректно рендерится в углу, причина пока неизвестна
+        while(bots.length < num) {
             const name = 'bot' + bots.length;
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
-            console.log(x, y);
+
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y);
+                const bot = new BotUnit(name, x, y, map.ways);
                 bots.push(bot);
                 map.grid[x][y].inside = bot;
                 map.ways.nodes[x][y].walkable = false;
@@ -151,13 +172,13 @@ class Game {
             // grid[width - 1][j].icon = 'wall';
         }
 
-        ways.nodes[5].forEach( (cell, i)  => {
-            if(i != 3) {
-                ways.nodes[i][5].walkable = false;
-                grid[i][5].texture = 'wall1';
-                // grid[i][5].icon = 'wall';
-            }
-        });
+        // ways.nodes[5].forEach( (cell, i)  => {
+        //     if(i != 3) {
+        //         ways.nodes[i][5].walkable = false;
+        //         grid[i][5].texture = 'wall1';
+        //         // grid[i][5].icon = 'wall';
+        //     }
+        // });
     }
 }
 

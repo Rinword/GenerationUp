@@ -30,6 +30,11 @@ class GamePanel extends React.PureComponent {
 
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        this.game.applySettings(nextProps.settings);
+        return true;
+    }
+
     componentDidMount() {
         axios( `api/game/default`).then((options) => {
             this.game = new Game(this.canvas, options.data, socket.getSocket());
