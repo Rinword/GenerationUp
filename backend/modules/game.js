@@ -3,8 +3,8 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 12;
-const SYNC_EVERY_FRAME = 5;
+const BOT_ENUM = 1;
+const SYNC_EVERY_FRAME = 15;
 const FPS = 60;
 
 class Game {
@@ -63,7 +63,7 @@ class Game {
 
     updateUnits() {
         this.data.units.forEach(unit => {
-            unit.update();
+            unit.update(this.frameCap);
         })
     }
 

@@ -53,11 +53,12 @@ class BaseUnit extends BaseObject {
         return { className, classCode }
     }
 
-    update() {
+    update(frame) {
         //random moving
+        this.frame = frame;
         let shouldMove = false;
         if(this.movingData.lastMoveTime % 10 === 0) {
-            shouldMove = helpers.randomInteger(0, this.movingData.lastMoveTime >= 70);
+            shouldMove = helpers.randomInteger(0, this.movingData.lastMoveTime) >= 60;
         }
 
         if(!this.movingData.isBusyNow && shouldMove) {
@@ -158,7 +159,7 @@ class BaseUnit extends BaseObject {
             // console.log('-- смена занятой клетки',  bg.curX, bg.curY, '->', currTargetCell[1], currTargetCell[0])
             //сменить текущую занятую клетку на новую
             if(!this.isWalkable(currTargetCell[1], currTargetCell[0])) {
-                console.log('Следующая клетка занята, маршрут прерван', this.name);
+                // console.log('Следующая клетка занята, маршрут прерван', this.name);
                 this.clearMovingData();
                 return;
             }
@@ -185,6 +186,7 @@ class BaseUnit extends BaseObject {
             const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
             md.direction = direction;
             md.currTimeLength = 0;
+            md.frame = this.frame;
         }
     }
 
