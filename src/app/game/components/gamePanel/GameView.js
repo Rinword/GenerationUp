@@ -1,4 +1,4 @@
-import UnitRenderer from './renders/units';
+import UnitView from './views/UnitView';
 import MapRenderer from './renders/map';
 
 import { deepExtend } from 'ui/helpers';
@@ -6,14 +6,14 @@ import { deepExtend } from 'ui/helpers';
 const CELL_SIZE = 40;
 const FPS = 60;
 
-createjs.Ticker.setFPS(FPS);
+// createjs.Ticker.setFPS(FPS);
 
 export default class Game {
     constructor(context, config, socket){
         this.mainStage = new createjs.Stage(context);
         this.mainStage.children.length = 0;
         this.socket = socket;
-        this.frameCap = 5;
+        this.frameCap = 0;
         this.serverFrameCap = 0;
         // input.init(); //регистрация событий клавиатуры
         this.isGameOver = false;
@@ -36,7 +36,11 @@ export default class Game {
 
         this.renders = {
             map: new MapRenderer(this, {cellSize: CELL_SIZE, mapSize: this.data.mapSize, settings: this.settings}),
-            unit: new UnitRenderer(this, {cellSize: CELL_SIZE, settings: this.settings}),
+            // unit: new UnitRenderer(this, {cellSize: CELL_SIZE, settings: this.settings}),
+        }
+
+        this.views = {
+            units: [],
         }
 
         //рендер карты. Объекты в ссылках (например юниты) не рендерятся.
@@ -62,11 +66,16 @@ export default class Game {
 
         this.applySettings = this.applySettings.bind(this);
         this.renderMap = this.renderMap.bind(this);
+        this.updateViews = this.updateViews.bind(this);
 
         setInterval(() => {
-            if(this.serverFrameCap >= this.frameCap) {
+            // console.log(this.serverFrameCap, '/', this.frameCap);
+            if(this.serverFrameCap > this.frameCap) {
                 this.frameCap++;
                 this.refresh();
+                this.updateViews();
+            } else {
+                // console.log('----TROT', this.serverFrameCap, '/', this.frameCap);
             }
         }, 1000/FPS)
     }
@@ -134,26 +143,23 @@ export default class Game {
     }
 
 
-    renderUnits(frameCap) {
+    renderUnits() {
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
         const units = this.data.units;
 
         if(!units_bots_canvas) {
             units_bots_canvas = new createjs.Container();
             units_bots_canvas.name = 'Units_bots';
-
-            units.forEach(unit => {
-                units_bots_canvas.addChild(this.renders.unit.renderItem(unit));
-            })
-
             this.mainStage.addChild(units_bots_canvas);
+
+            units.forEach(unitData => {
+                this.views.units.push(
+                    new UnitView(units_bots_canvas, unitData, { cellSize: this.mapGridCellSize, settings: this.settings, frameCup: this.frameCap})
+                );
+            })
         }
 
-        this.renders.unit.updateGameView(this);
-
-        units.forEach(unit => {
-            this.renders.unit._updateItem(unit, this.frameCap);
-        })
+        this.data.units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap));
 
     }
 
@@ -182,5 +188,11 @@ export default class Game {
 
     refresh() {
         this.mainStage.update();
+    }
+
+    updateViews() {
+        for(let i in this.views) {
+            this.views[i].forEach(view => view.updateView());
+        }
     }
 }
