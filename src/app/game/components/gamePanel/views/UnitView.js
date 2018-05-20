@@ -29,6 +29,7 @@ export default class UnitView {
         this.tick = this.tick.bind(this);
         this.addMoving = this.addMoving.bind(this);
         this._updateUnitPosition = this._updateUnitPosition.bind(this);
+        this._updateUnitInterface = this._updateUnitInterface.bind(this);
 
         this.renderView(unitData);
     }
@@ -127,8 +128,8 @@ export default class UnitView {
         }
 
         this._updateUnitPosition();
+        this._updateUnitInterface();
         // this._updateUnitState();
-        // this._updateUnitInterface();
     }
 
     addMoving(action) {
@@ -151,6 +152,12 @@ export default class UnitView {
         this.canvasObj.y += moveAction.dy;
     }
 
+    _updateUnitInterface() {
+        const currStats = this.state.serverState.charData.stats.current;
+        const unitHP = this.canvasObj.getChildByName('bot_interface').getChildByName('unitHP');
+        unitHP.text = currStats.hp.toFixed(0);
+    }
+
     updateData(serverUnitData, frontFrame, backendFrame) {
         this.state.serverState = serverUnitData;
         const md = serverUnitData.movingData;
@@ -164,6 +171,7 @@ export default class UnitView {
             }
         }
 
+        console.log('HP', this.state.serverState.charData.stats.current.hp.toFixed(0));
         // console.log(this.historyLine, this.frameCap, frontFrame, backendFrame);
     }
 
@@ -188,9 +196,4 @@ export default class UnitView {
 
         return {dx, dy}
     }
-
-    // _updateUnitInterface(inside, obj) {
-    //     const unitHP = obj.getChildByName('bot_interface').getChildByName('unitHP');
-    //     unitHP.text = 10;
-    // }
 }

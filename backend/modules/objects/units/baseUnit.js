@@ -1,8 +1,9 @@
 const BaseObject = require('../baseObject');
 const PF = require('pathfinding');
 
-const classResolver = require('../../dataToDB/classResolver');
 const helpers =  require('../../helpers');
+const classResolver = require('../../dataToDB/classResolver');
+const itemsStorage = require('../../dataToDB/itemsStorage');
 
 const finder = new PF.AStarFinder();
 
@@ -29,6 +30,61 @@ class BaseUnit extends BaseObject {
             speed: helpers.randomInteger(1, 4), // 4 клетки в секунду
         };
 
+        this.charData = {
+            level: 1,
+            gear: {
+                chest: itemsStorage.getRandomItemByClassName('chest'),
+                gloves: itemsStorage.getRandomItemByClassName('gloves'),
+                pants: itemsStorage.getRandomItemByClassName('pants'),
+                boots: itemsStorage.getRandomItemByClassName('boots'),
+                leftHand: itemsStorage.getRandomItemByClassName('leftHand'),
+                rightHand: null,
+                artefact1: null,
+                artefact2: null,
+            },
+            gearStats: {
+                strength: 0, agility: 0, stamina: 0, intellect: 0, spirit: 0,
+                critRating: 0, critMultiplier: 0,
+                defenceRating: 0,
+                speed: 0, viewRadius: 0,
+                hpRegen: 0, mpRegen: 0, epRegen: 0,
+                hpMax: 0, mpMax: 0, epMax: 0,
+                attackPower: 0,
+                spellPower: 0,
+                armor: 0,
+            },
+            stats: {
+                base: {
+                    strength: 2, agility: 2, stamina: 2, intellect: 2, spirit: 2,
+                },
+                baseMapStats: {speed: 2, viewRadius: 80},
+                current: {strength: 2, agility: 2, stamina: 2, intellect: 2, spirit: 2,
+                    hpRegen: 5.5, mpRegen: 1, epRegen: 6,
+                    critRating: 0, critChance: 2, critMultiplier: 2,
+                    defenceRating: 0, defence: 2,
+                    speed: 200,
+                    hp: 50, hpMax: 50, hpPc: 100,
+                    mp: 10, mpMax: 50, mpPc: 60,
+                    ep: 100, epMax: 100, epPc: 100,
+                    viewRadius: 3,
+                    attackPower: 2,
+                    spellPower: 4,
+                    armor: 0,
+                    absoluteArmor: 0,
+                    attack: 1,
+                    castSpeed: 1000 //global Cooldown
+                }
+            },
+            talentsMask:{},
+            effects: {
+                buffs: [],
+                debuffs: []
+            }
+
+
+
+        };
+
         this.data = {
             ...this.generateUnitClass(),
         }
@@ -36,6 +92,7 @@ class BaseUnit extends BaseObject {
         this.isWalkable = this.isWalkable.bind(this);
         this.updateNoWalkable = this.updateNoWalkable.bind(this);
         this.getFreeCell = this.getFreeCell.bind(this);
+        this.updateStats = this.updateStats.bind(this);
     }
 
     generateUnitClass(code1, code2) {
@@ -73,7 +130,71 @@ class BaseUnit extends BaseObject {
         }
 
         this.move();
+        this.updateStats();
     }
+
+    updateStats() {
+        let curStats = this.charData.stats.current;
+        let gd = this.charData.gearStats;
+
+        curStats.hpRegen = (1 + gd.hpRegen)*(1 + 0.1*curStats.stamina + 0.05*curStats.spirit);
+        curStats.mpRegen = (1 + gd.mpRegen)*(1 + 0.1*curStats.spirit + 0.05*curStats.intellect);
+        curStats.epRegen = (3 + gd.epRegen)*(1 + 0.2*curStats.stamina);
+        curStats.critRating = +( gd.critRating*(1 + 0.1*curStats.agility) ).toFixed();
+        curStats.critChance = +( (helpers.hiperbalNormalizer(curStats.critRating, 50)*100)).toFixed(2);
+        curStats.armor = gd.armor;
+        curStats.defenceRating = +(gd.defenceRating*(1 + 0.05*curStats.agility + 0.05*curStats.strength)).toFixed(0);
+        curStats.defence = +( (helpers.hiperbalNormalizer(curStats.defenceRating, 50)*100)).toFixed(2);
+        curStats.speed = (this.charData.stats.baseMapStats.speed + 2*curStats.agility + curStats.strength + 3*curStats.stamina + gd.speed)*(1 + 0.1*curStats.stamina);
+        curStats.absoluteArmor = +(curStats.armor*0.1 + curStats.defence*curStats.armor*0.01).toFixed(0);
+        curStats.hpPc = +( (curStats.hp/curStats.hpMax)*100).toFixed(0);
+        curStats.hpMax = +( (40 + gd.hpMax + (10*curStats.stamina))*(1 + 0.1*curStats.stamina) ).toFixed(0);
+        curStats.mpPc = +( (curStats.mp/curStats.mpMax)*100).toFixed(0);
+        curStats.mpMax = +(40 + + gd.mpMax + (10*curStats.intellect))*(1 + 0.1*curStats.intellect).toFixed(0);
+        curStats.epPc = +( (curStats.ep/curStats.epMax)*100).toFixed(0);
+        curStats.epMax = 100 + gd.epMax;
+
+        curStats.attackPower = +( (gd.attackPower)*(1+ 0.05*curStats.strength + 0.05*curStats.agility).toFixed(0));
+        curStats.spellPower = +((gd.spellPower)*(1+ 0.05*curStats.intellect + 0.05*curStats.spirit).toFixed(0));
+        curStats.attack = (this.charData.gear.leftHand.damage)*(1+ 0.08*curStats.attackPower);
+        curStats.DPS = +(curStats.attack*1000/(this.charData.gear.leftHand.castTime + this.charData.gear.leftHand.coolDownTime).toFixed(2));
+
+
+        //TODO:тут же обновлять коэффиценты умножения для скилов и характеристик
+        //regenTick
+        if(curStats.hp < curStats.hpMax) {
+            curStats.hp += curStats.hpRegen / 60;
+            if(curStats.hp >= curStats.hpMax) curStats.hp = curStats.hpMax;
+        }
+        if(curStats.mp < curStats.mpMax) {
+            curStats.mp += curStats.mpRegen / 60;
+            if(curStats.mp >= curStats.mpMax) curStats.mp = curStats.mpMax;
+        }
+        if(curStats.ep < curStats.epMax) {
+            curStats.ep += curStats.epRegen / 60;
+            if(curStats.ep >= curStats.epMax) curStats.ep = curStats.epMax;
+        }
+    }
+
+    // updateStatsFromGear() {
+    //     let gear =  this.charData.gear;
+    //     // let gs = this.charData.gearStats;
+    //     for(let item in gear) {
+    //         if(gear[item]) {
+    //             gear[item].stats.forEach( stats => {
+    //                 for( let stat in stats) {
+    //                     this.charData.gearStats[stat] += stats[stat];
+    //                 }
+    //             });
+    //             if(gear[item].armor) {
+    //                 this.charData.gearStats.armor += gear[item].armor;
+    //             }
+    //         }
+    //
+    //     }
+    //
+    //     // console.log(this.name, this.charData.gearStats, this.charData.stats.current)
+    // }
 
     isWalkable(x, y) {
         if(!this.wayGrid.nodes[x] || !this.wayGrid.nodes[x][y] ) {
