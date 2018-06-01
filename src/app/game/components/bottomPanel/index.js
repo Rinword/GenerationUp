@@ -2,6 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
+import socket from 'app/io';
+
+import State from './components/unitState';
+import Gear from './components/unitGear';
+import Environment from './components/unitEnvironment';
+import Behaviour from './components/unitBehaviour';
+
 import './styles.scss';
 
 class BottomPanel extends React.PureComponent {
@@ -11,10 +18,19 @@ class BottomPanel extends React.PureComponent {
         this.state = {};
     }
 
+    componentDidMount() {
+        socket.getSocket().on('update_selected_unit', data => {
+            this.setState({data})
+        })
+    }
+
     render() {
         return (
             <div className={cx('bottom-panel', this.props.className)}>
-                <div>BottomPanel</div>
+                <State className={cx('bottom-panel__state')} {...this.state.data} />
+                <Gear className={cx('bottom-panel__gear')} />
+                <Environment className={cx('bottom-panel__env')} />
+                <Behaviour className={cx('bottom-panel__behaviour')} />
             </div>
         );
     }

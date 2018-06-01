@@ -46,6 +46,7 @@ class Game {
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
             this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
+            this.socket.emit('update_selected_unit', {data: this.data.units[0]})
         }
 
         if(!(this.isGameOver || this.isGamePause)) {
