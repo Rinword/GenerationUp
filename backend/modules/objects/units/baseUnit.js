@@ -102,7 +102,7 @@ class BaseUnit extends BaseObject {
         } else {
             while(1) {
                 classCode = helpers.randomInteger(0, 6).toString() + helpers.randomInteger(0, 6).toString();
-                if(classCode[0] != classCode[1]) break;
+                if(classCode[0] !== classCode[1]) break;
             }
         }
         let className = classResolver.getClassNameById(classCode);

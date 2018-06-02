@@ -28,9 +28,9 @@ class BottomPanel extends React.PureComponent {
         return (
             <div className={cx('bottom-panel', this.props.className)}>
                 <State className={cx('bottom-panel__state')} {...this.state.data} />
-                <Gear className={cx('bottom-panel__gear')} />
-                <Environment className={cx('bottom-panel__env')} />
-                <Behaviour className={cx('bottom-panel__behaviour')} />
+                <Gear className={cx('bottom-panel__gear')} {...this.state.data} />
+                <Environment className={cx('bottom-panel__env')} {...this.state.data} />
+                <Behaviour className={cx('bottom-panel__behaviour')} {...this.state.data} />
             </div>
         );
     }

@@ -17,29 +17,10 @@ class BotUnit extends BaseUnit {
         this.destructable = true;
         this.color = helpers.getRandomColor();
 
-        // let addStatsPoints = 4;
-        // while(1) {
-        //     for(let stat in this.charData.stats.base) {
-        //         if(randomInteger(0,20) < 2) {
-        //             this.charData.stats.base[stat] +=1;
-        //             this.charData.stats.current[stat] +=1;
-        //             addStatsPoints--;
-        //             if(addStatsPoints == 0) break;
-        //         }
-        //     }
-        //     if(addStatsPoints == 0) break;
-        // }
+        this.setRandomStats = this.setRandomStats.bind(this);
 
-        // let unitClass = {};
-        // // if(this.name =='bot1') {
-        //     unitClass = this.generateUnitClass(0,4)
-        // // } else {
-        // //     unitClass = this.generateUnitClass();
-        // // }
+        this.setRandomStats(4);
 
-        // this.charData.className = unitClass.className;
-        // this.charData.classCode = unitClass.classCode;
-        //
         // this.initClass();
         // // добавляем по случайному скилу из каждой специальности
         // this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.charData.classCode.charAt(0)));
@@ -54,6 +35,22 @@ class BotUnit extends BaseUnit {
     // initClass() {
     //     specData.initClass(this); //по коду специальностей загружает скилы, таланты и прочее для текущего бота
     // }
+
+    setRandomStats(num) {
+        let addStatsPoints = num;
+
+        while(1) {
+            for(let stat in this.charData.stats.base) {
+                if(helpers.randomInteger(0, 10) < 2) {
+                    this.charData.stats.base[stat] += 1;
+                    this.charData.stats.current[stat] += 1;
+                    addStatsPoints--;
+                    if(addStatsPoints === 0) break;
+                }
+            }
+            if(addStatsPoints === 0) break;
+        }
+    }
 }
 
 module.exports = BotUnit;

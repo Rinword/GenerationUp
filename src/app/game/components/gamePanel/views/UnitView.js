@@ -171,7 +171,6 @@ export default class UnitView {
             }
         }
 
-        console.log('HP', this.state.serverState.charData.stats.current.hp.toFixed(0));
         // console.log(this.historyLine, this.frameCap, frontFrame, backendFrame);
     }
 
