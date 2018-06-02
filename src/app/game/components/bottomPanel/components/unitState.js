@@ -22,6 +22,7 @@ class UnitState extends React.PureComponent {
         const { className } = data;
         const { level } = charData;
         const currentStats = get(charData, 'stats.current', {});
+        const { hp, hpMax, hpRegen, mp, mpMax, mpRegen, ep, epMax, epRegen } = currentStats;
 
         return (
             <Column className={cx('unit-state', this.props.className)}>
@@ -34,10 +35,13 @@ class UnitState extends React.PureComponent {
                     </Column>
                 </Row>
                 <Column className={cx('unit-state__bars')} ai='stretch'>
-                    <Bar value={currentStats.hp} maxValue={currentStats.hpMax} color='hp' height={30} />
-                    <Bar value={currentStats.mp} maxValue={currentStats.mpMax} color='mp' height={25} />
-                    <Bar value={currentStats.ep} maxValue={currentStats.epMax} color='ep' height={25} />
+                    <Bar value={hp} maxValue={hpMax} color='hp' height={30} regen={hpRegen} />
+                    <Bar value={mp} maxValue={mpMax} color='mp' height={25} regen={mpRegen} />
+                    <Bar value={ep} maxValue={epMax} color='ep' height={25} regen={epRegen} />
                 </Column>
+                <Row className={cx('unit-state__skills')}>
+
+                </Row>
             </Column>
         );
     }
