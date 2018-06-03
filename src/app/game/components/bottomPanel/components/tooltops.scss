@@ -1,0 +1,58 @@
+$color-rare: #07428b;
+$color-epic: #6d1695;
+$color-legendary: #e28a1e;
+$regen-pos: #00e700;
+$regen-neg: #f06240;
+
+.wow-tooltip {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 100%;
+
+  h2 {
+    margin: 0;
+  }
+  &__name {
+    font-weight: bold;
+    &_rare {
+      &_1 {
+        color: $color-rare;
+      }
+      &_2 {
+        color: $color-epic;
+      }
+      &_3 {
+        color: $color-legendary;
+      }
+    }
+  }
+
+  &__row, &__column {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    p {
+      margin: 0;
+    }
+  }
+
+  &__column {
+    flex-direction: column;
+    h3 {
+      margin: 0 0 0 10px;
+    }
+    &_require {
+      h3 {
+        color: $regen-neg;
+      }
+    }
+    &_stats {
+      .wow-tooltip__row {
+        color: $regen-pos;
+      }
+    }
+  }
+
+
+}

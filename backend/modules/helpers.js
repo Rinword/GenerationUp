@@ -21,10 +21,15 @@ const linealInterpolation = (x1, y1, x2, y2, value) => {
     return y1 + ( (value - x1) / (x2 - x1) * (y2 - y1) );
 }
 
+const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 module.exports = {
     randomInteger: randomInteger,
     stringReverse: stringReverse,
     getRandomColor: getRandomColor,
     hiperbalNormalizer: hiperbalNormalizer,
     linealInterpolation: linealInterpolation,
+    capitalizeFirstLetter: capitalizeFirstLetter,
 }

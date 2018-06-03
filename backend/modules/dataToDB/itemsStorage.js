@@ -79,7 +79,7 @@ module.exports = {
                 name: 'Простой полуторный меч',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 2, //двуручный
                 itemLevel: 1,
                 rare: 0,

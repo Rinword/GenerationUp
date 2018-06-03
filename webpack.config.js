@@ -22,6 +22,7 @@ module.exports = {
     extensions: ['.js', '.jsx'],
     alias: {
       ui: path.resolve(__dirname, 'src/app/uxComponent'),
+      backend: path.resolve(__dirname, 'backend'),
       static: path.resolve(__dirname, 'public/static')
     }
   },
