@@ -146,7 +146,7 @@ class BaseUnit extends BaseObject {
         curStats.defenceRating = +(gd.defenceRating*(1 + 0.05*curStats.agility + 0.05*curStats.strength)).toFixed(0);
         curStats.defence = +( (helpers.hiperbalNormalizer(curStats.defenceRating, 50)*100)).toFixed(2);
         curStats.speed = (this.charData.stats.baseMapStats.speed + 2*curStats.agility + curStats.strength + 3*curStats.stamina + gd.speed)*(1 + 0.1*curStats.stamina);
-        curStats.absoluteArmor = +(curStats.armor*0.1 + curStats.defence*curStats.armor*0.01).toFixed(0);
+        curStats.absoluteArmor = +(curStats.armor*0.07 + curStats.defence*curStats.armor*0.008).toFixed(0);
         curStats.hpPc = +( (curStats.hp/curStats.hpMax)*100).toFixed(0);
         curStats.hpMax = +( (40 + gd.hpMax + (10*curStats.stamina))*(1 + 0.1*curStats.stamina) ).toFixed(0);
         curStats.mpPc = +( (curStats.mp/curStats.mpMax)*100).toFixed(0);

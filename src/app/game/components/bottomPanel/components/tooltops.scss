@@ -10,6 +10,10 @@ $regen-neg: #f06240;
   flex: 0 0 auto;
   width: 100%;
 
+  hr {
+    width: 100%;
+  }
+
   h2 {
     margin: 0;
   }
@@ -53,6 +57,7 @@ $regen-neg: #f06240;
       }
     }
   }
-
-
+  &__description {
+    color: #d2d03d;
+  }
 }

@@ -18,7 +18,7 @@ class UnitGear extends React.PureComponent {
     render() {
         const { charData = {}, name, color, data = {} } = this.props.data || {};
         const currentStats = get(charData, 'stats.current', {});
-        const { strength, stamina, agility, spirit, intellect, defenceRating, critRating } = currentStats;
+        const { strength, stamina, agility, spirit, intellect, defenceRating, critRating, critChance } = currentStats;
         const { attackPower, spellPower, speed, armor, absoluteArmor, defence, attack, DPS } = currentStats;
 
         return (
@@ -33,7 +33,7 @@ class UnitGear extends React.PureComponent {
                     </Row>
                     <hr />
                     <StatRow name={'Защита'} value={`${defence}% + (${absoluteArmor})`}/>
-                    <StatRow name={'Атака'} value={`${attack} (DPS: ${(DPS || 0).toFixed(0)})`}/>
+                    <StatRow name={'Атака'} value={`${(attack || 0).toFixed(1)} (Crit: ${critChance}%)`}/>
                     <hr />
                     <StatRow name={'Рейтинг защиты'} value={defenceRating}/>
                     <StatRow name={'Рейтинг крит. удара'} value={critRating}/>

@@ -18,15 +18,17 @@ class BotUnit extends BaseUnit {
         this.color = helpers.getRandomColor();
 
         this.setRandomStats = this.setRandomStats.bind(this);
+        this.updateStatsFromGear = this.updateStatsFromGear.bind(this);
 
         this.setRandomStats(4);
+        this.updateStatsFromGear();
 
         // this.initClass();
         // // добавляем по случайному скилу из каждой специальности
         // this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.charData.classCode.charAt(0)));
         // this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.charData.classCode.charAt(1)));
         // //добавить статы от экипировки и пассивных талантов
-        // this.updateStatsFromGear();
+
         //
         // this.checkEnvironmentObjs();
         // this.updateActionsList();
@@ -49,6 +51,24 @@ class BotUnit extends BaseUnit {
                 }
             }
             if(addStatsPoints === 0) break;
+        }
+    }
+
+    updateStatsFromGear() {
+        let gear = this.charData.gear;
+
+        for (let item in gear) {
+            if (gear[item]) {
+                gear[item].stats.forEach(stats => {
+                    for (let stat in stats) {
+                        this.charData.gearStats[stat] += stats[stat];
+                    }
+                });
+                if (gear[item].armor) {
+                    this.charData.gearStats.armor += gear[item].armor;
+                }
+            }
+
         }
     }
 }

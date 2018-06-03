@@ -29,7 +29,7 @@ class WowTooltip extends React.PureComponent {
         const { data } = this.props;
         dict.refactorLang(data);
         const { name, rare, deepType, itemLevel, requires, stats, tooltipType, armor, armorType } = data;
-        const { DPS, damage, castTime, coolDownTime, size, range } = data;
+        const { DPS, damage, castTime, coolDownTime, size, range, description } = data;
 
         let TooltipType = <div>{JSON.stringify(data)}</div>;
 
@@ -56,6 +56,7 @@ class WowTooltip extends React.PureComponent {
         return (
             <div className={cx('wow-tooltip', this.props.className)}>
                 <h2 className={cx('wow-tooltip__name', `wow-tooltip__name_rare_${rare}`)}>{name}</h2>
+                <hr/>
                 <div className={cx('wow-tooltip__row')}>
                     <p>Уровень предмета: </p>
                     <span>{itemLevel}</span>
@@ -63,6 +64,8 @@ class WowTooltip extends React.PureComponent {
                 {TooltipType}
                 <Stats data={stats} />
                 <Requires data={requires} />
+                {description && <hr/>}
+                {description && <div className={cx('wow-tooltip__description')}>{description}</div>}
             </div>
         )
     }
