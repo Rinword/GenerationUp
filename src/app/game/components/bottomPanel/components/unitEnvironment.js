@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+import { Tooltip } from 'ui/UxBox';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import WowTooltip from './WowTooltip';
 
 import './tabs.scss';
 import './styles.scss';
@@ -40,12 +42,14 @@ class UnitEnvironment extends React.PureComponent {
                             <div className="wear-panel__hero-logo icon icon_character" />
                             {Object.values(gear).map( (item, i) => {
                                 if(item && item.deepType) {
-                                    return (<div
-                                        key={item.deepType}
-                                        className={cx(`wear-panel__${item.deepType}`, 'icon', '')}
-                                        data-imgid={item.iconName}
-                                        data-rare={item.rare}
-                                    />)
+                                    return (
+                                        <Tooltip key={item.deepType} data={item} Overlay={WowTooltip}>
+                                            <div
+                                                className={cx(`wear-panel__${item.deepType}`, 'icon', '')}
+                                                data-imgid={item.iconName}
+                                                data-rare={item.rare}
+                                            />
+                                        </Tooltip>)
                                 }
 
                                 const missedName = Object.keys(gear)[i];
