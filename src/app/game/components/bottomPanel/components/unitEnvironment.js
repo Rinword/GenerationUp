@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { Tooltip } from 'ui/UxBox';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import WowTooltip from './WowTooltip';
+import WowTooltip from './subComponents/WowTooltip';
 
 import './tabs.scss';
 import './styles.scss';

@@ -7,6 +7,7 @@ import './tooltops.scss';
 
 const armorTypes = ['Легкий доспех', 'Средний доспех', 'Тяжелый доспех'];
 const sizeTypes = ['', 'Одноручное', 'Двуручное'];
+const damageTypes = {physical: 'физический', magic: 'магический'}
 const deepTypes = {
     artefact1: 'Артефакт',
     artefact2: 'Артефакт',
@@ -30,8 +31,10 @@ class WowTooltip extends React.PureComponent {
         dict.refactorLang(data);
         const { name, rare, deepType, itemLevel, requires, stats, tooltipType, armor, armorType } = data;
         const { DPS, damage, castTime, coolDownTime, size, range, description } = data;
+        const { buffs, cost, damageType, langName } = data;
 
         let TooltipType = <div>{JSON.stringify(data)}</div>;
+        const isSkill = tooltipType === 'skill';
 
         switch (tooltipType) {
             case 'wear':
@@ -49,13 +52,22 @@ class WowTooltip extends React.PureComponent {
                 />
                 break;
             case 'skill':
-                TooltipType = <SkillRows armor={armor} armorType={armorType} deepType={deepType}/>
+                TooltipType = <SkillRows
+                    buffs={buffs}
+                    damage={damage}
+                    castTime={castTime}
+                    coolDownTime={coolDownTime}
+                    range={range}
+                    cost={cost}
+                    damageType={damageType}
+                    deepType={deepType}
+                />
                 break;
         }
 
         return (
             <div className={cx('wow-tooltip', this.props.className)}>
-                <h2 className={cx('wow-tooltip__name', `wow-tooltip__name_rare_${rare}`)}>{name}</h2>
+                <h2 className={cx('wow-tooltip__name', `wow-tooltip__name_rare_${rare}`)}>{isSkill ? langName : name}</h2>
                 <hr/>
                 <div className={cx('wow-tooltip__row')}>
                     <p>Уровень предмета: </p>
@@ -91,7 +103,13 @@ const Stats = ({ data }) => {
 
     return (
         <div className={cx('wow-tooltip__column', 'wow-tooltip__column_stats')}>
-            {data.map(stat => <div className={cx('wow-tooltip__row')} key={stat.name}><span>{stat.langName}</span><span>+ {stat.value}</span></div>)}
+            {data.map(stat => {
+                if(stat.value) {
+                    return <div className={cx('wow-tooltip__row')} key={stat.name}><span>{stat.langName}</span><span>+ {stat.value}</span></div>
+                }
+
+                return <div className={cx('wow-tooltip__row')} key={stat}>{stat}</div>
+            })}
         </div>
     )
 }
@@ -134,17 +152,39 @@ const WeaponRows = ({DPS, damage, size, range, coolDownTime, deepType}) => {
     ]
 }
 
-const SkillRows = ({armor}) => {
+const SkillRows = ({buffs, damage, castTime, coolDownTime, range, cost, damageType}) => {
+    const _range = range > 1 ? range : 'Ближний бой';
+    const _castTime = castTime === 0 ? 'Мгновенно' : `${castTime / 1000} сек.`;
     return [
-        <div key={'armor'} className={cx('wow-tooltip__row')}>
-            <p>{armor.langName} </p>
-            <span>{armor.value}</span>
+        <div key={'damage'} className={cx('wow-tooltip__row')}>
+            <p>Урон {`(${damageType})`}</p>
+            <span>{`${damage}`}</span>
         </div>,
-        <div key={'armorType'} className={cx('wow-tooltip__row')}>
-            {/*<p>{deepTypes[deepType]}</p>*/}
-            {/*<span>{armorTypes[armorType]}</span>*/}
+        <SkillCost key={'cost'} cost={cost} />,
+        <div key={'cast'} className={cx('wow-tooltip__row')}>
+            <p>Время каста</p>
+            <span>{_castTime}</span>
         </div>,
+        <div key={'cooldown'} className={cx('wow-tooltip__row')}>
+            <p>Время восстановления</p>
+            <span>{`${coolDownTime / 1000} сек.`}</span>
+        </div>,
+        <div key={'range'} className={cx('wow-tooltip__row')}>
+            <p>Дальность атаки</p>
+            <span>{_range}</span>
+        </div>,
+        <Stats key={'buffs'} data={buffs} />,
     ]
+}
+
+const SkillCost = ({cost}) => {
+
+    return (
+        <div className={cx('wow-tooltip__row', 'wow-tooltip__column_cost')}>
+            <span className={cx('wow-tooltip__mp-cost')}>Мана : {cost.mpCost || 0}</span>
+            <span className={cx('wow-tooltip__ep-cost')}>Энергия : {cost.epCost || 0}</span>
+        </div>
+    )
 }
 
 WowTooltip.propTypes = {

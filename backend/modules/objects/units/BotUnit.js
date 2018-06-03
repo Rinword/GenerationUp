@@ -19,24 +19,23 @@ class BotUnit extends BaseUnit {
 
         this.setRandomStats = this.setRandomStats.bind(this);
         this.updateStatsFromGear = this.updateStatsFromGear.bind(this);
+        this.initClassSkills = this.initClassSkills.bind(this);
 
         this.setRandomStats(4);
         this.updateStatsFromGear();
 
-        // this.initClass();
+        this.initClassSkills();
         // // добавляем по случайному скилу из каждой специальности
-        // this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.charData.classCode.charAt(0)));
-        // this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.charData.classCode.charAt(1)));
-        // //добавить статы от экипировки и пассивных талантов
+        this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.data.classCode.charAt(0)));
+        this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.data.classCode.charAt(1)));
 
-        //
         // this.checkEnvironmentObjs();
         // this.updateActionsList();
     }
 
-    // initClass() {
-    //     specData.initClass(this); //по коду специальностей загружает скилы, таланты и прочее для текущего бота
-    // }
+    initClassSkills() {
+        specData.initClass(this); //по коду специальностей загружает скилы, таланты и прочее для текущего бота
+    }
 
     setRandomStats(num) {
         let addStatsPoints = num;
@@ -70,6 +69,25 @@ class BotUnit extends BaseUnit {
             }
 
         }
+    }
+
+    setSkill(skillName) {
+        let skill = specData.findSkill(skillName);
+        let aSkills = this.charData.skills.active;
+        let aSlsCnt = 0;
+        for(let pr in aSkills) {aSlsCnt++}
+        if(aSlsCnt > 5) return;
+        this.charData.skills.active[skillName] = Object.assign({},skill);
+        this.charData.skills.active[skillName].socket = aSlsCnt;
+    }
+
+    setRandomSkillFromSpec(specName) {
+        let skillsArr = [];
+        let skillsObj = this.charData.classData[specName].skills;
+        for(let skill in skillsObj) {
+            skillsArr.push(skill);
+        }
+        this.setSkill( skillsArr[helpers.randomInteger(0, skillsArr.length - 1)] )
     }
 }
 

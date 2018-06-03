@@ -5,7 +5,8 @@ import cx from 'classnames';
 import get from 'lodash/get';
 
 import { Row, Column } from 'ui/UxBox';
-import Bar from './Bar';
+import Bar from './subComponents/Bar';
+import SkillsPanel from './subComponents/SkillsPanel';
 
 import './styles.scss';
 
@@ -20,7 +21,7 @@ class UnitState extends React.PureComponent {
         // console.log(this.props);
         const { charData = {}, name, color, data = {} } = this.props.data || {};
         const { className } = data;
-        const { level } = charData;
+        const { level, skills } = charData;
         const currentStats = get(charData, 'stats.current', {});
         const { hp, hpMax, hpRegen, mp, mpMax, mpRegen, ep, epMax, epRegen } = currentStats;
 
@@ -40,7 +41,7 @@ class UnitState extends React.PureComponent {
                     <Bar value={ep} maxValue={epMax} color='ep' height={25} regen={epRegen} />
                 </Column>
                 <Row className={cx('unit-state__skills')}>
-
+                    <SkillsPanel className={cx('unit-state__skills-panel')} skills={skills}/>
                 </Row>
             </Column>
         );

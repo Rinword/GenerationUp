@@ -3,8 +3,8 @@
 
 module.exports = {
     initClass: function (obj) {
-        let first = obj.charData.classCode.charAt(0);
-        let second = obj.charData.classCode.charAt(1);
+        let first = obj.data.classCode.charAt(0);
+        let second = obj.data.classCode.charAt(1);
         obj.charData.classData = {};
         obj.charData.classData[this.data[first].name] = this.data[first];
         obj.charData.classData[this.data[second].name] = this.data[second];

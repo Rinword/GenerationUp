@@ -89,6 +89,33 @@ class BaseUnit extends BaseObject {
             ...this.generateUnitClass(),
         }
 
+        this.charData.skills = { //характеристики скиллов приведены для текущих характеристик и талантов. Бафы считаются отдельно
+            active: {
+                autoAttack: { //тут строго надо соблюдать одинаковость названия атрибута и name внутри него для обеспечения удобного доступа
+                    socket: 0,
+                    name: 'autoAttack',
+                    langName: 'Автоатака',
+                    cost: {
+                        epCost: this.charData.gear.leftHand.size == 1 ? 10 : 30
+                    },
+                    target: 'enemy',
+                    castTime: this.charData.gear.leftHand.castTime,
+                    coolDownTime: this.charData.gear.leftHand.coolDownTime,
+                    coolDownCurrTime: 0,
+                    damage: this.charData.stats.current.attack,
+                    calcDamage: function () {
+                        return this.charData.stats.current.attack;
+                    },
+                    range: this.charData.gear.leftHand.range,
+                    damageType: this.charData.gear.leftHand.damageType,
+                    iconName: '_skills_unit_melee_autoattack',
+                    tooltipType: 'skill',
+                }
+            },
+            passive: [],
+            aura: []
+        };
+
         this.isWalkable = this.isWalkable.bind(this);
         this.updateNoWalkable = this.updateNoWalkable.bind(this);
         this.getFreeCell = this.getFreeCell.bind(this);

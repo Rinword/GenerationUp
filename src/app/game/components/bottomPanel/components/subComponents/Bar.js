@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import './styles.scss';
+import '../styles.scss';
 
 const Bar = ({value, maxValue, height, color, regen }) => {
     const percent = (value * 100 / maxValue).toFixed(0);
