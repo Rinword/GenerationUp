@@ -27,7 +27,7 @@ class Game {
 
         this.interface = {
             leftClickMode: 'selectUnit',
-            selectedUnit: this.data.units[0] || null,
+            selectedUnit: Object.values(this.data.units)[0] || null,
         }
 
         this.getData = this.getData.bind(this);
@@ -51,7 +51,7 @@ class Game {
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map, selectedUnit: this.interface.selectedUnit.name})
+            this.socket.emit('update_units', {cap: this.frameCap, units: Object.values(this.data.units), map: this.data.map, selectedUnit: this.interface.selectedUnit.name})
             this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
 
@@ -69,8 +69,8 @@ class Game {
     }
 
     updateUnits() {
-        this.data.units.forEach(unit => {
-            unit.update(this.frameCap);
+        Object.values(this.data.units).forEach(unit => {
+            unit.update(this.frameCap, this.getData());
         })
     }
 
@@ -107,7 +107,7 @@ class Game {
         this.socket.on('game_click-on-stage', data => {
             switch (this.interface.leftClickMode) {
                 case 'moveTo':
-                    this.data.units.forEach(unit => {
+                    Object.values(this.data.units).forEach(unit => {
                         unit.moveTo(data.params.x, data.params.y);
                     })
                     break;
@@ -148,17 +148,17 @@ class Game {
     }
 
     generateBots(num) {
-        const bots = [];
+        const bots = {};
         const map = this.data.map;
-        while(bots.length < num) {
-            const name = 'bot' + bots.length;
+        while(Object.keys(bots).length < num) {
+            const name = 'bot' + Object.keys(bots).length;
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
 
             if(map.ways.nodes[x][y].walkable) {
                 const bot = new BotUnit(name, x, y, map.ways, map.grid);
-                bots.push(bot);
-                map.grid[x][y].inside = bot.name;
+                bots[bot.uuid] = bot;
+                map.grid[x][y].inside = bot.uuid;
                 map.ways.nodes[x][y].walkable = false;
             }
         }
@@ -205,7 +205,7 @@ class Game {
         const map = this.data.map.grid;
         const inside = map[coords.x][coords.y].inside;
         if(inside) {
-            this.interface.selectedUnit = this.data.units.find(u => u.name === inside);
+            this.interface.selectedUnit = this.data.units[inside];
             this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
     }

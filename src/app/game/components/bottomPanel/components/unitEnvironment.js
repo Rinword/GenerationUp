@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Tooltip } from 'ui/UxBox';
+import { Row, Column, Tooltip } from 'ui/UxBox';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import WowTooltip from './subComponents/WowTooltip';
 
@@ -28,8 +28,7 @@ class UnitEnvironment extends React.PureComponent {
     render() {
         const { charData = {}, behaviourData = {}, name, color, data = {} } = this.props.data || {};
         const gear = Object.assign(baseConfig, charData.gear || {});
-
-        // console.log(behaviourData.environmentObjs);
+        const env = behaviourData.environmentObjs || [];
 
         return (
             <div className={cx('unit-environment', this.props.className)}>
@@ -60,7 +59,16 @@ class UnitEnvironment extends React.PureComponent {
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <h2>Окружение</h2>
+                        <Column ai="stretch">
+                            {env.map(unit => (
+                                <Row key={unit.uuid} jc='space-between' ai="center" padding="5px 5px">
+                                    <span>{unit.name}</span>
+                                    <span style={{backgroundColor: unit.color, flexGrow: 2, textAlign: 'center'}} >{unit.color}</span>
+                                    <span>{unit.distance}</span>
+                                </Row>
+                            ))}
+
+                        </Column>
                     </TabPanel>
                 </Tabs>
             </div>

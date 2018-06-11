@@ -11,7 +11,6 @@ class BotUnit extends BaseUnit {
     constructor(name, x, y, grid, map) {
         super(x, y, grid, map);
 
-        this.id = null;
         this.type = 'unit'; //charItem, mapItem, unit
         this.name = name;
         this.movable = true;
@@ -30,7 +29,7 @@ class BotUnit extends BaseUnit {
             name: 'autoAttack',
             langName: 'Автоатака',
             cost: {
-                epCost: this.charData.gear.leftHand.size == 1 ? 10 : 30
+                epCost: this.charData.gear.leftHand.size === 1 ? 10 : 30
             },
             target: 'enemy',
             castTime: this.charData.gear.leftHand.castTime,

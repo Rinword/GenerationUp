@@ -89,7 +89,6 @@ class BaseUnit extends BaseObject {
         this.behaviourData = {
             currentAction: null,
             environmentObjs: [],
-            environmentObjsDist: [],
             actionsList: [],
             moveRating: 0,
             attackRating: 0,
@@ -298,7 +297,7 @@ class BaseUnit extends BaseObject {
         this.updateSkills = this.updateSkills.bind(this);
         this.checkEnvironmentObjs = this.checkEnvironmentObjs.bind(this);
         this.getCellsInViewRadius = this.getCellsInViewRadius.bind(this);
-        this.calculateDistances = this.calculateDistances.bind(this);
+        this.calculateDistance = this.calculateDistance.bind(this);
 
         this.checkEnvironmentObjs();
     }
@@ -318,7 +317,7 @@ class BaseUnit extends BaseObject {
         return { className, classCode }
     }
 
-    update(frame) {
+    update(frame, gameData) {
         //random moving
         this.frame = frame;
         let shouldMove = false;
@@ -340,7 +339,7 @@ class BaseUnit extends BaseObject {
         this.move();
         this.updateStats();
         this.updateSkills();
-        this.checkEnvironmentObjs();
+        this.checkEnvironmentObjs(gameData);
     }
 
     updateStats() {
@@ -402,7 +401,6 @@ class BaseUnit extends BaseObject {
             return false;
         }
 
-
         return this.wayGrid.nodes[x][y].walkable;
     }
 
@@ -410,7 +408,7 @@ class BaseUnit extends BaseObject {
         this.wayGrid.setWalkableAt(current.curY, current.curX, true);
         this.wayGrid.setWalkableAt(newNode[0], newNode[1], false);
         this.map[current.curX][current.curY].inside = null;
-        this.map[newNode[1]][newNode[0]].inside = this.name;
+        this.map[newNode[1]][newNode[0]].inside = this.uuid;
     }
 
     getFreeCell(curX, curY, range = 3) {
@@ -534,10 +532,14 @@ class BaseUnit extends BaseObject {
         return direction;
     }
 
-    checkEnvironmentObjs() {
-        const unitsArr = this.getCellsInViewRadius(this.baseGeometry, this.charData.stats.current.viewRadius);
-        this.behaviourData.environmentObjs = unitsArr.filter(i => i.inside && (i.inside !== this.name) );
-        this.behaviourData.environmentObjsDist = this.calculateDistances();
+    checkEnvironmentObjs(gameData) {
+        if(gameData) {
+            const unitsArr = this.getCellsInViewRadius(this.baseGeometry, this.charData.stats.current.viewRadius);
+            this.behaviourData.environmentObjs = unitsArr
+                .filter(i => i.inside && (i.inside !== this.uuid) )
+                .map(i => this._getOnlyCommonData(gameData.units[i.inside])) //recursive call with map.wayGrid
+                .sort((a, b) => a.distance < b.distance);
+        }
     }
 
     getCellsInViewRadius(cell, radius) {
@@ -559,22 +561,22 @@ class BaseUnit extends BaseObject {
         return resArr;
     }
 
-    calculateDistances() {
-        let distsArr = [];
-        // let startCell = this.baseGeometry;
-        // this.behaviourData.environmentObjs.forEach(unit =>{
-        //     let grid = this.wayGrid.clone();
-        //     let finder = new PF.AStarFinder();
-        //     // let wayArr = finder.findPath(startCell.x, startCell.y, unit.baseGeometry.curCell.x, unit.baseGeometry.curCell.y, grid);
-        //     const x = unit.baseGeometry.curX;
-        //     const y = unit.baseGeometry.curY;
-        //     grid.nodes[y][x].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
-        //     let wayArr = finder.findPath(startCell.x, startCell.y, unit.baseGeometry.curCell.x, unit.baseGeometry.curCell.y, grid);
-        //
-        //     distsArr.push(wayArr.length - 1);
-        // });
+    _getOnlyCommonData(unit) {
+        if(!unit) return unit;
+        const { name, color, charData, baseGeometry, uuid } = unit;
+        const distance = this.calculateDistance(baseGeometry);
 
-        return distsArr;
+        return { name, color, charData, baseGeometry, uuid, distance };
+
+    }
+
+    calculateDistance({ curX, curY }) {
+        const grid = this.wayGrid.clone();
+        const finder = new PF.AStarFinder();
+        grid.setWalkableAt(curY, curX, true); //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
+        const path = finder.findPath(this.baseGeometry.curY, this.baseGeometry.curX, curY, curX, grid);
+
+        return path.length - 1;
     }
 
     clearMovingData() {

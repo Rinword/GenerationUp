@@ -86,7 +86,7 @@ export default class Game {
 
             this.renderUnits(this.frameCap);
 
-            this.renders.map.renderWays(this.data.units);
+            this.renders.map.renderWays(Object.values(this.data.units));
             this.renders.map.renderNoWalkableCells(this.data.map.ways);
             this.refresh();
         })
@@ -143,7 +143,7 @@ export default class Game {
 
     renderUnits() {
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
-        const units = this.data.units;
+        const units = Object.values(this.data.units);
 
         if(!units_bots_canvas) {
             units_bots_canvas = new createjs.Container();
@@ -157,7 +157,7 @@ export default class Game {
             })
         }
 
-        this.data.units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap, this.selectedUnitName));
+        units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap, this.selectedUnitName));
 
     }
 
