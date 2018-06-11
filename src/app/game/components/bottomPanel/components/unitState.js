@@ -18,7 +18,7 @@ class UnitState extends React.PureComponent {
     }
 
     render() {
-        console.log(this.props);
+        // console.log(this.props);
         const { charData = {}, name, color, data = {} } = this.props.data || {};
         const { className } = data;
         const { level, skills } = charData;

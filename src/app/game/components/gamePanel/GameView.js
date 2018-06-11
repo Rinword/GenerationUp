@@ -82,6 +82,7 @@ export default class Game {
             this.data.units = data.units;
             this.data.map = data.map;
             this.serverFrameCap = data.cap;
+            this.selectedUnitName = data.selectedUnit;
 
             this.renderUnits(this.frameCap);
 
@@ -156,7 +157,7 @@ export default class Game {
             })
         }
 
-        this.data.units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap));
+        this.data.units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap, this.selectedUnitName));
 
     }
 

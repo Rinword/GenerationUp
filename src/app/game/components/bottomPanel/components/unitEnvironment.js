@@ -26,8 +26,10 @@ class UnitEnvironment extends React.PureComponent {
     }
 
     render() {
-        const { charData = {}, name, color, data = {} } = this.props.data || {};
+        const { charData = {}, behaviourData = {}, name, color, data = {} } = this.props.data || {};
         const gear = Object.assign(baseConfig, charData.gear || {});
+
+        // console.log(behaviourData.environmentObjs);
 
         return (
             <div className={cx('unit-environment', this.props.className)}>

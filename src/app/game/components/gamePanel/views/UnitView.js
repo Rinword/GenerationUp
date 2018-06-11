@@ -18,6 +18,7 @@ export default class UnitView {
             hp: 100,
             ep: 100,
             mp: 150,
+            isSelected: false,
             serverState: unitData,
         }
 
@@ -35,12 +36,6 @@ export default class UnitView {
     }
 
     renderView(unitData) {
-        // const rObj = this.unitsLayer && this.unitsLayer.getChildByName(unitData.name);
-        // if(rObj) {
-        //     this._updateItem(unitData, rObj);
-        //     return rObj;
-        // }
-
         this.canvasObj = new createjs.Container();
         this.canvasObj.addEventListener("tick", this.tick);
         this.canvasObj.name = unitData.name;
@@ -54,7 +49,7 @@ export default class UnitView {
         this.unitsLayer.addChild(this.canvasObj);
     }
 
-    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry, color }, cellSize) {
+    renderUnitInterface ({name = 'Default', data = {}, hp = randomInteger(0, 100), movingData, baseGeometry, color, charData }, cellSize) {
         const obj = new createjs.Container();
         obj.name = 'bot_interface';
         //надпись
@@ -79,6 +74,12 @@ export default class UnitView {
         hpLabel.textBaseline = "alphabetic";
         hpLabel.textAlign = 'center';
 
+        const viewRadius = new createjs.Shape();
+        viewRadius.name = 'viewRadius';
+        const radius = charData.stats.current.viewRadius || 2;
+        viewRadius.graphics.beginStroke("#1d2860").setStrokeDash([5, 2], 0)
+            .drawRect(-radius * cellSize + 1, -radius * cellSize + 1,  (2 * radius  + 1) * cellSize - 1,  (2 * radius  + 1) * cellSize - 1);
+
         //перенесено в castAnimate
         // const castState = new createjs.Container();
         // castState.name = 'castState';
@@ -87,6 +88,7 @@ export default class UnitView {
         obj.addChild(classNameLabel);
         obj.setChildIndex(classNameLabel, 0);
         obj.addChild(hpLabel);
+        obj.addChild(viewRadius);
         // obj.addChild(castState);
         // obj.addChild(damageLabel);
 
@@ -156,10 +158,14 @@ export default class UnitView {
         const currStats = this.state.serverState.charData.stats.current;
         const unitHP = this.canvasObj.getChildByName('bot_interface').getChildByName('unitHP');
         unitHP.text = currStats.hp.toFixed(0);
+
+        const viewRadius = this.canvasObj.getChildByName('bot_interface').getChildByName('viewRadius');
+        viewRadius.visible = this.state.isSelected;
     }
 
-    updateData(serverUnitData, frontFrame, backendFrame) {
+    updateData(serverUnitData, frontFrame, backendFrame, selectedUnitName) {
         this.state.serverState = serverUnitData;
+        this.state.isSelected = selectedUnitName === serverUnitData.name;
         const md = serverUnitData.movingData;
 
         if(md.direction && !this.historyLine[md.frame]) {

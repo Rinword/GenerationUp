@@ -86,6 +86,201 @@ class BaseUnit extends BaseObject {
 
         };
 
+        this.behaviourData = {
+            currentAction: null,
+            environmentObjs: [],
+            environmentObjsDist: [],
+            actionsList: [],
+            moveRating: 0,
+            attackRating: 0,
+            // brains: {
+            //     actions: [
+            //         {
+            //             type: 'skill',
+            //             name: 'autoAttack',
+            //             influenceFactors: [
+            //                 {
+            //                     name: 'distanceToTarget',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         pA: [-1, 0, 1,   4,  10, 100],
+            //                         v:  [0,  0, 50, 40,  5,  0]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetHP',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         p: [0, 20,  40, 60, 80, 100],
+            //                         v: [40, 50, 50, 40, 60, 20]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetInAttackRadius',
+            //                     type: 'mult',
+            //                     ratingMask: {
+            //                         pA: [0, 1],
+            //                         v:  [0, 100]
+            //                     }
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             type: 'skill',
+            //             name: 'mortalStrike',
+            //             influenceFactors: [
+            //                 {
+            //                     name: 'distanceToTarget',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         pA: [-1, 0, 1,   4,  10, 100],
+            //                         v:  [ 0, 0, 80, 60,  20,  0]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetHP',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         p: [0, 20,  40, 60, 80, 100],
+            //                         v: [80, 80, 70, 40, 30, 60]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetInAttackRadius',
+            //                     type: 'mult',
+            //                     ratingMask: {
+            //                         pA: [0, 1],
+            //                         v:  [0, 100]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'selfCD',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         p:[0,100],
+            //                         v:[100,0]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'hasMana',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         pA:[0, 'cost', '2cost', 'full'],
+            //                         v:[0,   90,     100,    100]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'hasEnergy',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         pA:[0, 'cost', '2cost', 'full'],
+            //                         v: [0,  90,     100,     100]
+            //                     }
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             type: 'skill',
+            //             name: 'fireball',
+            //             influenceFactors: [
+            //                 {
+            //                     name: 'distanceToTarget',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         pA: [-1, 0, 1,   4,  10, 100],
+            //                         v:  [ 0, 0, 60, 100,  80,  80]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetHP',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         p: [0,  20, 40, 60, 80, 100],
+            //                         v: [80, 80, 70, 40, 30, 60]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetInAttackRadius',
+            //                     type: 'mult',
+            //                     ratingMask: {
+            //                         pA: [0, 1],
+            //                         v:  [0, 100]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'selfCD',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         p:[0,100],
+            //                         v:[100,0]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'hasMana',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         pA:[0, 'cost', '2cost', 'full'],
+            //                         v: [0,  90,     100,    100]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'hasEnergy',
+            //                     type: 'mult',
+            //                     ratingMask:{
+            //                         pA:[0, 'cost', '2cost', 'full'],
+            //                         v: [0,  90,     100,     100]
+            //                     }
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             type: 'nt_moving',
+            //             name: 'randomMoving',
+            //             influenceFactors: [
+            //                 {
+            //                     name: 'enemyCnt',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         pA: [0,  1,  2, 100],
+            //                         v:  [70, 30, 10, 0]
+            //                     }
+            //                 },
+            //             ]
+            //         },
+            //         {
+            //             type: 'moving',
+            //             name: 'approachToMiliDist',
+            //             influenceFactors: [
+            //                 {
+            //                     name: 'distanceToTarget',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         pA: [-1, 1, 3,  20],
+            //                         v:  [ 0, 0, 50, 20]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'targetHP',
+            //                     type: 'addend',
+            //                     ratingMask: {
+            //                         p: [0, 20,  40, 60, 80, 100],
+            //                         v: [100, 70, 60, 20, 40, 30]
+            //                     }
+            //                 },
+            //                 {
+            //                     name: 'isEnemy',
+            //                     type: 'mult',
+            //                     ratingMask: {
+            //                         pA: [0,   1],
+            //                         v: [100, 50]
+            //                     }
+            //                 },
+            //             ]
+            //         }
+            //     ]
+            // }
+        };
+
         this.data = {
             ...this.generateUnitClass(0, 4),
         }
@@ -101,6 +296,11 @@ class BaseUnit extends BaseObject {
         this.getFreeCell = this.getFreeCell.bind(this);
         this.updateStats = this.updateStats.bind(this);
         this.updateSkills = this.updateSkills.bind(this);
+        this.checkEnvironmentObjs = this.checkEnvironmentObjs.bind(this);
+        this.getCellsInViewRadius = this.getCellsInViewRadius.bind(this);
+        this.calculateDistances = this.calculateDistances.bind(this);
+
+        this.checkEnvironmentObjs();
     }
 
     generateUnitClass(code1, code2) {
@@ -140,6 +340,7 @@ class BaseUnit extends BaseObject {
         this.move();
         this.updateStats();
         this.updateSkills();
+        this.checkEnvironmentObjs();
     }
 
     updateStats() {
@@ -331,6 +532,49 @@ class BaseUnit extends BaseObject {
         }
 
         return direction;
+    }
+
+    checkEnvironmentObjs() {
+        const unitsArr = this.getCellsInViewRadius(this.baseGeometry, this.charData.stats.current.viewRadius);
+        this.behaviourData.environmentObjs = unitsArr.filter(i => i.inside && (i.inside !== this.name) );
+        this.behaviourData.environmentObjsDist = this.calculateDistances();
+    }
+
+    getCellsInViewRadius(cell, radius) {
+        const map = this.map;
+        const resArr = [];
+
+        const top = Math.max(cell.curY - radius, 0);
+        const right = Math.min(cell.curX + radius + 1, map.length);
+        const bottom = Math.min(cell.curY + radius + 1, map[0].length);
+        const left = Math.max(cell.curX - radius, 0);
+
+        for(let i = left; i < right; i++) {
+            for(let j = top; j < bottom; j++) {
+                const a = (map[i][j]);
+                resArr.push(map[i][j]);
+            }
+        }
+
+        return resArr;
+    }
+
+    calculateDistances() {
+        let distsArr = [];
+        // let startCell = this.baseGeometry;
+        // this.behaviourData.environmentObjs.forEach(unit =>{
+        //     let grid = this.wayGrid.clone();
+        //     let finder = new PF.AStarFinder();
+        //     // let wayArr = finder.findPath(startCell.x, startCell.y, unit.baseGeometry.curCell.x, unit.baseGeometry.curCell.y, grid);
+        //     const x = unit.baseGeometry.curX;
+        //     const y = unit.baseGeometry.curY;
+        //     grid.nodes[y][x].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
+        //     let wayArr = finder.findPath(startCell.x, startCell.y, unit.baseGeometry.curCell.x, unit.baseGeometry.curCell.y, grid);
+        //
+        //     distsArr.push(wayArr.length - 1);
+        // });
+
+        return distsArr;
     }
 
     clearMovingData() {

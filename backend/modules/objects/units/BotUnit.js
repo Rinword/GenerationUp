@@ -1,6 +1,7 @@
 const BaseUnit = require('./baseUnit');
 const helpers =  require('../../helpers');
 const specData = require('../../dataToDB/SpecData');
+const PF = require('pathfinding');
 
 const BOT_ACTIVITY_LOWER = 20; //двигательная активность ботов, 20 - беспокойные, 200 - нормальные, 2000 - еле подвижные
 const HIGHLIGHT_VIEW_RADIUS = true; //подсветка радиуса обзора текущего выбранного юнита
@@ -51,7 +52,6 @@ class BotUnit extends BaseUnit {
         this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.data.classCode.charAt(0)));
         this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.data.classCode.charAt(1)));
 
-        // this.checkEnvironmentObjs();
         // this.updateActionsList();
     }
 

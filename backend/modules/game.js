@@ -51,8 +51,8 @@ class Game {
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
-            this.socket.emit('update_selected_unit', {data: this.selectedUnit})
+            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map, selectedUnit: this.interface.selectedUnit.name})
+            this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
 
         if(!(this.isGameOver || this.isGamePause)) {
@@ -205,8 +205,8 @@ class Game {
         const map = this.data.map.grid;
         const inside = map[coords.x][coords.y].inside;
         if(inside) {
-            this.selectedUnit = this.data.units.find(u => u.name === inside);
-            this.socket.emit('update_selected_unit', {data: this.selectedUnit})
+            this.interface.selectedUnit = this.data.units.find(u => u.name === inside);
+            this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
     }
 }

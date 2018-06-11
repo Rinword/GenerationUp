@@ -40,7 +40,7 @@ class SkillsPanel extends React.PureComponent {
     render() {
         const {skills} = this.state;
 
-        console.log('skills', skills);
+        // console.log('skills', skills);
 
         return (
             <div className={cx('skill-panel', this.props.className)}>
