@@ -30,7 +30,7 @@ class WowTooltip extends React.PureComponent {
         const { data } = this.props;
         dict.refactorLang(data);
         const { name, rare, deepType, itemLevel, requires, stats, tooltipType, armor, armorType } = data;
-        const { DPS, damage, castTime, coolDownTime, size, range, description } = data;
+        const { DPS, damage, currentDamage, castTime, coolDownTime, size, range, description } = data;
         const { buffs, cost, damageType, langName } = data;
 
         let TooltipType = <div>{JSON.stringify(data)}</div>;
@@ -55,6 +55,7 @@ class WowTooltip extends React.PureComponent {
                 TooltipType = <SkillRows
                     buffs={buffs}
                     damage={damage}
+                    currentDamage={currentDamage}
                     castTime={castTime}
                     coolDownTime={coolDownTime}
                     range={range}
@@ -152,13 +153,13 @@ const WeaponRows = ({DPS, damage, size, range, coolDownTime, deepType}) => {
     ]
 }
 
-const SkillRows = ({buffs, damage, castTime, coolDownTime, range, cost, damageType}) => {
+const SkillRows = ({buffs, damage, currentDamage, castTime, coolDownTime, range, cost, damageType}) => {
     const _range = range > 1 ? range : 'Ближний бой';
     const _castTime = castTime === 0 ? 'Мгновенно' : `${castTime / 1000} сек.`;
     return [
         <div key={'damage'} className={cx('wow-tooltip__row')}>
-            <p>Урон {`(${damageType})`}</p>
-            <span>{`${damage}`}</span>
+            <p>Урон {`(${damageType || ''})`}</p>
+            <span><span>{currentDamage.toFixed(1)} </span>({`${damage}`})</span>
         </div>,
         <SkillCost key={'cost'} cost={cost} />,
         <div key={'cast'} className={cx('wow-tooltip__row')}>

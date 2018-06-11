@@ -24,6 +24,28 @@ class BotUnit extends BaseUnit {
         this.setRandomStats(4);
         this.updateStatsFromGear();
 
+        this.charData.skills.active.autoAttack = { //тут строго надо соблюдать одинаковость названия атрибута и name внутри него для обеспечения удобного доступа
+            socket: 0,
+            name: 'autoAttack',
+            langName: 'Автоатака',
+            cost: {
+                epCost: this.charData.gear.leftHand.size == 1 ? 10 : 30
+            },
+            target: 'enemy',
+            castTime: this.charData.gear.leftHand.castTime,
+            coolDownTime: this.charData.gear.leftHand.coolDownTime,
+            coolDownCurrTime: 0,
+            damage: this.charData.gear.leftHand.damage,
+            currentDamage: this.charData.gear.leftHand.damage,
+            calcDamage: stats => {
+                return this.charData.gear.leftHand.damage * (1 + 0.05 * stats.attackPower);
+            },
+            range: this.charData.gear.leftHand.range,
+            damageType: this.charData.gear.leftHand.damageType,
+            iconName: '_skills_unit_melee_autoattack',
+            tooltipType: 'skill',
+        }
+
         this.initClassSkills();
         // // добавляем по случайному скилу из каждой специальности
         this.setRandomSkillFromSpec(specData.getSpecNameByCode(this.data.classCode.charAt(0)));
@@ -77,7 +99,7 @@ class BotUnit extends BaseUnit {
         let aSlsCnt = 0;
         for(let pr in aSkills) {aSlsCnt++}
         if(aSlsCnt > 5) return;
-        this.charData.skills.active[skillName] = Object.assign({},skill);
+        this.charData.skills.active[skillName] = Object.assign({}, skill);
         this.charData.skills.active[skillName].socket = aSlsCnt;
     }
 

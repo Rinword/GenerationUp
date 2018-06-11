@@ -86,32 +86,11 @@ class BaseUnit extends BaseObject {
         };
 
         this.data = {
-            ...this.generateUnitClass(),
+            ...this.generateUnitClass(0, 4),
         }
 
         this.charData.skills = { //характеристики скиллов приведены для текущих характеристик и талантов. Бафы считаются отдельно
-            active: {
-                autoAttack: { //тут строго надо соблюдать одинаковость названия атрибута и name внутри него для обеспечения удобного доступа
-                    socket: 0,
-                    name: 'autoAttack',
-                    langName: 'Автоатака',
-                    cost: {
-                        epCost: this.charData.gear.leftHand.size == 1 ? 10 : 30
-                    },
-                    target: 'enemy',
-                    castTime: this.charData.gear.leftHand.castTime,
-                    coolDownTime: this.charData.gear.leftHand.coolDownTime,
-                    coolDownCurrTime: 0,
-                    damage: this.charData.stats.current.attack,
-                    calcDamage: function () {
-                        return this.charData.stats.current.attack;
-                    },
-                    range: this.charData.gear.leftHand.range,
-                    damageType: this.charData.gear.leftHand.damageType,
-                    iconName: '_skills_unit_melee_autoattack',
-                    tooltipType: 'skill',
-                }
-            },
+            active: {},
             passive: [],
             aura: []
         };
@@ -120,6 +99,7 @@ class BaseUnit extends BaseObject {
         this.updateNoWalkable = this.updateNoWalkable.bind(this);
         this.getFreeCell = this.getFreeCell.bind(this);
         this.updateStats = this.updateStats.bind(this);
+        this.updateSkills = this.updateSkills.bind(this);
     }
 
     generateUnitClass(code1, code2) {
@@ -158,6 +138,7 @@ class BaseUnit extends BaseObject {
 
         this.move();
         this.updateStats();
+        this.updateSkills();
     }
 
     updateStats() {
@@ -203,25 +184,16 @@ class BaseUnit extends BaseObject {
         }
     }
 
-    // updateStatsFromGear() {
-    //     let gear =  this.charData.gear;
-    //     // let gs = this.charData.gearStats;
-    //     for(let item in gear) {
-    //         if(gear[item]) {
-    //             gear[item].stats.forEach( stats => {
-    //                 for( let stat in stats) {
-    //                     this.charData.gearStats[stat] += stats[stat];
-    //                 }
-    //             });
-    //             if(gear[item].armor) {
-    //                 this.charData.gearStats.armor += gear[item].armor;
-    //             }
-    //         }
-    //
-    //     }
-    //
-    //     // console.log(this.name, this.charData.gearStats, this.charData.stats.current)
-    // }
+    updateSkills() {
+        const aSkills = this.charData.skills.active || {};
+        for(let i in aSkills) {
+            if(typeof aSkills[i].calcDamage === 'function' && aSkills[i].damage) {
+                aSkills[i].currentDamage = aSkills[i].calcDamage.call(this, this.charData.stats.current, aSkills[i]);
+            } else {
+                console.warn('BAD skill in', aSkills[i])
+            }
+        }
+    }
 
     isWalkable(x, y) {
         if(!this.wayGrid.nodes[x] || !this.wayGrid.nodes[x][y] ) {
