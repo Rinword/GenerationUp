@@ -8,10 +8,11 @@ const itemsStorage = require('../../dataToDB/itemsStorage');
 const finder = new PF.AStarFinder();
 
 class BaseUnit extends BaseObject {
-    constructor(x, y, grid) {
+    constructor(x, y, grid, map) {
         super();
 
         this.wayGrid = grid;
+        this.map = map;
 
         this.baseGeometry = {
             type: 'unit',
@@ -207,6 +208,8 @@ class BaseUnit extends BaseObject {
     updateNoWalkable(current, newNode) {
         this.wayGrid.setWalkableAt(current.curY, current.curX, true);
         this.wayGrid.setWalkableAt(newNode[0], newNode[1], false);
+        this.map[current.curX][current.curY].inside = null;
+        this.map[newNode[1]][newNode[0]].inside = this.name;
     }
 
     getFreeCell(curX, curY, range = 3) {

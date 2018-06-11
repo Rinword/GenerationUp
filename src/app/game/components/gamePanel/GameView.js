@@ -69,13 +69,10 @@ export default class Game {
         this.updateViews = this.updateViews.bind(this);
 
         setInterval(() => {
-            // console.log(this.serverFrameCap, '/', this.frameCap);
             if(this.serverFrameCap > this.frameCap) {
                 this.frameCap++;
                 this.refresh();
                 this.updateViews();
-            } else {
-                // console.log('----TROT', this.serverFrameCap, '/', this.frameCap);
             }
         }, 1000/FPS)
     }

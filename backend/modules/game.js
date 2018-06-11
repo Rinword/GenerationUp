@@ -3,7 +3,7 @@ const helpers = require('./helpers');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 1;
+const BOT_ENUM = 4;
 const SYNC_EVERY_FRAME = 15;
 const FPS = 60;
 
@@ -25,6 +25,11 @@ class Game {
 
         this.data.units = this.generateBots(BOT_ENUM);
 
+        this.interface = {
+            leftClickMode: 'selectUnit',
+            selectedUnit: this.data.units[0] || null,
+        }
+
         this.getData = this.getData.bind(this);
         this.generateMap = this.generateMap.bind(this);
         this.generateBots = this.generateBots.bind(this);
@@ -32,6 +37,7 @@ class Game {
         this.update = this.update.bind(this);
         this.updateUnits = this.updateUnits.bind(this);
         this.registerSockets = this.registerSockets.bind(this);
+        this.selectUnitWithCoords = this.selectUnitWithCoords.bind(this);
 
         this.main();
     }
@@ -46,7 +52,7 @@ class Game {
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
             this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
-            this.socket.emit('update_selected_unit', {data: this.data.units[0]})
+            this.socket.emit('update_selected_unit', {data: this.selectedUnit})
         }
 
         if(!(this.isGameOver || this.isGamePause)) {
@@ -80,20 +86,33 @@ class Game {
                         this.isGamePause = true;
                     }
                     break;
+
                 case 'start_again':
                     this.frameCap = 0;
                     this.data.units = this.generateBots(BOT_ENUM);
                     this.isGameOver = false;
                     this.main();
+                    break;
+
+                case 'left_click_moveTo':
+                    this.interface.leftClickMode = 'moveTo';
+                    break;
+
+                case 'left_click_selectUnit':
+                    this.interface.leftClickMode = 'selectUnit';
+                    break;
             }
         })
 
         this.socket.on('game_click-on-stage', data => {
-            switch (data.action) {
+            switch (this.interface.leftClickMode) {
                 case 'moveTo':
                     this.data.units.forEach(unit => {
-                        unit.moveTo(data.params.x, data.params.y)
+                        unit.moveTo(data.params.x, data.params.y);
                     })
+                    break;
+                case 'selectUnit':
+                    this.selectUnitWithCoords(data.params);
             }
         })
     }
@@ -137,9 +156,9 @@ class Game {
             const y = helpers.randomInteger(1, map.ways.width - 1);
 
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y, map.ways);
+                const bot = new BotUnit(name, x, y, map.ways, map.grid);
                 bots.push(bot);
-                map.grid[x][y].inside = bot;
+                map.grid[x][y].inside = bot.name;
                 map.ways.nodes[x][y].walkable = false;
             }
         }
@@ -180,6 +199,15 @@ class Game {
         //         // grid[i][5].icon = 'wall';
         //     }
         // });
+    }
+
+    selectUnitWithCoords(coords) {
+        const map = this.data.map.grid;
+        const inside = map[coords.x][coords.y].inside;
+        if(inside) {
+            this.selectedUnit = this.data.units.find(u => u.name === inside);
+            this.socket.emit('update_selected_unit', {data: this.selectedUnit})
+        }
     }
 }
 
