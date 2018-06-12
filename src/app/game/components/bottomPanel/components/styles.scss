@@ -223,6 +223,7 @@ $regen-neg: #f06240;
 .unit-behaviour {
   overflow-y: auto;
   flex: 0 1 auto;
+  padding: 0 5px !important;
   &__row {
     margin: 5px;
     padding: 5px 0;

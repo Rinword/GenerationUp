@@ -18,10 +18,10 @@ class UnitBehaviour extends React.PureComponent {
         const actionsList = behaviourData.actionsList || [];
 
         return (
-            <div className={cx('unit-behaviour', this.props.className)}>
+            <div className={cx(this.props.className, 'unit-behaviour')}>
                 <Column className="env-panel" ai="stretch">
                     {actionsList.map((action, i) => (
-                        <Column key={action.brainsForAction.name} padding="5px 5px" className={cx('unit-behaviour__row')}>
+                        <Column key={action.brainsForAction.name + action.target.name} padding="5px 5px" className={cx('unit-behaviour__row')}>
                             <Row ai="center" className={cx('unit-behaviour__header')}>
                                 <span>{i + 1}.</span>
                                 <span><b>{action.rating}</b></span>
@@ -31,15 +31,15 @@ class UnitBehaviour extends React.PureComponent {
 
                             </Row>
                             <Row ai="center" multiStr={true}>
-                                {action.behaviourArr.map(bh => (
+                                {action.behaviourArr.map((bh => (
                                     <p
-                                        key={bh.name}
+                                        key={bh.name + action.target.name}
                                         className={cx('unit-behaviour__factor')}
                                     >
                                         <span>{bh.name}:</span>
                                         {`${bh.type === 'mult' ? '*' : '+'}${bh.rating}`}
                                     </p>
-                                ))}
+                                )))}
                             </Row>
                         </Column>
                     ))}

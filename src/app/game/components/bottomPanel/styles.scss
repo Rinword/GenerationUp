@@ -1,6 +1,8 @@
 .bottom-panel {
   width: 100%;
-  height: 278px;
+  min-height: 270px;
+  max-width: 90em;
+  max-height: 278px;
   border: 1px solid white;
   padding: 10px;
   margin: 0 10px 10px 10px;
