@@ -8,11 +8,12 @@ const itemsStorage = require('../../dataToDB/itemsStorage');
 const finder = new PF.AStarFinder();
 
 class BaseUnit extends BaseObject {
-    constructor(x, y, grid, map) {
+    constructor(x, y, grid, map, options) {
         super();
 
         this.wayGrid = grid;
         this.map = map;
+        this._options = options;
 
         this.baseGeometry = {
             type: 'unit',
@@ -92,192 +93,192 @@ class BaseUnit extends BaseObject {
             actionsList: [],
             moveRating: 0,
             attackRating: 0,
-            // brains: {
-            //     actions: [
-            //         {
-            //             type: 'skill',
-            //             name: 'autoAttack',
-            //             influenceFactors: [
-            //                 {
-            //                     name: 'distanceToTarget',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         pA: [-1, 0, 1,   4,  10, 100],
-            //                         v:  [0,  0, 50, 40,  5,  0]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetHP',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         p: [0, 20,  40, 60, 80, 100],
-            //                         v: [40, 50, 50, 40, 60, 20]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetInAttackRadius',
-            //                     type: 'mult',
-            //                     ratingMask: {
-            //                         pA: [0, 1],
-            //                         v:  [0, 100]
-            //                     }
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             type: 'skill',
-            //             name: 'mortalStrike',
-            //             influenceFactors: [
-            //                 {
-            //                     name: 'distanceToTarget',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         pA: [-1, 0, 1,   4,  10, 100],
-            //                         v:  [ 0, 0, 80, 60,  20,  0]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetHP',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         p: [0, 20,  40, 60, 80, 100],
-            //                         v: [80, 80, 70, 40, 30, 60]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetInAttackRadius',
-            //                     type: 'mult',
-            //                     ratingMask: {
-            //                         pA: [0, 1],
-            //                         v:  [0, 100]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'selfCD',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         p:[0,100],
-            //                         v:[100,0]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'hasMana',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         pA:[0, 'cost', '2cost', 'full'],
-            //                         v:[0,   90,     100,    100]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'hasEnergy',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         pA:[0, 'cost', '2cost', 'full'],
-            //                         v: [0,  90,     100,     100]
-            //                     }
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             type: 'skill',
-            //             name: 'fireball',
-            //             influenceFactors: [
-            //                 {
-            //                     name: 'distanceToTarget',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         pA: [-1, 0, 1,   4,  10, 100],
-            //                         v:  [ 0, 0, 60, 100,  80,  80]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetHP',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         p: [0,  20, 40, 60, 80, 100],
-            //                         v: [80, 80, 70, 40, 30, 60]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetInAttackRadius',
-            //                     type: 'mult',
-            //                     ratingMask: {
-            //                         pA: [0, 1],
-            //                         v:  [0, 100]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'selfCD',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         p:[0,100],
-            //                         v:[100,0]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'hasMana',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         pA:[0, 'cost', '2cost', 'full'],
-            //                         v: [0,  90,     100,    100]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'hasEnergy',
-            //                     type: 'mult',
-            //                     ratingMask:{
-            //                         pA:[0, 'cost', '2cost', 'full'],
-            //                         v: [0,  90,     100,     100]
-            //                     }
-            //                 }
-            //             ]
-            //         },
-            //         {
-            //             type: 'nt_moving',
-            //             name: 'randomMoving',
-            //             influenceFactors: [
-            //                 {
-            //                     name: 'enemyCnt',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         pA: [0,  1,  2, 100],
-            //                         v:  [70, 30, 10, 0]
-            //                     }
-            //                 },
-            //             ]
-            //         },
-            //         {
-            //             type: 'moving',
-            //             name: 'approachToMiliDist',
-            //             influenceFactors: [
-            //                 {
-            //                     name: 'distanceToTarget',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         pA: [-1, 1, 3,  20],
-            //                         v:  [ 0, 0, 50, 20]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'targetHP',
-            //                     type: 'addend',
-            //                     ratingMask: {
-            //                         p: [0, 20,  40, 60, 80, 100],
-            //                         v: [100, 70, 60, 20, 40, 30]
-            //                     }
-            //                 },
-            //                 {
-            //                     name: 'isEnemy',
-            //                     type: 'mult',
-            //                     ratingMask: {
-            //                         pA: [0,   1],
-            //                         v: [100, 50]
-            //                     }
-            //                 },
-            //             ]
-            //         }
-            //     ]
-            // }
+            brains: {
+                actions: [
+                    {
+                        type: 'skill',
+                        name: 'autoAttack',
+                        influenceFactors: [
+                            {
+                                name: 'distanceToTarget',
+                                type: 'addend',
+                                ratingMask: {
+                                    pA: [-1, 0, 1,   4,  10, 100],
+                                    v:  [0,  0, 50, 40,  5,  0]
+                                }
+                            },
+                            {
+                                name: 'targetHP',
+                                type: 'addend',
+                                ratingMask: {
+                                    p: [0, 20,  40, 60, 80, 100],
+                                    v: [40, 50, 50, 40, 60, 20]
+                                }
+                            },
+                            {
+                                name: 'targetInAttackRadius',
+                                type: 'mult',
+                                ratingMask: {
+                                    pA: [0, 1],
+                                    v:  [0, 100]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'skill',
+                        name: 'mortalStrike',
+                        influenceFactors: [
+                            {
+                                name: 'distanceToTarget',
+                                type: 'addend',
+                                ratingMask: {
+                                    pA: [-1, 0, 1,   4,  10, 100],
+                                    v:  [ 0, 0, 80, 60,  20,  0]
+                                }
+                            },
+                            {
+                                name: 'targetHP',
+                                type: 'addend',
+                                ratingMask: {
+                                    p: [0, 20,  40, 60, 80, 100],
+                                    v: [80, 80, 70, 40, 30, 60]
+                                }
+                            },
+                            {
+                                name: 'targetInAttackRadius',
+                                type: 'mult',
+                                ratingMask: {
+                                    pA: [0, 1],
+                                    v:  [0, 100]
+                                }
+                            },
+                            {
+                                name: 'selfCD',
+                                type: 'mult',
+                                ratingMask:{
+                                    p:[0,100],
+                                    v:[100,0]
+                                }
+                            },
+                            {
+                                name: 'hasMana',
+                                type: 'mult',
+                                ratingMask:{
+                                    pA:[0, 'cost', '2cost', 'full'],
+                                    v:[0,   90,     100,    100]
+                                }
+                            },
+                            {
+                                name: 'hasEnergy',
+                                type: 'mult',
+                                ratingMask:{
+                                    pA:[0, 'cost', '2cost', 'full'],
+                                    v: [0,  90,     100,     100]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'skill',
+                        name: 'fireball',
+                        influenceFactors: [
+                            {
+                                name: 'distanceToTarget',
+                                type: 'addend',
+                                ratingMask: {
+                                    pA: [-1, 0, 1,   4,  10, 100],
+                                    v:  [ 0, 0, 60, 100,  80,  80]
+                                }
+                            },
+                            {
+                                name: 'targetHP',
+                                type: 'addend',
+                                ratingMask: {
+                                    p: [0,  20, 40, 60, 80, 100],
+                                    v: [80, 80, 70, 40, 30, 60]
+                                }
+                            },
+                            {
+                                name: 'targetInAttackRadius',
+                                type: 'mult',
+                                ratingMask: {
+                                    pA: [0, 1],
+                                    v:  [0, 100]
+                                }
+                            },
+                            {
+                                name: 'selfCD',
+                                type: 'mult',
+                                ratingMask:{
+                                    p:[0,100],
+                                    v:[100,0]
+                                }
+                            },
+                            {
+                                name: 'hasMana',
+                                type: 'mult',
+                                ratingMask:{
+                                    pA:[0, 'cost', '2cost', 'full'],
+                                    v: [0,  90,     100,    100]
+                                }
+                            },
+                            {
+                                name: 'hasEnergy',
+                                type: 'mult',
+                                ratingMask:{
+                                    pA:[0, 'cost', '2cost', 'full'],
+                                    v: [0,  90,     100,     100]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'nt_moving',
+                        name: 'randomMoving',
+                        influenceFactors: [
+                            {
+                                name: 'enemyCnt',
+                                type: 'addend',
+                                ratingMask: {
+                                    pA: [0,  1,  2, 100],
+                                    v:  [70, 30, 10, 0]
+                                }
+                            },
+                        ]
+                    },
+                    {
+                        type: 'moving',
+                        name: 'approachToMiliDist',
+                        influenceFactors: [
+                            {
+                                name: 'distanceToTarget',
+                                type: 'addend',
+                                ratingMask: {
+                                    pA: [-1, 1, 3,  20],
+                                    v:  [ 0, 0, 50, 20]
+                                }
+                            },
+                            {
+                                name: 'targetHP',
+                                type: 'addend',
+                                ratingMask: {
+                                    p: [0, 20,  40, 60, 80, 100],
+                                    v: [100, 70, 60, 20, 40, 30]
+                                }
+                            },
+                            {
+                                name: 'isEnemy',
+                                type: 'mult',
+                                ratingMask: {
+                                    pA: [0,   1],
+                                    v: [100, 50]
+                                }
+                            },
+                        ]
+                    }
+                ]
+            }
         };
 
         this.data = {
@@ -298,6 +299,7 @@ class BaseUnit extends BaseObject {
         this.checkEnvironmentObjs = this.checkEnvironmentObjs.bind(this);
         this.getCellsInViewRadius = this.getCellsInViewRadius.bind(this);
         this.calculateDistance = this.calculateDistance.bind(this);
+        this._getBrainsForSkillName = this._getBrainsForSkillName.bind(this);
 
         this.checkEnvironmentObjs();
     }
@@ -340,6 +342,7 @@ class BaseUnit extends BaseObject {
         this.updateStats();
         this.updateSkills();
         this.checkEnvironmentObjs(gameData);
+        this.updateActionsList();
     }
 
     updateStats() {
@@ -396,12 +399,41 @@ class BaseUnit extends BaseObject {
         }
     }
 
-    isWalkable(x, y) {
-        if(!this.wayGrid.nodes[x] || !this.wayGrid.nodes[x][y] ) {
-            return false;
+    updateActionsList() { //TODO возможно стоит перенести логику формирования списка в rc, чтобы и скилы, и перемещения формировались там по имеющимся у бота мозгам
+        this.behaviourData.actionsList.length = 0;
+        let activeSkills = this.charData.skills.active;
+        for(let aSkill in activeSkills) {
+            this.behaviourData.environmentObjs.forEach(unit => {
+                const isFriendly = (unit.color === this.color);
+                let action = {
+                    rating: 0,
+                    target: unit,
+                    action: activeSkills[aSkill],
+                    brainsForAction: this._getBrainsForSkillName(aSkill)
+                };
+                if( (isFriendly && action.action.target === 'friendly') || (!isFriendly && action.action.target === 'enemy') )
+                    this.behaviourData.actionsList.push(action); //атаковать союзников нельзя, лечить врагов тоже
+            })
         }
+        this.behaviourData.actionsList = this._options.rc.calcRatingForObject(this); //!!! Внутри этого же метода происходит подгрузка моделей движения по имеющимся у бота мозгам
 
-        return this.wayGrid.nodes[x][y].walkable;
+        this.behaviourData.actionsList.sort(function (a, b) {
+            if (a.rating > b.rating) return -1;
+            if (a.rating < b.rating) return 1;
+
+            return 0;
+        });
+        // console.log('actionsList', me.behaviourData.actionsList);
+    }
+
+    _getBrainsForSkillName(name) {
+        let tactic = this.behaviourData.brains.actions;
+        for(let tact in tactic) {
+            if(tactic[tact].type === 'skill' && tactic[tact].name === name) {
+                return tactic[tact]
+            }
+        }
+        return null;
     }
 
     updateNoWalkable(current, newNode) {
@@ -409,6 +441,14 @@ class BaseUnit extends BaseObject {
         this.wayGrid.setWalkableAt(newNode[0], newNode[1], false);
         this.map[current.curX][current.curY].inside = null;
         this.map[newNode[1]][newNode[0]].inside = this.uuid;
+    }
+
+    isWalkable(x, y) {
+        if(!this.wayGrid.nodes[x] || !this.wayGrid.nodes[x][y] ) {
+            return false;
+        }
+
+        return this.wayGrid.nodes[x][y].walkable;
     }
 
     getFreeCell(curX, curY, range = 3) {

@@ -1,5 +1,6 @@
 const PF = require('pathfinding');
 const helpers = require('./helpers');
+const RatingCalculator = require('./objects/libs/RatingCalculator');
 
 const BotUnit = require('./objects/units/BotUnit');
 
@@ -11,10 +12,12 @@ class Game {
     constructor(props) {
         this.app = props.app;
         this.socket = props.socket;
-        this.registerSockets()
+        this.registerSockets();
 
         this.isGameOver = false;
         this.isGamePause = false;
+
+        this.rc = new RatingCalculator();
 
         this.frameCap = 0; //отсчет тактов игры, помогает настроить частоту синхронизации данных с фронтом
         this.mapSize = {x: 23, y: 15}; //размер карты (не экрана)
@@ -156,7 +159,7 @@ class Game {
             const y = helpers.randomInteger(1, map.ways.width - 1);
 
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y, map.ways, map.grid);
+                const bot = new BotUnit(name, x, y, map.ways, map.grid, { rc: this.rc});
                 bots[bot.uuid] = bot;
                 map.grid[x][y].inside = bot.uuid;
                 map.ways.nodes[x][y].walkable = false;

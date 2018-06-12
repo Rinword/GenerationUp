@@ -59,11 +59,11 @@ class UnitEnvironment extends React.PureComponent {
                         </div>
                     </TabPanel>
                     <TabPanel>
-                        <Column ai="stretch">
+                        <Column className="env-panel" ai="stretch">
                             {env.map(unit => (
                                 <Row key={unit.uuid} jc='space-between' ai="center" padding="5px 5px">
                                     <span>{unit.name}</span>
-                                    <span style={{backgroundColor: unit.color, flexGrow: 2, textAlign: 'center'}} >{unit.color}</span>
+                                    <span className={cx('env-panel__color')} style={{backgroundColor: unit.color}} >{unit.color}</span>
                                     <span>{unit.distance}</span>
                                 </Row>
                             ))}

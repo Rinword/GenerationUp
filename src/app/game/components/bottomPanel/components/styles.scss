@@ -8,6 +8,7 @@ $regen-neg: #f06240;
 
 .unit-state {
   max-width: 20em;
+  flex-shrink: 0;
   * {
     box-sizing: border-box;
   }
@@ -111,7 +112,7 @@ $regen-neg: #f06240;
   flex-direction: column;
   align-items: stretch;
   max-width: 15em;
-
+  flex-shrink: 0;
   &__stats {
     > .ux-layout {
       flex-shrink: 0;
@@ -132,14 +133,15 @@ $regen-neg: #f06240;
   }
 }
 
-.unit-environment{
+.unit-environment {
   max-width: 15em;
+  flex-shrink: 0;
   .wear-panel {
     display: flex;
     position: relative;
     margin: auto;
     height: 206px;
-    width: 13em;
+    width: 12em;
     &__hero-logo {
       position: absolute;
       left: 59px;
@@ -203,6 +205,48 @@ $regen-neg: #f06240;
       top: 162px;
       width: 42px;
       height: 42px;
+    }
+  }
+}
+
+.env-panel {
+  &__color {
+    color: black;
+    text-shadow: 0 0 0.6em white;
+    text-align: center;
+    flex-grow: 1;
+    margin: 0 5px;
+    font-weight: bold;
+  }
+}
+
+.unit-behaviour {
+  overflow-y: auto;
+  flex: 0 1 auto;
+  &__row {
+    margin: 5px;
+    padding: 5px 0;
+    border: 1px dashed white;
+    width: auto;
+  }
+
+  &__header {
+    font-size: 1.1em;
+    span {
+      font-weight: bold;
+      margin-right: 15px;
+      b {
+        color: $regen-pos;
+      }
+    }
+  }
+
+  &__factor {
+    margin: 0 2px;
+    padding: 2px;
+    font-size: 1em;
+    span {
+      opacity: 0.5;
     }
   }
 }

@@ -3,13 +3,9 @@ const helpers =  require('../../helpers');
 const specData = require('../../dataToDB/SpecData');
 const PF = require('pathfinding');
 
-const BOT_ACTIVITY_LOWER = 20; //двигательная активность ботов, 20 - беспокойные, 200 - нормальные, 2000 - еле подвижные
-const HIGHLIGHT_VIEW_RADIUS = true; //подсветка радиуса обзора текущего выбранного юнита
-const UPDATE_DISTANCES_TICK = 30; //частота обновления окружающих объектов, каждые 15/60 кадров/сек = 4 раза в секунду
-
 class BotUnit extends BaseUnit {
-    constructor(name, x, y, grid, map) {
-        super(x, y, grid, map);
+    constructor(name, x, y, grid, map, options) {
+        super(x, y, grid, map, options);
 
         this.type = 'unit'; //charItem, mapItem, unit
         this.name = name;
