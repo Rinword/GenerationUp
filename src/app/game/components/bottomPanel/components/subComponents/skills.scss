@@ -1,0 +1,35 @@
+.skill-panel {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  flex: 1 0 auto;
+
+  &__skill {
+    .icon {
+      .ux-progress-bar {
+        width: calc(100% + 4px);
+        position: absolute;
+        height: 5px;
+        bottom: -7px;
+        left: -2px;
+        &__box {
+          margin-right: 0;
+        }
+
+        &.ux-progress-bar_cooldown-display {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border: none;
+          .ux-progress-bar__slider {
+            background-color: black;
+            opacity: 0.5;
+          }
+
+        }
+      }
+    }
+  }
+}

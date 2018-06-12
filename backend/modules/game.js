@@ -1,9 +1,10 @@
 const PF = require('pathfinding');
 const helpers = require('./helpers');
+const RatingCalculator = require('./objects/libs/RatingCalculator');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 1;
+const BOT_ENUM = 4;
 const SYNC_EVERY_FRAME = 15;
 const FPS = 60;
 
@@ -11,10 +12,12 @@ class Game {
     constructor(props) {
         this.app = props.app;
         this.socket = props.socket;
-        this.registerSockets()
+        this.registerSockets();
 
         this.isGameOver = false;
         this.isGamePause = false;
+
+        this.rc = new RatingCalculator();
 
         this.frameCap = 0; //отсчет тактов игры, помогает настроить частоту синхронизации данных с фронтом
         this.mapSize = {x: 23, y: 15}; //размер карты (не экрана)
@@ -25,6 +28,11 @@ class Game {
 
         this.data.units = this.generateBots(BOT_ENUM);
 
+        this.interface = {
+            leftClickMode: 'selectUnit',
+            selectedUnit: Object.values(this.data.units)[0] || null,
+        }
+
         this.getData = this.getData.bind(this);
         this.generateMap = this.generateMap.bind(this);
         this.generateBots = this.generateBots.bind(this);
@@ -32,6 +40,7 @@ class Game {
         this.update = this.update.bind(this);
         this.updateUnits = this.updateUnits.bind(this);
         this.registerSockets = this.registerSockets.bind(this);
+        this.selectUnitWithCoords = this.selectUnitWithCoords.bind(this);
 
         this.main();
     }
@@ -45,7 +54,8 @@ class Game {
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: this.data.units, map: this.data.map})
+            this.socket.emit('update_units', {cap: this.frameCap, units: Object.values(this.data.units), map: this.data.map, selectedUnit: this.interface.selectedUnit.name})
+            this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
 
         if(!(this.isGameOver || this.isGamePause)) {
@@ -62,8 +72,8 @@ class Game {
     }
 
     updateUnits() {
-        this.data.units.forEach(unit => {
-            unit.update(this.frameCap);
+        Object.values(this.data.units).forEach(unit => {
+            unit.update(this.frameCap, this.getData());
         })
     }
 
@@ -79,20 +89,33 @@ class Game {
                         this.isGamePause = true;
                     }
                     break;
+
                 case 'start_again':
                     this.frameCap = 0;
                     this.data.units = this.generateBots(BOT_ENUM);
                     this.isGameOver = false;
                     this.main();
+                    break;
+
+                case 'left_click_moveTo':
+                    this.interface.leftClickMode = 'moveTo';
+                    break;
+
+                case 'left_click_selectUnit':
+                    this.interface.leftClickMode = 'selectUnit';
+                    break;
             }
         })
 
         this.socket.on('game_click-on-stage', data => {
-            switch (data.action) {
+            switch (this.interface.leftClickMode) {
                 case 'moveTo':
-                    this.data.units.forEach(unit => {
-                        unit.moveTo(data.params.x, data.params.y)
+                    Object.values(this.data.units).forEach(unit => {
+                        unit.moveTo(data.params.x, data.params.y);
                     })
+                    break;
+                case 'selectUnit':
+                    this.selectUnitWithCoords(data.params);
             }
         })
     }
@@ -128,17 +151,17 @@ class Game {
     }
 
     generateBots(num) {
-        const bots = [];
+        const bots = {};
         const map = this.data.map;
-        while(bots.length < num) {
-            const name = 'bot' + bots.length;
+        while(Object.keys(bots).length < num) {
+            const name = 'bot' + Object.keys(bots).length;
             const x = helpers.randomInteger(1, map.ways.height - 1);
             const y = helpers.randomInteger(1, map.ways.width - 1);
 
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y, map.ways);
-                bots.push(bot);
-                map.grid[x][y].inside = bot;
+                const bot = new BotUnit(name, x, y, map.ways, map.grid, { rc: this.rc});
+                bots[bot.uuid] = bot;
+                map.grid[x][y].inside = bot.uuid;
                 map.ways.nodes[x][y].walkable = false;
             }
         }
@@ -179,6 +202,15 @@ class Game {
         //         // grid[i][5].icon = 'wall';
         //     }
         // });
+    }
+
+    selectUnitWithCoords(coords) {
+        const map = this.data.map.grid;
+        const inside = map[coords.x][coords.y].inside;
+        if(inside) {
+            this.interface.selectedUnit = this.data.units[inside];
+            this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
+        }
     }
 }
 

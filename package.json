@@ -31,6 +31,7 @@
     "path": "^0.12.7",
     "pathfinding": "^0.4.18",
     "prop-types": "^15.6.1",
+    "rc-tooltip": "^3.7.2",
     "react": "^16.2.0",
     "react-datepicker": "^1.2.2",
     "react-dom": "^16.2.0",
@@ -39,12 +40,14 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
+    "react-tabs": "^2.2.2",
     "react-text-mask": "^5.1.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "socket.io": "^2.1.0",
     "socket.io-client": "^2.1.0",
-    "text-mask-addons": "^3.7.2"
+    "text-mask-addons": "^3.7.2",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

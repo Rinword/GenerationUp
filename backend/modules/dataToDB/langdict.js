@@ -1,4 +1,4 @@
-const helpers =  require('../../helpers');
+const helpers = require('../helpers');
 
 module.exports = {
     data: {
@@ -116,8 +116,8 @@ module.exports = {
 
     getPropByName(propName) {
         for(let key in this.data) {
-            for( let key2 in this.data[key] ) {
-                if (key2 === propName) return this.data[key][key2][this.lang];
+            for(let key2 in this.data[key] ) {
+                if (key2 === propName) return this.data[key][key2].ru;
             }
         }
 
@@ -126,30 +126,31 @@ module.exports = {
 
     refactorLang(data) {
         let me = this;
-        for(let obj in data) {
-            for(let prop in data[obj]) {
-                if(typeof(data[obj][prop]) === 'object') { //забираемся в stats и requires
-                    data[obj][prop].length && data[obj][prop].forEach(pr => {
-                        for( let inpr in pr) {
-                            let refPropValue = me.getPropByName(inpr); //ищем название свойства в словаре strength например
-                            if(refPropValue) {
-                                pr.langName = utils.capitalize1Letter(refPropValue);
-                                pr.name = pr;
-                                pr.value = pr[inpr]; //заменяем {strength: 3} на {name: strength, langName: 'сила', value: 3}
-                            }
+        // for(let obj in data) {
+        for(let prop in data) {
+            if(typeof(data[prop]) === 'object') { //забираемся в stats и requires
+                data[prop].length && data[prop].forEach(pr => {
+                    for(let inpr in pr) {
+                        let refPropValue = me.getPropByName(inpr); //ищем название свойства в словаре strength например
+                        if(refPropValue) {
+                            pr.langName = helpers.capitalizeFirstLetter(refPropValue);
+                            pr.name = refPropValue,
+                            pr.value = pr[inpr]; //заменяем {strength: 3} на {name: strength, langName: 'сила', value: 3}
                         }
+                    }
 
-                    })
-                } else {
-                    let refPropValue = me.getPropByName(prop);
-                    if(refPropValue) { //!!! Замена поля armor: 17 на armor: {value: 17, langName: 'броня'}
-                        data[obj][prop] = {
-                            langName: utils.capitalize1Letter(refPropValue),
-                            value: data[obj][prop]
-                        }
+                })
+            } else {
+                let refPropValue = me.getPropByName(prop);
+                if(refPropValue) { //!!! Замена поля armor: 17 на armor: {value: 17, langName: 'броня'}
+                    data[prop] = {
+                        langName: helpers.capitalizeFirstLetter(refPropValue),
+                        name: refPropValue,
+                        value: data[prop]
                     }
                 }
             }
         }
+        // }
     }
 }

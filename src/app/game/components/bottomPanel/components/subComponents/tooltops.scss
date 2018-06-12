@@ -1,0 +1,90 @@
+$color-rare: #07428b;
+$color-epic: #6d1695;
+$color-legendary: #e28a1e;
+$hp-color: #00ae00;
+$mp-color: #1f52ae;
+$ep-color: #ddad3f;
+$regen-pos: #00e700;
+$regen-neg: #f06240;
+
+.wow-tooltip {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 100%;
+
+  hr {
+    width: 100%;
+  }
+
+  h2 {
+    margin: 0;
+    line-height: 1.1;
+  }
+  &__name {
+    font-weight: bold;
+    &_rare {
+      &_1 {
+        color: $color-rare;
+      }
+      &_2 {
+        color: $color-epic;
+      }
+      &_3 {
+        color: $color-legendary;
+      }
+    }
+  }
+
+  &__row, &__column {
+    display: flex;
+    justify-content: space-between;
+    margin: 3px 0;
+    p {
+      margin: 0;
+    }
+
+    > span > span {
+      color: $regen-pos;
+    }
+
+    &_cost {
+      justify-content: flex-start;
+      span {
+        margin-right: 10px;
+        padding: 0 3px;
+      }
+    }
+  }
+
+  &__mp-cost, &__ep-cost {
+    font-weight: bold;
+    color: $mp-color;
+    border: 1px solid $mp-color;
+  }
+
+  &__ep-cost {
+    color: $ep-color;
+    border-color: $ep-color;
+  }
+
+  &__column {
+    flex-direction: column;
+    h3 {
+      margin: 0 0 0 10px;
+    }
+    &_require {
+      h3 {
+        color: $regen-neg;
+      }
+    }
+    &_stats {
+      .wow-tooltip__row {
+        color: $regen-pos;
+      }
+    }
+  }
+  &__description {
+    color: #d2d03d;
+  }
+}

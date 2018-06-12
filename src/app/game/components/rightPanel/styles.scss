@@ -1,5 +1,7 @@
 .right-panel {
   width: 100%;
+  flex: 0 0 auto;
+  max-width: 21em;
   border: 1px solid white;
   padding: 10px;
   margin: 10px 10px 10px 0;

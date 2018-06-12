@@ -1,7 +1,25 @@
 .bottom-panel {
   width: 100%;
-  height: 278px;
+  min-height: 270px;
+  max-width: 90em;
+  max-height: 278px;
   border: 1px solid white;
   padding: 10px;
   margin: 0 10px 10px 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  > * {
+    border-right: 1px solid white;
+    flex-grow: 1;
+    padding: 5px;
+    &:last-child {
+      border: none;
+    }
+  }
+
+  &__env {
+    flex: 0 0 13em;
+  }
 }

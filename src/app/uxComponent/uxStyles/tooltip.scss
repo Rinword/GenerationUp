@@ -1,0 +1,78 @@
+.ux-tooltip {
+  position: relative;
+  transition: .2s all;
+  opacity: 1;
+  z-index: 110;
+
+  &__shadow-input {
+    position: relative;
+  }
+
+  &_hidden {
+    opacity: 1;
+  }
+  &.rc-tooltip {
+    background-color: transparent;
+    //opacity: 1;
+    width: 320px;
+  }
+
+  .rc-tooltip-content {
+    background-color: rgba(0,0,0, 0.8);
+    border: 1px solid white;
+
+    color: white;
+  }
+  &.rc-tooltip-placement-top {
+    .rc-tooltip-inner {
+      &:before {
+        bottom: -11px;
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &.rc-tooltip-placement-bottom {
+    .rc-tooltip-inner {
+      &:before {
+        top: -11px;
+      }
+    }
+  }
+
+  .rc-tooltip-inner {
+    display: flex ;
+    //flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start ;
+    border-radius: 3px;
+    position: relative;
+    background-color: rgba(0,0,0, 0.8);
+    font-size: 16px;
+
+    color: white;
+    > * {
+      margin-right: 5px;
+    }
+    &:before {
+      content: '';
+      position: absolute;
+      //background-image: url('images/before_arrow_border.svg');
+      width: 16px;
+      height: 11px;
+      background-repeat: no-repeat;
+      z-index: 5;
+      right: calc(50% - 8px);
+      margin-left: -10px;
+    }
+
+    .ux-sticker:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .rc-tooltip-arrow {
+    display: none;
+  }
+}

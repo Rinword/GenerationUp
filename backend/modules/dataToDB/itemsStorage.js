@@ -1,17 +1,13 @@
-/**
- * Created by Илья on 22.04.2017.
- */
-import utils from '../../../utils';
-import langdict from './langdict';
-import specData from './SpecData';
+// const langdict = require('./langdict');
+// const specData = require('./SpecData');
+const helpers = require('../helpers');
 
-export default {
+module.exports = {
     getItemById(id) {
         for(let key in this.data) {
             for( let key2 in this.data[key] ) {
                 if (this.data[key][key2].iconName === id) return this.data[key][key2];
             }
-
         }
 
         return null;
@@ -22,63 +18,60 @@ export default {
             for( let key2 in this.data[key] ) {
                 if (this.data[key][key2].name === itemName) return this.data[key][key2];
             }
-
         }
 
         return null;
     },
 
     getRandomItemByClassName(className) {
-        if(!this.data[className]) return null;
-        let cnt = 0;
-        for(let key in this.data[className]) {
-            cnt++;
-        }
-        let rnd = utils.randomInteger(0,cnt-1)
+        const items = this.data[className];
+        if(!items) return null;
 
-        return this.data[className][rnd];
+        const rnd = helpers.randomInteger(0, Object.values(items).length - 1)
+
+        return items[rnd];
 
     },
 
-    initGetDataListener() { //TODO потом будут просто запросы к серверу,
-        let itemsDataObj = {};
-        let me = this;
-        window.addEventListener('TooltipsSetAllInfo', function (event) {
-            if(event.detail) {
-                // me.findRequiredDataWithIdArr(event.detail)
-                me.returnAllObjects()
-            }
-        },false);
-    },
+    // initGetDataListener() { //TODO потом будут просто запросы к серверу,
+    //     let itemsDataObj = {};
+    //     let me = this;
+    //     window.addEventListener('TooltipsSetAllInfo', function (event) {
+    //         if(event.detail) {
+    //             // me.findRequiredDataWithIdArr(event.detail)
+    //             me.returnAllObjects()
+    //         }
+    //     },false);
+    // },
 
-    findRequiredDataWithIdArr(reqArr) {
-        let me = this;
-        let resObj = {};
-        reqArr.forEach(itemId => {
-            resObj[itemId] = me.getItemById(itemId);
-        });
-        let event = new CustomEvent("TooltipsGetAllInfo", {
-            detail: resObj  //TODO возврат только имеющихся на странице подсказок. Дохнет, когда юнит обновляется,
-                            // надо при старте игры формировать список созданных предметов и сразу добавлять его к выдаче
-        });
-        window.dispatchEvent(event);
-    },
+    // findRequiredDataWithIdArr(reqArr) {
+    //     let me = this;
+    //     let resObj = {};
+    //     reqArr.forEach(itemId => {
+    //         resObj[itemId] = me.getItemById(itemId);
+    //     });
+    //     let event = new CustomEvent("TooltipsGetAllInfo", {
+    //         detail: resObj  //TODO возврат только имеющихся на странице подсказок. Дохнет, когда юнит обновляется,
+    //                         // надо при старте игры формировать список созданных предметов и сразу добавлять его к выдаче
+    //     });
+    //     window.dispatchEvent(event);
+    // },
 
-    returnAllObjects() {
-        let me = this;
-        let resObj = {};
-        for(let cls in me.data) {
-            for(let item in me.data[cls]) {
-                resObj[me.data[cls][item].iconName] = me.data[cls][item];
-            }
-        };
-        langdict.refactorLang(resObj); //дополнение массива названиями для выбранного языка
-        Object.assign( resObj, specData.returnAllSkills() );
-        let event = new CustomEvent("TooltipsGetAllInfo", {
-            detail: resObj  //пока что возвращается список ВСЕХ предметов, а не имеющихся на странице.
-        });
-        window.dispatchEvent(event);
-    },
+    // returnAllObjects() {
+    //     let me = this;
+    //     let resObj = {};
+    //     for(let cls in me.data) {
+    //         for(let item in me.data[cls]) {
+    //             resObj[me.data[cls][item].iconName] = me.data[cls][item];
+    //         }
+    //     };
+    //     langdict.refactorLang(resObj); //дополнение массива названиями для выбранного языка
+    //     Object.assign( resObj, specData.returnAllSkills() );
+    //     let event = new CustomEvent("TooltipsGetAllInfo", {
+    //         detail: resObj  //пока что возвращается список ВСЕХ предметов, а не имеющихся на странице.
+    //     });
+    //     window.dispatchEvent(event);
+    // },
 
     data: {
         leftHand: {
@@ -86,7 +79,7 @@ export default {
                 name: 'Простой полуторный меч',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 2, //двуручный
                 itemLevel: 1,
                 rare: 0,
@@ -104,7 +97,7 @@ export default {
                 name: 'Короткий клинок стражника',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 1,
                 itemLevel: 1,
                 rare: 0,
@@ -122,7 +115,7 @@ export default {
                 name: 'Блестящий клеймор',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 2,
                 itemLevel: 3,
                 rare: 1,
@@ -140,7 +133,7 @@ export default {
                 name: 'Кованый бурей клинок',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 1,
                 itemLevel: 3,
                 rare: 2,
@@ -158,7 +151,7 @@ export default {
                 name: 'Шепот Аиура',
                 type: 'item',
                 tooltipType: 'weapon',
-                deepType: 'sword',
+                deepType: 'leftHand',
                 size: 2,
                 itemLevel: 5,
                 rare: 3,

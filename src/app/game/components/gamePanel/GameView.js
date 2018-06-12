@@ -69,13 +69,10 @@ export default class Game {
         this.updateViews = this.updateViews.bind(this);
 
         setInterval(() => {
-            // console.log(this.serverFrameCap, '/', this.frameCap);
             if(this.serverFrameCap > this.frameCap) {
                 this.frameCap++;
                 this.refresh();
                 this.updateViews();
-            } else {
-                // console.log('----TROT', this.serverFrameCap, '/', this.frameCap);
             }
         }, 1000/FPS)
     }
@@ -85,10 +82,11 @@ export default class Game {
             this.data.units = data.units;
             this.data.map = data.map;
             this.serverFrameCap = data.cap;
+            this.selectedUnitName = data.selectedUnit;
 
             this.renderUnits(this.frameCap);
 
-            this.renders.map.renderWays(this.data.units);
+            this.renders.map.renderWays(Object.values(this.data.units));
             this.renders.map.renderNoWalkableCells(this.data.map.ways);
             this.refresh();
         })
@@ -145,7 +143,7 @@ export default class Game {
 
     renderUnits() {
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
-        const units = this.data.units;
+        const units = Object.values(this.data.units);
 
         if(!units_bots_canvas) {
             units_bots_canvas = new createjs.Container();
@@ -159,7 +157,7 @@ export default class Game {
             })
         }
 
-        this.data.units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap));
+        units.forEach((unitData, i) => this.views.units[i].updateData(unitData, this.frameCap, this.serverFrameCap, this.selectedUnitName));
 
     }
 

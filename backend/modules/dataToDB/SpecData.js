@@ -3,8 +3,8 @@
 
 module.exports = {
     initClass: function (obj) {
-        let first = obj.charData.classCode.charAt(0);
-        let second = obj.charData.classCode.charAt(1);
+        let first = obj.data.classCode.charAt(0);
+        let second = obj.data.classCode.charAt(1);
         obj.charData.classData = {};
         obj.charData.classData[this.data[first].name] = this.data[first];
         obj.charData.classData[this.data[second].name] = this.data[second];
@@ -28,7 +28,7 @@ module.exports = {
             for(let item in me.data[cls].skills) {
                 resObj[me.data[cls].skills[item].iconName] = me.data[cls].skills[item];
             }
-        };
+        }
         // langdict.refactorLang(resObj); //дополнение массива названиями для выбранного языка
         return resObj;
     },
@@ -40,7 +40,7 @@ module.exports = {
             description: 'Бойцы, обучаемые владению мечом, непревзойденные мастера ближнего боя',
             skills: {
                 mortalStrike: {
-                    description: 'Жестокий удар, наносящий 15 ед. урона  + урон оружия.' +
+                    description: 'Жестокий удар, наносящий 15 ед. урона  +  50% урона оружия.' +
                     ' Кроме того восстановление здоровья жертвы из любых источников снижено на 25% на 8 сек.',
                     name: 'mortalStrike',
                     langName: 'Смертельный удар',
@@ -53,7 +53,7 @@ module.exports = {
                         mpCost: 10
                     },
                     buffs: [
-                        '+5% урона за каждую единицу силы атаки'
+                        '+2% урона за каждую единицу силы атаки'
                     ],
                     effects: [
                         {
@@ -71,8 +71,8 @@ module.exports = {
                     castTime: 0,
                     coolDownTime: 10000,
                     coolDownCurrTime: 0,
-                    calcDamage: function (stats) {
-                        return +( (15 + stats.attack * (1 + 0.05 * stats.attackPower)).toFixed(0) )
+                    calcDamage: function(stats, skill) {
+                        return +( ((skill.damage + this.charData.gear.leftHand.damage * 0.5) * (1 + 0.02 * stats.attackPower)).toFixed(0) )
                     },
                     damage: 15,
                     range: 1,
@@ -109,7 +109,7 @@ module.exports = {
                             effectType: 'charBuff',
                             values: {
                                 defence: 40,
-                                armor: 1+1,
+                                armor: 1 + 1,
                             },
                             iconName: '_warcraft_buffs_healReduce'
                         }
@@ -154,7 +154,7 @@ module.exports = {
                             effectType: 'charBuff',
                             values: {
                                 defence: 40,
-                                armor: 1+1,
+                                armor: 1 + 1,
                             },
                             iconName: '_warcraft_buffs_healReduce'
                         }
@@ -232,8 +232,8 @@ module.exports = {
                         mpCost: 40
                     },
                     buffs: [
-                        '+10% урона за каждую единицу силы заклинаний',
-                        '+7% к дальности за единицу интеллекта'
+                        '+3% урона за каждую единицу силы заклинаний',
+                        '+10% урона за единицу интеллекта'
                     ],
                     effects: [
                     ],
@@ -241,8 +241,8 @@ module.exports = {
                     castTime: 1500,
                     coolDownTime: 4000,
                     coolDownCurrTime: 0,
-                    calcDamage: function (stats) {
-                        return +( (15 * (1 + 0.1 * stats.spellPower)).toFixed(0) )
+                    calcDamage: (stats, skill) => {
+                        return +( (skill.damage * (1 + 0.03 * stats.spellPower + 0.1 * stats.intellect)).toFixed(0) )
                     },
                     damage: 15,
                     flySpeed: 200,

@@ -1,11 +1,17 @@
+$color-rare: #07428b;
+$color-epic: #6d1695;
+$color-legendary: #e28a1e;
+$dark-grey: #4f4f4f;
 
 .icon {
   background-position: center center;
+  background-size: cover;
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border: 2px solid $dark-grey;
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inventoryslot_trinket.jpg");
   background-repeat: no-repeat;
-
-  width: 16px;
-  height: 16px;
-  background-size: 16px;
 
   @mixin bg-size($size) {
     &_bg-size_#{$size} {
@@ -26,4 +32,151 @@
       @include bg-size($i);
     }
   }
+
+  &_type_passive {
+    border-radius: 50%;
+  }
+
+  &_character {
+    background-image: url('~static/icons/char_icon.png');
+  }
+
+  &_artefact {
+
+  }
+
+  &_spec_defence {
+    background-image: url('~static/icons/classes/specs/spec_defence.jpg');
+  }
+  &_spec_holy {
+    background-image: url('~static/icons/classes/specs/spec_holy.jpg');
+  }
+  &_spec_hunter {
+    background-image: url('~static/icons/classes/specs/spec_hunter.jpg');
+  }
+  &_spec_nature {
+    background-image: url('~static/icons/classes/specs/spec_nature.jpg');
+  }
+  &_spec_primal {
+    background-image: url('~static/icons/classes/specs/spec_primal.jpg');
+  }
+  &_spec_shadow {
+    background-image: url('~static/icons/classes/specs/spec_shadow.jpg');
+  }
+  &_spec_sword-master {
+    background-image: url('~static/icons/classes/specs/spec_sword-master.jpg');
+  }
+
+  //&_skills_autoattack {
+  //  background-image: url("//wow.zamimg.com/images/wow/icons/large/ability_meleedamage.jpg");
+  //}
+}
+
+[data-imgid='_items_leftHand_0'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/large/inv_sword_20.jpg");
+}
+[data-imgid='_items_leftHand_1'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_sword_04.jpg");
+}
+[data-imgid='_items_leftHand_2'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_sword_06.jpg");
+}
+[data-imgid='_items_leftHand_3'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_sword_01.jpg");
+}
+[data-imgid='_items_leftHand_4'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/large/inv_sword_73.jpg");
+}
+
+[data-imgid='_items_chest_0'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/large/inv_chest_mail_18.jpg");
+}
+[data-imgid='_items_chest_1'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_cloth_33.jpg");
+}
+[data-imgid='_items_chest_2'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_plate14.jpg");
+}
+
+[data-imgid='_items_gloves_0'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_misc_desecrated_leatherglove.jpg");
+}
+[data-imgid='_items_gloves_1'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_gauntlets_22.jpg");
+}
+[data-imgid='_items_gloves_2'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/large/inv_glove_challengedruid_d_01.jpg");
+}
+
+[data-imgid='_items_boots_0'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/large/inv_boots_wolf.jpg");
+}
+[data-imgid='_items_boots_1'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_boots_01.jpg");
+}
+[data-imgid='_items_boots_2']{
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_boots_02.jpg");
+}
+
+[data-imgid='_items_pants_0'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_pants_leather_39v3.jpg");
+}
+[data-imgid='_items_pants_1'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_pant_cloth_legionquest100_b_01.jpg");
+}
+[data-imgid='_items_pants_2'] {
+  background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_plate_plate_pvpwarrior_o_01pants.jpg");
+}
+
+//skills
+
+[data-imgid='_skills_unit_melee_autoattack']{
+  background-image: url("~static/icons/classes/skills/_skills_unit_melee_autoattack.jpg");
+}
+
+[data-imgid='_skills_warcraft_1']{
+  background-image: url("~static/icons/classes/skills/_skills_warcraft_1.jpg");
+}
+
+[data-imgid='_skills_defence_1']{
+  background-image: url("~static/icons/classes/skills/_skills_defence_1.jpg");
+}
+
+[data-imgid='_skills_light_1']{
+  background-image: url("~static/icons/classes/skills/_skills_light_1.jpg");
+}
+
+[data-imgid='_skills_shadow_1']{
+  background-image: url("~static/icons/classes/skills/_skills_shadow_1.jpg");
+}
+
+[data-imgid='_skills_elements_1']{
+  background-image: url("~static/icons/classes/skills/_skills_elements_1.jpg");
+}
+
+[data-imgid='_skills_nature_1']{
+  background-image: url("~static/icons/classes/skills/_skills_nature_1.jpg");
+}
+
+[data-imgid='_skills_hunt_1']{
+  background-image: url("~static/icons/classes/skills/_skills_hunt_1.jpg");
+}
+
+[data-rare='0'] {
+  border: 2px solid $dark-grey;
+}
+
+.icon_rare_rare, [data-rare='1'] {
+  border: 2px solid $color-rare;
+  box-shadow: 0 0 8px 2px $color-rare;
+}
+
+.icon_rare_epic, [data-rare='2'] {
+  border: 2px solid $color-epic;
+  box-shadow: 0 0 8px 2px #6d1695;
+}
+
+.icon_rare_legendary, [data-rare='3'] {
+  border: 2px solid $color-legendary;
+  box-shadow: 0 0 8px 2px $color-legendary;
 }
