@@ -227,10 +227,14 @@ $regen-neg: #f06240;
   width: calc(100% + 15px);
   overflow-x: hidden;
   &__row {
-    margin: 5px;
+    margin: 0 5px 10px;
     padding: 5px 0;
     border: 1px dashed white;
     width: auto;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   &__header {

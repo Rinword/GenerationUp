@@ -47,7 +47,7 @@ export default class Game {
         this.renderMap();
 
         //рендер динамических структур. Здесь это боты
-        this.renderUnits();
+        this.renderUnits(0, false);
 
         this.regSockets();
 
@@ -84,7 +84,10 @@ export default class Game {
             this.serverFrameCap = data.cap;
             this.selectedUnitName = data.selectedUnit;
 
-            this.renderUnits(this.frameCap);
+            const isNewGame = this.data.uuid !== data.uuid;
+            this.data.uuid = data.uuid;
+
+            this.renderUnits(this.frameCap, isNewGame);
 
             this.renders.map.renderWays(Object.values(this.data.units));
             this.renders.map.renderNoWalkableCells(this.data.map.ways);
@@ -141,9 +144,14 @@ export default class Game {
     }
 
 
-    renderUnits() {
-        let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
+    renderUnits(frame, needRerender) {
+        // if(needRerender) {
+        //     this.mainStage.getChildByName('Units_bots').removeAllChildren();
+        //     this.mainStage.removeChild(this.mainStage.getChildByName('Units_bots'));
+        // }
+
         const units = Object.values(this.data.units);
+        let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
 
         if(!units_bots_canvas) {
             units_bots_canvas = new createjs.Container();

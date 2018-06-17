@@ -1,5 +1,6 @@
 const PF = require('pathfinding');
 const helpers = require('./helpers');
+const uuidv4 = require('uuid/v4');
 const RatingCalculator = require('./objects/libs/RatingCalculator');
 
 const BotUnit = require('./objects/units/BotUnit');
@@ -24,6 +25,7 @@ class Game {
 
         this.data = {
             map: this.generateMap({borders: true}),
+            uuid: uuidv4(),
         }
 
         this.data.units = this.generateBots(BOT_ENUM);
@@ -54,7 +56,7 @@ class Game {
         this.update(); //обновление логики
         if(this.frameCap % SYNC_EVERY_FRAME === 0) {
             // console.log('--updateFront, frame', this.frameCap);
-            this.socket.emit('update_units', {cap: this.frameCap, units: Object.values(this.data.units), map: this.data.map, selectedUnit: this.interface.selectedUnit.name})
+            this.socket.emit('update_units', {cap: this.frameCap, units: Object.values(this.data.units), map: this.data.map, selectedUnit: this.interface.selectedUnit.name, uuid: this.data.uuid})
             this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
 

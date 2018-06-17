@@ -26,10 +26,6 @@ class GamePanel extends React.PureComponent {
         }
     }
 
-    componentWillMount() {
-
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         this.game.applySettings(nextProps.settings);
         return true;
