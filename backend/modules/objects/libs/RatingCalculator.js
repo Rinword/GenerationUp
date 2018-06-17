@@ -13,6 +13,7 @@ class RatingCalculator {
         actionsList.forEach(action => {
             action.rating = this.calcRatingWithInfluence(action, obj).rating;
             action.behaviourArr = this.calcRatingWithInfluence(action, obj).behaviourArr;
+            action.fullId = `${action.brainsForAction.type}_${action.action.name}_${action.target.uuid || action.target.name}`;
         });
 
         // console.log('AL', actionsList)
@@ -137,10 +138,8 @@ class RatingCalculator {
 
 
     obtainData() {
-        let rating = 1;
         let minValue = 0;
         let maxValue = 1;
-        const curObj = this.curObject;
         return {
             factors: {
                 selfCD: function (action, skill, factor, obj) {
@@ -241,9 +240,8 @@ class RatingCalculator {
             movingStrategies: {
                 randomMoving: { /*@non-target Action*/
                     langName: 'Поиск цели',
-                    action: function (action, skill, factor, obj) {
-                        // debugger;
-                        if(helpers.randomInteger(0, 1) === 0) {
+                    action: function (action, obj) {
+                        if(!obj.movingData.isBusyNow) {
                             while(1) {
                                 let x = helpers.randomInteger(1, 3);
                                 let y = helpers.randomInteger(1, 3);
@@ -263,10 +261,10 @@ class RatingCalculator {
                 },
                 approachToMiliDist: {
                     langName: 'Сблизиться с',
-                    action: function (action, skill, factor, obj) {
+                    action: function (action, obj) {
                         let cellX = action.target.baseGeometry.curX;
                         let cellY = action.target.baseGeometry.curY;
-                        this.mecurrObj.moveTo(cellX, cellY, false, true);
+                        obj.moveTo(cellX, cellY, true);
                     },
                 },
             }

@@ -4,7 +4,7 @@ const RatingCalculator = require('./objects/libs/RatingCalculator');
 
 const BotUnit = require('./objects/units/BotUnit');
 
-const BOT_ENUM = 4;
+const BOT_ENUM = 3;
 const SYNC_EVERY_FRAME = 15;
 const FPS = 60;
 

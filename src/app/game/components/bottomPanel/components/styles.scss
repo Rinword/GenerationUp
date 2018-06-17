@@ -221,9 +221,11 @@ $regen-neg: #f06240;
 }
 
 .unit-behaviour {
-  overflow-y: auto;
+  overflow-y: scroll;
   flex: 0 1 auto;
   padding: 0 5px !important;
+  width: calc(100% + 15px);
+  overflow-x: hidden;
   &__row {
     margin: 5px;
     padding: 5px 0;

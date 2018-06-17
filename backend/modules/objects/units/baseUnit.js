@@ -1,11 +1,15 @@
 const BaseObject = require('../baseObject');
 const PF = require('pathfinding');
+const _ = require('lodash');
 
 const helpers =  require('../../helpers');
 const classResolver = require('../../dataToDB/classResolver');
 const itemsStorage = require('../../dataToDB/itemsStorage');
 
 const finder = new PF.AStarFinder();
+
+const UPDATE_LOGIC_FREQ = 15; //обновлять список окружающих объектов, список активностей и принятие решения на их основе
+                              //каждые 15 тактов игры (экономия вычислительных ресурсов)
 
 class BaseUnit extends BaseObject {
     constructor(x, y, grid, map, options) {
@@ -299,6 +303,10 @@ class BaseUnit extends BaseObject {
         this.checkEnvironmentObjs = this.checkEnvironmentObjs.bind(this);
         this.getCellsInViewRadius = this.getCellsInViewRadius.bind(this);
         this.calculateDistance = this.calculateDistance.bind(this);
+        this.calcBehaviour = this.calcBehaviour.bind(this);
+        this._clearMovingData = this._clearMovingData.bind(this);
+        this._clearAttackData = this._clearAttackData.bind(this);
+        this._clearBehaviourData = this._clearBehaviourData.bind(this);
         this._getBrainsForSkillName = this._getBrainsForSkillName.bind(this);
 
         this.checkEnvironmentObjs();
@@ -322,27 +330,16 @@ class BaseUnit extends BaseObject {
     update(frame, gameData) {
         //random moving
         this.frame = frame;
-        let shouldMove = false;
-        if(this.movingData.lastMoveTime % 10 === 0) {
-            shouldMove = helpers.randomInteger(0, this.movingData.lastMoveTime) >= 60;
-        }
-
-        if(!this.movingData.isBusyNow && shouldMove) {
-            let cellX = this.baseGeometry.curX;
-            let cellY = this.baseGeometry.curY;
-            const { x, y } = this.getFreeCell(cellX, cellY);
-            this.moveTo(x, y);
-
-            return;
-        } else {
-            this.movingData.lastMoveTime++;
-        }
 
         this.move();
         this.updateStats();
         this.updateSkills();
-        this.checkEnvironmentObjs(gameData);
-        this.updateActionsList();
+        if (frame % UPDATE_LOGIC_FREQ === 0) {
+            this.checkEnvironmentObjs(gameData);
+            this.updateActionsList();
+            this.calcBehaviour();
+        }
+
     }
 
     updateStats() {
@@ -401,6 +398,7 @@ class BaseUnit extends BaseObject {
 
     updateActionsList() { //TODO возможно стоит перенести логику формирования списка в rc, чтобы и скилы, и перемещения формировались там по имеющимся у бота мозгам
         this.behaviourData.actionsList.length = 0;
+        const me = this;
         let activeSkills = this.charData.skills.active;
         for(let aSkill in activeSkills) {
             this.behaviourData.environmentObjs.forEach(unit => {
@@ -424,6 +422,33 @@ class BaseUnit extends BaseObject {
             return 0;
         });
         // console.log('actionsList', me.behaviourData.actionsList);
+    }
+
+    calcBehaviour() {
+        const topAction = this.behaviourData.actionsList[0];
+        // console.log('-------------');
+        // console.log(this.name, topAction, _.get(this.behaviourData, 'currentAction.fullId') === topAction.fullId);
+        // console.log('CURR ARC', this.behaviourData.currentAction);
+        if(_.get(this.behaviourData, 'currentAction.fullId') === topAction.fullId) {
+            return;
+        }
+
+        switch(topAction.brainsForAction.type) {
+            case 'moving':
+            case 'nt_moving':
+                this._clearMovingData();
+                this.behaviourData.currentAction = topAction;
+                this.behaviourData.currentAction.action.action(topAction, this);
+                console.log('MOVE', this.name, this.movingData);
+                break;
+
+            case 'skill':
+                this._clearAttackData();
+                console.log('SKILL', this.name, this.attackData, topAction);
+                break;
+            default:
+                console.warn('wrong action type', topAction.brainsForAction.type, topAction)
+        }
     }
 
     _getBrainsForSkillName(name) {
@@ -474,8 +499,8 @@ class BaseUnit extends BaseObject {
     }
 
     //задает юниту конечную точку, которую нужно достигнуть
-    moveTo(x,y, initByCoords, approachMode) {
-        this.clearMovingData();
+    moveTo(x,y, approachMode) {
+        this._clearMovingData();
         this.movingData.isBusyNow = true;
 
         this.movingData.finalTargetPoint = {x, y};
@@ -489,9 +514,9 @@ class BaseUnit extends BaseObject {
         let wayArr = [];
 
         if(approachMode) {
-            // grid.nodes[y][x].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
-            // wayArr = finder.findPath(startPoint.x, startPoint.y, this.movingData.finalTargetPoint.x, this.movingData.finalTargetPoint.y, grid);
-            // wayArr.pop(); //убираем последнюю точку маршрута, потому что там целевой бот
+            grid.nodes[x][y].walkable = true; //принудительно в клоне карты меняем на walkable, иначе не строит маршрут
+            wayArr = finder.findPath(startPoint.y, startPoint.x, this.movingData.finalTargetPoint.y, this.movingData.finalTargetPoint.x, grid);
+            wayArr.pop(); //убираем последнюю точку маршрута, потому что там целевой бот
         } else {
             try {
                 wayArr = finder.findPath(startPoint.y, startPoint.x, this.movingData.finalTargetPoint.y, this.movingData.finalTargetPoint.x, grid);
@@ -510,9 +535,8 @@ class BaseUnit extends BaseObject {
         const currTargetCell = md.wayArr[0];
 
         if(!md.wayArr.length) {
-            console.log('FRAME', md.currTimeLength);
-            console.warn('Конечная точка недостижима', this.name);
-            this.clearMovingData();
+            // console.warn('Конечная точка недостижима', this.name);
+            this._clearMovingData();
             return;
         }
 
@@ -522,7 +546,7 @@ class BaseUnit extends BaseObject {
             //сменить текущую занятую клетку на новую
             if(!this.isWalkable(currTargetCell[1], currTargetCell[0])) {
                 // console.log('Следующая клетка занята, маршрут прерван', this.name);
-                this.clearMovingData();
+                this._clearMovingData();
                 return;
             }
             this.updateNoWalkable(bg, currTargetCell);
@@ -538,15 +562,15 @@ class BaseUnit extends BaseObject {
             if(!md.wayArr.length) {
                 // console.log('МАРШРУТ ОКОНЧЕН', this.name, currTargetCell[1], currTargetCell[0]);
                 md.currTimeLength = 0;
-                this.clearMovingData();
+                this._clearMovingData(true);
+
                 return;
             }
 
             // console.log('||Точка достигнута', currTargetCell[1], currTargetCell[0]);
 
             const newTargetCell = md.wayArr[0];
-            const direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
-            md.direction = direction;
+            md.direction = this.getDirectionBy2Cells({x: bg.curX, y: bg.curY }, {x: newTargetCell[1], y: newTargetCell[0]});
             md.currTimeLength = 0;
             md.frame = this.frame;
         }
@@ -601,15 +625,6 @@ class BaseUnit extends BaseObject {
         return resArr;
     }
 
-    _getOnlyCommonData(unit) {
-        if(!unit) return unit;
-        const { name, color, charData, baseGeometry, uuid } = unit;
-        const distance = this.calculateDistance(baseGeometry);
-
-        return { name, color, charData, baseGeometry, uuid, distance };
-
-    }
-
     calculateDistance({ curX, curY }) {
         const grid = this.wayGrid.clone();
         const finder = new PF.AStarFinder();
@@ -619,7 +634,16 @@ class BaseUnit extends BaseObject {
         return path.length - 1;
     }
 
-    clearMovingData() {
+    _getOnlyCommonData(unit) {
+        if(!unit) return unit;
+        const { name, color, charData, baseGeometry, uuid } = unit;
+        const distance = this.calculateDistance(baseGeometry);
+
+        return { name, color, charData, baseGeometry, uuid, distance };
+
+    }
+
+    _clearMovingData(withBehaviour) {
         this.movingData = {
             ...this.movingData,
             direction: null,
@@ -628,8 +652,30 @@ class BaseUnit extends BaseObject {
             wayArr: [],
             finalTargetPoint: null,
             currTargetPoint: null,
-            isBusyNow: false
+            isBusyNow: false,
+            currentAction: null,
         }
+        withBehaviour && this._clearBehaviourData();
+    }
+
+    _clearAttackData(withBehaviour) {
+        this.attackData = {
+            currentAction: null,
+            lastTimeCastStamp: 0,
+            isBusyNow: false,
+            target: null,
+            castData : {
+                CDpercent: 0,
+                CDtime: 0,
+                endOfCast: true,
+                id: undefined
+            }
+        }
+        withBehaviour && this._clearBehaviourData();
+    }
+
+    _clearBehaviourData() {
+        this.behaviourData.currentAction = null;
     }
 }
 
