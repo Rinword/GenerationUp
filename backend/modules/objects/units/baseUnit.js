@@ -285,6 +285,14 @@ class BaseUnit extends BaseObject {
             }
         };
 
+        this.coolDownData = {
+            autoAttack: {
+                percent: 0,
+                time: 0,
+                ready: true
+            }
+        };
+
         this.data = {
             ...this.generateUnitClass(0, 4),
         }
@@ -304,12 +312,14 @@ class BaseUnit extends BaseObject {
         this.getCellsInViewRadius = this.getCellsInViewRadius.bind(this);
         this.calculateDistance = this.calculateDistance.bind(this);
         this.calcBehaviour = this.calcBehaviour.bind(this);
+        this.checkActionCost = this.checkActionCost.bind(this);
         this._clearMovingData = this._clearMovingData.bind(this);
         this._clearAttackData = this._clearAttackData.bind(this);
         this._clearBehaviourData = this._clearBehaviourData.bind(this);
         this._getBrainsForSkillName = this._getBrainsForSkillName.bind(this);
 
         this.checkEnvironmentObjs();
+        this.updateCoolDowns();
     }
 
     generateUnitClass(code1, code2) {
@@ -334,6 +344,7 @@ class BaseUnit extends BaseObject {
         this.move();
         this.updateStats();
         this.updateSkills();
+        this.updateCoolDowns();
         if (frame % UPDATE_LOGIC_FREQ === 0) {
             this.checkEnvironmentObjs(gameData);
             this.updateActionsList();
@@ -439,16 +450,131 @@ class BaseUnit extends BaseObject {
                 this._clearMovingData();
                 this.behaviourData.currentAction = topAction;
                 this.behaviourData.currentAction.action.action(topAction, this);
-                console.log('MOVE', this.name, this.movingData);
                 break;
 
             case 'skill':
                 this._clearAttackData();
-                console.log('SKILL', this.name, this.attackData, topAction);
+                console.log(this.name, '-------');
+                this.applySkill(topAction);
                 break;
             default:
                 console.warn('wrong action type', topAction.brainsForAction.type, topAction)
         }
+    }
+
+    applySkill(action) {
+        console.log('SKILL', action);
+        this.attackData.currentAction = action;
+        this.doAttack();
+    }
+
+    doAttack() {
+        const ca = this.attackData.currentAction;
+        const actionCost = this.checkActionCost(ca.action);
+        let castData = this.updateCastState(actionCost.canUse); //в этом методе чекается только текущий активный каст и рисуется его отображение
+        const coolDownData = this.coolDownData;
+
+        if(ca && actionCost.canUse && coolDownData[this.attackData.currentAction.action.name].ready) { //есть скилл, хватает маны/энергии, не на кд
+            this.attackData.castData = castData;
+            if(castData.endOfCast) { // в момент конца каста инициализируем атаку
+                console.log('ATTACK', ca.action.name);
+                //в случае удачной атаки
+                //TODO проверить если это не мгновенный скилл, тогда в setTimeout отложить takeDamage на flyTime и начать анимировать эту атаку
+                // if(actionCost.canUse) { //если есть энергия и мана на применение
+                //     let damageObj = this.generateDamageObj();
+                //     this.attackData.target.takeDamage(damageObj, me); //вызываем метод отображения целью получаемого урона и уменьшения его за счет его способностей
+                //     this.charData.stats.current.ep -= actionCost.ep; //отнимаем у атакующего стоимость применения этого скилла
+                //     this.charData.stats.current.mp -= actionCost.mp;
+                //     this.coolDownData[this.attackData.currentAction.name].ready = false; //выставляем кулдаун примененной способноти
+                //     this.attackData.currentAction.range > 1 && this.rangeAttacks(this.behaviourData.currentAction); //только дальние скилы //TODO разобраться с аналогичными параметрами в attackData
+                // } else {
+                //     this.attackData.castData.percent = 0;
+                // }
+            }
+            //TODO отрисовать линию и махать ею во время атаки
+            // this.animateAttack(this.behaviourData.currentAction);
+        }
+
+    }
+
+    checkActionCost(ca) {
+        let canMP = true;
+        let canEP = true;
+        //TODO тут же чекать снижение стоимости при появлении бафов с таким действием
+        if(ca) {
+            if(ca.cost.mpCost) {
+                canMP = (this.charData.stats.current.mp >= ca.cost.mpCost);
+            }
+            if(ca.cost.epCost) {
+                canEP = (this.charData.stats.current.ep >= ca.cost.epCost);
+            }
+
+            return {
+                canUse: (canMP && canEP),
+                mp: (ca.cost.mpCost || 0),
+                ep: (ca.cost.epCost || 0)
+            };
+        } else {
+            return {
+                canUse: false
+            }
+        }
+    }
+
+    updateCastState(canAttack) {
+        if(this.attackData.lastTimeCastStamp < this.attackData.currentAction.castTime && canAttack) {
+            this.attackData.lastTimeCastStamp += 1;
+            //тут рисовать анимацию каста (кружки по краям бота крутятся)
+            // this.animateCastState(true, this.attackData.currentAction.range);
+        }
+        else {
+            this.attackData.lastTimeCastStamp = 0;
+            // this.animateCastState(false, this.attackData.currentAction.range);
+            return  {
+                percent: 0,
+                time: 0,
+                endOfCast: true,
+                id: this.attackData.currentAction.iconName
+            }
+        }
+
+        return {
+            percent: +(this.attackData.lastTimeCastStamp/this.attackData.currentAction.castTime*100).toFixed(0),
+            time: (this.attackData.currentAction.castTime - this.attackData.lastTimeCastStamp)/1000,
+            endOfCast: false,
+            id: this.attackData.currentAction.iconName
+        }
+    }
+
+    updateCoolDowns() {
+        const resObj = {};
+        const skills = this.charData.skills.active;
+
+        for(let key in skills) {
+            if(skills[key].coolDownCurrTime < skills[key].coolDownTime &&
+                !( this.coolDownData[key] && this.coolDownData[key].ready) ) {
+                skills[key].coolDownCurrTime += 1;
+                resObj[key] = {
+                    percent: +(skills[key].coolDownCurrTime/skills[key].coolDownTime*100).toFixed(0),
+                    time: (skills[key].coolDownTime - skills[key].coolDownCurrTime)/1000,
+                    ready: false,
+                    id: skills[key].iconName
+                }
+                // console.log(skills[key].coolDownCurrTime, '/', skills[key].coolDownTime);
+            }
+            else {
+                console.log('READY', skills[key].name);
+                skills[key].coolDownCurrTime = 0;
+                resObj[key] = {
+                    percent: 0,
+                    time: 0,
+                    ready: true,
+                    id: skills[key].iconName
+                }
+            }
+        }
+
+        this.coolDownData = resObj;
     }
 
     _getBrainsForSkillName(name) {
@@ -665,8 +791,8 @@ class BaseUnit extends BaseObject {
             isBusyNow: false,
             target: null,
             castData : {
-                CDpercent: 0,
-                CDtime: 0,
+                percent: 0,
+                time: 0,
                 endOfCast: true,
                 id: undefined
             }
