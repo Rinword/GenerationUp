@@ -1,0 +1,36 @@
+.ux-cooldown {
+  position: relative;
+  &__bar {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+
+    width: 0;
+    height: calc(100% - 4px);
+
+    background-color: rgba(0,0,0, 0.6);
+
+    z-index: 5;
+  }
+
+  &__time {
+    position: absolute;
+    top: calc(50% - 6px);
+    left: calc(50% - 10px);
+
+    color: white;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: bold;
+
+    z-index: 5;
+  }
+
+  //canvas {
+  //  position: absolute;
+  //  left: 1px;
+  //  top: 1px;
+  //  z-index: 5;
+  //}
+
+}

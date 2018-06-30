@@ -10,6 +10,8 @@ const finder = new PF.AStarFinder();
 
 const UPDATE_LOGIC_FREQ = 15; //обновлять список окружающих объектов, список активностей и принятие решения на их основе
                               //каждые 15 тактов игры (экономия вычислительных ресурсов)
+const FPS = 60;
+const TIME_TICK = 1000 / FPS;
 
 class BaseUnit extends BaseObject {
     constructor(x, y, grid, map, options) {
@@ -463,7 +465,7 @@ class BaseUnit extends BaseObject {
     }
 
     applySkill(action) {
-        console.log('SKILL', action);
+        // console.log('SKILL', action);
         this.attackData.currentAction = action;
         this.doAttack();
     }
@@ -471,12 +473,11 @@ class BaseUnit extends BaseObject {
     doAttack() {
         const ca = this.attackData.currentAction;
         const actionCost = this.checkActionCost(ca.action);
-        let castData = this.updateCastState(actionCost.canUse); //в этом методе чекается только текущий активный каст и рисуется его отображение
+        this.attackData.castData = this.updateCastState(actionCost.canUse); //в этом методе чекается только текущий активный каст и рисуется его отображение
         const coolDownData = this.coolDownData;
 
-        if(ca && actionCost.canUse && coolDownData[this.attackData.currentAction.action.name].ready) { //есть скилл, хватает маны/энергии, не на кд
-            this.attackData.castData = castData;
-            if(castData.endOfCast) { // в момент конца каста инициализируем атаку
+        if(ca && actionCost.canUse && coolDownData[ca.action.name].ready) { //есть скилл, хватает маны/энергии, не на кд
+            if(this.attackData.castData.endOfCast) { // в момент конца каста инициализируем атаку
                 console.log('ATTACK', ca.action.name);
                 //в случае удачной атаки
                 //TODO проверить если это не мгновенный скилл, тогда в setTimeout отложить takeDamage на flyTime и начать анимировать эту атаку
@@ -553,9 +554,9 @@ class BaseUnit extends BaseObject {
         for(let key in skills) {
             if(skills[key].coolDownCurrTime < skills[key].coolDownTime &&
                 !( this.coolDownData[key] && this.coolDownData[key].ready) ) {
-                skills[key].coolDownCurrTime += 1;
+                skills[key].coolDownCurrTime += TIME_TICK;
                 resObj[key] = {
-                    percent: +(skills[key].coolDownCurrTime/skills[key].coolDownTime*100).toFixed(0),
+                    percent: +(skills[key].coolDownCurrTime / skills[key].coolDownTime*100).toFixed(0),
                     time: (skills[key].coolDownTime - skills[key].coolDownCurrTime)/1000,
                     ready: false,
                     id: skills[key].iconName
@@ -563,7 +564,6 @@ class BaseUnit extends BaseObject {
                 // console.log(skills[key].coolDownCurrTime, '/', skills[key].coolDownTime);
             }
             else {
-                console.log('READY', skills[key].name);
                 skills[key].coolDownCurrTime = 0;
                 resObj[key] = {
                     percent: 0,

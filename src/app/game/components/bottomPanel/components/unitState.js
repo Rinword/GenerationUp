@@ -18,8 +18,8 @@ class UnitState extends React.PureComponent {
     }
 
     render() {
-        // console.log(this.props);
-        const { charData = {}, name, color, data = {} } = this.props.data || {};
+        // console.log('---!!!---', this.props);
+        const { charData = {}, name, color, data = {}, coolDownData } = this.props.data || {};
         const { className } = data;
         const { level, skills } = charData;
         const currentStats = get(charData, 'stats.current', {});
@@ -41,7 +41,7 @@ class UnitState extends React.PureComponent {
                     <Bar value={ep} maxValue={epMax} color='ep' height={25} regen={epRegen} />
                 </Column>
                 <Row className={cx('unit-state__skills')}>
-                    <SkillsPanel className={cx('unit-state__skills-panel')} skills={skills}/>
+                    <SkillsPanel className={cx('unit-state__skills-panel')} skills={skills} coolDownData={coolDownData} />
                 </Row>
             </Column>
         );
