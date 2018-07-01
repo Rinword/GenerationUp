@@ -53,14 +53,15 @@ class SkillsPanel extends React.PureComponent {
         return (
             <div className={cx('skill-panel', this.props.className)}>
                 {skills.map((item, i) =>
-                    <Tooltip key={item.name} data={item} Overlay={WowTooltip}>
-                        <CoolDown percent={_.get(item, 'coolDownData.percent', 0)} time={_.get(item, 'coolDownData.time', 0)}>
+                    <CoolDown key={item.name} percent={_.get(item, 'coolDownData.percent', 0)} time={_.get(item, 'coolDownData.time', 0)}>
+                        <Tooltip  data={item} Overlay={WowTooltip}>
                             <div
                                 className={cx('skill-panel__skill', `icon icon_ability_${i + 1}`)}
                                 data-imgid={item.iconName}
                             />
-                        </CoolDown>
-                    </Tooltip>)}
+                        </Tooltip>
+                    </CoolDown>
+                )}
             </div>
         );
     }

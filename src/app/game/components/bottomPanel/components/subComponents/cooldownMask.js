@@ -40,7 +40,7 @@ class CoolDown extends React.PureComponent {
         return (
             <div className={cx('ux-cooldown', this.props.className)}>
                 {/*<canvas width="40px" height="40px" ref={ canvas => this.canvas = canvas} />*/}
-                <div className="ux-cooldown__bar" style={{width: `calc(${currentPercent}% - 2px`}}/>
+                {!!currentPercent && <div className="ux-cooldown__bar" style={{width: `calc(100% - ${currentPercent}% - 4px`}}/>}
                 {!!currentPercent && <div className="ux-cooldown__time">{currentTime}</div>}
                 {children}
             </div>

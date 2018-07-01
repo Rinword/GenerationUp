@@ -36,6 +36,9 @@ class BotUnit extends BaseUnit {
             calcDamage: stats => {
                 return this.charData.gear.leftHand.damage * (1 + 0.05 * stats.attackPower);
             },
+            buffs: [
+                '+5% урона за каждую единицу силы атаки'
+            ],
             range: this.charData.gear.leftHand.range,
             damageType: this.charData.gear.leftHand.damageType,
             iconName: '_skills_unit_melee_autoattack',

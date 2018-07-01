@@ -152,6 +152,13 @@ export default class Game {
 
         const units = Object.values(this.data.units);
         let units_bots_canvas = this.mainStage.getChildByName('Units_bots');
+        let range_objects_layer = this.mainStage.getChildByName('Range_objects_layer');
+
+        if(!range_objects_layer) {
+            range_objects_layer = new createjs.Container();
+            range_objects_layer.name = 'Range_objects_layer';
+            this.mainStage.addChild(range_objects_layer);
+        }
 
         if(!units_bots_canvas) {
             units_bots_canvas = new createjs.Container();
@@ -160,7 +167,15 @@ export default class Game {
 
             units.forEach(unitData => {
                 this.views.units.push(
-                    new UnitView(units_bots_canvas, unitData, { cellSize: this.mapGridCellSize, settings: this.settings, frameCup: this.frameCap})
+                    new UnitView(
+                        units_bots_canvas,
+                        unitData,
+                        {
+                            cellSize: this.mapGridCellSize,
+                            settings: this.settings,
+                            frameCup: this.frameCap,
+                            rangeObjectsLayer: range_objects_layer
+                        })
                 );
             })
         }

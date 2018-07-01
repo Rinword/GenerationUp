@@ -2,10 +2,11 @@ import { randomInteger } from 'ui/helpers';
 import get from 'lodash/get';
 
 export default class UnitView {
-    constructor(unitsLayer, unitData, {cellSize = 40, frameCup = 0}) {
+    constructor(unitsLayer, unitData, {cellSize = 40, frameCup = 0, rangeObjectsLayer}) {
         this.unitsLayer = unitsLayer;
         this.cellSize = cellSize;
         this.frameCap = frameCup;
+        this.rangeObjectsLayer = rangeObjectsLayer;
 
         this.historyLine = {};
         this.activities = {
@@ -13,6 +14,7 @@ export default class UnitView {
             attack: null,
             buff: null,
             deBuff: null,
+            interface_take_damage: null,
         };
         this.state = {
             hp: 100,
@@ -80,6 +82,10 @@ export default class UnitView {
         viewRadius.graphics.beginStroke("#1d2860").setStrokeDash([5, 2], 0)
             .drawRect(-radius * cellSize + 1, -radius * cellSize + 1,  (2 * radius  + 1) * cellSize - 1,  (2 * radius  + 1) * cellSize - 1);
 
+
+        const takeDamageContainer = new createjs.Container();
+        takeDamageContainer.name = 'takeDamageContainer';
+
         //перенесено в castAnimate
         // const castState = new createjs.Container();
         // castState.name = 'castState';
@@ -89,6 +95,7 @@ export default class UnitView {
         obj.setChildIndex(classNameLabel, 0);
         obj.addChild(hpLabel);
         obj.addChild(viewRadius);
+        obj.addChild(takeDamageContainer);
         // obj.addChild(castState);
         // obj.addChild(damageLabel);
 
@@ -104,10 +111,6 @@ export default class UnitView {
 
         return shape;
     }
-
-    // updateGameView(gameView) {
-    //     this.stage = gameView.mainStage;
-    // }
 
     tick() {
 
@@ -125,6 +128,9 @@ export default class UnitView {
                 case 'cast':
                     // this.actions.addCast(action);
                     break;
+                case 'takeDamage':
+                    this.addTakeDamage(action, this.frameCap);
+                    break;
                 default:
             }
         }
@@ -138,6 +144,46 @@ export default class UnitView {
         const { dx, dy } = this.calculateDelta(action);
 
         this.activities.moving = { dx, dy, destroyAfter: this.frameCap + action.duration };
+    }
+
+    addTakeDamage(action, frame) {
+        const { realDamage, isCrit, iconName } = action.damage;
+        console.log('GET', realDamage, isCrit, action);
+        //анимация получаемого урона
+        // const obj = this.canvasObj.getChildByName('bot_interface').getChildByName('takeDamageContainer');
+        // let damageLabel = new createjs.Text('', "22px Arial", 'black');
+        // damageLabel.name = 'unitDamage_' + frame;
+        // damageLabel.x = 30;
+        // damageLabel.y = 0;
+        // damageLabel.textBaseline = "alphabetic";
+        // damageLabel.textAlign = 'left';
+        // damageLabel.text = ' -' + realDamage.toFixed(0) + (isCrit ? ' Крит!' : '');
+        // obj.addChild(damageLabel);
+        //
+        // //иконка примененного скилла
+        // let bitmap = new createjs.Bitmap('http://localhost:8080/images/' + iconName + '.jpg');
+        // bitmap.alpha = 0.8;
+        // damageLabel.x = 20;
+        // damageLabel.y = 17;
+        // let targetWidth = 20;
+        // let targetHeight = 20;
+        // bitmap.scaleX = targetWidth / bitmap.image.width;
+        // bitmap.scaleY = targetHeight / bitmap.image.height;
+        // obj.addChild(bitmap);
+
+        // function damageUpper() {
+        //     this.y -= 2;
+        // }
+        //
+        // damageLabel.addEventListener("tick", damageUpper.bind(damageLabel));
+        // bitmap.addEventListener("tick", damageUpper.bind(bitmap));
+        //
+        // setTimeout( function () {
+        //     damageLabel.removeEventListener("tick", damageUpper);
+        //     bitmap.removeEventListener("tick", damageUpper);
+        //     obj.removeChild(damageLabel);
+        //     obj.removeChild(bitmap);
+        // }, 600)
     }
 
     _updateUnitPosition() {
@@ -167,6 +213,7 @@ export default class UnitView {
         this.state.serverState = serverUnitData;
         this.state.isSelected = selectedUnitName === serverUnitData.name;
         const md = serverUnitData.movingData;
+        const ed = serverUnitData.eventsData;
 
         if(md.direction && !this.historyLine[md.frame]) {
             this.historyLine[md.frame] = {
@@ -175,6 +222,10 @@ export default class UnitView {
                 direction: md.direction,
                 duration: +((60 / md.speed).toFixed(0)),
             }
+        }
+
+        if(!this.historyLine[backendFrame] && ed[backendFrame]) {
+            this.historyLine[backendFrame] = ed[backendFrame];
         }
 
         // console.log(this.historyLine, this.frameCap, frontFrame, backendFrame);
@@ -200,5 +251,39 @@ export default class UnitView {
         }
 
         return {dx, dy}
+    }
+
+    rangeAttacks(action) {
+        let obj = this.rangeObjectsLayer;
+        // this.canvasView.mainStage.setChildIndex( obj, this.canvasView.mainStage.getNumChildren()-1);
+
+        let skillName = `${this.state.unitData.name} ${action.action.name}`;
+        let speed = action.action.flySpeed || 0;
+        // if(!obj.getChildByName(skillName) && speed) {
+        //     let shape = new createjs.Shape();
+        //     shape.name = skillName;
+        //     let startPoint = {x: me.baseGeometry.curCell.x * cellSize + cellSize / 2, y: me.baseGeometry.curCell.y * cellSize + cellSize / 2};
+        //     let endPoint = {x: action.target.baseGeometry.curCell.x * cellSize + cellSize / 2, y: action.target.baseGeometry.curCell.y * cellSize + cellSize / 2};
+        //
+        //     let fillObj = shape.graphics.beginFill('red').command;
+        //     shape.graphics.drawCircle(startPoint.x, startPoint.y, 5);
+        //     let xSpeed = speed * Math.cos( Math.atan2( (endPoint.y - startPoint.y), (endPoint.x - startPoint.x) ) ) / 60;
+        //     let ySpeed = speed * Math.sin( Math.atan2( (endPoint.y - startPoint.y), (endPoint.x - startPoint.x) ) ) / 60;
+        //
+        //     let flyTime = Math.sqrt( Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2) ) / speed * 1000;
+        //
+        //     function damageUpper(event) {
+        //         this.x += xSpeed;
+        //         this.y += ySpeed;
+        //     }
+        //     obj.addChild(shape);
+        //     shape.addEventListener("tick", damageUpper.bind(shape));
+        //
+        //     setTimeout( function () {
+        //         shape.removeEventListener("tick", damageUpper);
+        //         // console.log(shape.name, 'ended');
+        //         obj.removeChild(shape);
+        //     }, flyTime)
+        // }
     }
 }

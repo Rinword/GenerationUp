@@ -2,7 +2,7 @@
   position: relative;
   &__bar {
     position: absolute;
-    left: 2px;
+    right: 2px;
     top: 2px;
 
     width: 0;
@@ -10,7 +10,7 @@
 
     background-color: rgba(0,0,0, 0.6);
 
-    z-index: 5;
+    z-index: 1;
   }
 
   &__time {
@@ -23,7 +23,7 @@
     line-height: 12px;
     font-weight: bold;
 
-    z-index: 5;
+    z-index: 1;
   }
 
   //canvas {

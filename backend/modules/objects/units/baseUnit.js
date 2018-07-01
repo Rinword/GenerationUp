@@ -93,6 +93,39 @@ class BaseUnit extends BaseObject {
 
         };
 
+        // this.charData.skills.active.autoAttack = { //тут строго надо соблюдать одинаковость названия атрибута и name внутри него для обеспечения удобного доступа
+        //     socket: 0,
+        //     name: 'autoAttack',
+        //     langName: 'Автоатака',
+        //     cost: {
+        //         epCost: this.charData.gear.leftHand.size === 1 ? 10 : 30
+        //     },
+        //     target: 'enemy',
+        //     castTime: this.charData.gear.leftHand.castTime,
+        //     coolDownTime: this.charData.gear.leftHand.coolDownTime,
+        //     coolDownCurrTime: 0,
+        //     damage: this.charData.gear.leftHand.damage,
+        //     currentDamage: this.charData.gear.leftHand.damage,
+        //     calcDamage: stats => {
+        //         return this.charData.gear.leftHand.damage * (1 + 0.05 * stats.attackPower);
+        //     },
+        //     buffs: [
+        //         '+5% урона за каждую единицу силы атаки'
+        //     ],
+        //     range: this.charData.gear.leftHand.range,
+        //     damageType: this.charData.gear.leftHand.damageType,
+        //     iconName: '_skills_unit_melee_autoattack',
+        //     tooltipType: 'skill',
+        // }
+
+        this.coolDownData = {
+            autoAttack: {
+                percent: 0,
+                time: 0,
+                ready: true
+            }
+        };
+
         this.behaviourData = {
             currentAction: null,
             environmentObjs: [],
@@ -287,13 +320,7 @@ class BaseUnit extends BaseObject {
             }
         };
 
-        this.coolDownData = {
-            autoAttack: {
-                percent: 0,
-                time: 0,
-                ready: true
-            }
-        };
+        this.eventsData = {};
 
         this.data = {
             ...this.generateUnitClass(0, 4),
@@ -402,7 +429,7 @@ class BaseUnit extends BaseObject {
         const aSkills = this.charData.skills.active || {};
         for(let i in aSkills) {
             if(typeof aSkills[i].calcDamage === 'function' && aSkills[i].damage) {
-                aSkills[i].currentDamage = aSkills[i].calcDamage.call(this, this.charData.stats.current, aSkills[i]);
+                aSkills[i].currentDamage = aSkills[i].calcDamage.call(this, this.charData.stats.current, aSkills[i], this.charData.gear);
             } else {
                 console.warn('BAD skill in', aSkills[i])
             }
@@ -456,7 +483,6 @@ class BaseUnit extends BaseObject {
 
             case 'skill':
                 this._clearAttackData();
-                console.log(this.name, '-------');
                 this.applySkill(topAction);
                 break;
             default:
@@ -465,7 +491,6 @@ class BaseUnit extends BaseObject {
     }
 
     applySkill(action) {
-        // console.log('SKILL', action);
         this.attackData.currentAction = action;
         this.doAttack();
     }
@@ -481,21 +506,18 @@ class BaseUnit extends BaseObject {
                 console.log('ATTACK', ca.action.name);
                 //в случае удачной атаки
                 //TODO проверить если это не мгновенный скилл, тогда в setTimeout отложить takeDamage на flyTime и начать анимировать эту атаку
-                // if(actionCost.canUse) { //если есть энергия и мана на применение
-                //     let damageObj = this.generateDamageObj();
-                //     this.attackData.target.takeDamage(damageObj, me); //вызываем метод отображения целью получаемого урона и уменьшения его за счет его способностей
-                //     this.charData.stats.current.ep -= actionCost.ep; //отнимаем у атакующего стоимость применения этого скилла
-                //     this.charData.stats.current.mp -= actionCost.mp;
-                //     this.coolDownData[this.attackData.currentAction.name].ready = false; //выставляем кулдаун примененной способноти
-                //     this.attackData.currentAction.range > 1 && this.rangeAttacks(this.behaviourData.currentAction); //только дальние скилы //TODO разобраться с аналогичными параметрами в attackData
-                // } else {
-                //     this.attackData.castData.percent = 0;
-                // }
+                let damageObj = this.generateDamageObj();
+                ca.target.takeDamage(damageObj, this); //вызываем метод отображения целью получаемого урона и уменьшения его за счет его способностей
+                this.charData.stats.current.ep -= actionCost.ep; //отнимаем у атакующего стоимость применения этого скилла
+                this.charData.stats.current.mp -= actionCost.mp;
+                this.coolDownData[this.attackData.currentAction.action.name].ready = false; //выставляем кулдаун примененной способноти
+                //this.attackData.currentAction.range > 1 && this.rangeAttacks(this.behaviourData.currentAction); //только дальние скилы //TODO разобраться с аналогичными параметрами в attackData
             }
             //TODO отрисовать линию и махать ею во время атаки
             // this.animateAttack(this.behaviourData.currentAction);
+        } else {
+            // console.log(this.name, 'cannot do', ca)
         }
-
     }
 
     checkActionCost(ca) {
@@ -522,9 +544,56 @@ class BaseUnit extends BaseObject {
         }
     }
 
+    generateDamageObj() {
+        let damage = 1;
+        let isCrit = false;
+        let action = this.attackData.currentAction.action;
+
+        damage = action.calcDamage(this.charData.stats.current, action, this.charData.gear);
+
+        if( this.charData.stats.current.critChance * 100 >= helpers.randomInteger(0,10000) ) {
+            isCrit = true;
+            damage = damage * this.charData.stats.current.critMultiplier;
+        }
+
+        return {
+            value: damage,
+            type: action.damageType,
+            range: action.range,
+            effects: action.effects,
+            isCrit,
+            actionName: action.langName,
+            iconName: action.iconName
+        }
+    }
+
+    //обработка получения урона
+    takeDamage(damage, dealer) {
+        let canvasObj = this.canvasObj;
+        let incomingDamage = damage.value;
+        let defence = this.charData.stats.current.defence;
+        let absoluteArmor = this.charData.stats.current.absoluteArmor;
+        let realDamage = Math.floor( (100 - defence) * incomingDamage / 100 - absoluteArmor);
+        if(realDamage <= 0) realDamage = 1;
+        let reducedDamage = Math.ceil(incomingDamage - realDamage);
+        this.charData.stats.current.hp -= realDamage;
+        if(this.charData.stats.current.hp <= 0) {
+            console.log(this.name, this.color, 'is dead and get', dealer.color);
+            this.color = dealer.color;
+            this.charData.stats.current.hp = 10;
+        }
+
+        this.eventsData[this.frame] = {
+            type: 'takeDamage',
+            damage: { ...damage, realDamage, reducedDamage}
+        }
+
+        console.log(this.name, 'получает', realDamage, 'урона (', reducedDamage,' заблокивано) от', dealer.name)
+    }
+
     updateCastState(canAttack) {
         if(this.attackData.lastTimeCastStamp < this.attackData.currentAction.castTime && canAttack) {
-            this.attackData.lastTimeCastStamp += 1;
+            this.attackData.lastTimeCastStamp += TIME_TICK;
             //тут рисовать анимацию каста (кружки по краям бота крутятся)
             // this.animateCastState(true, this.attackData.currentAction.range);
         }
@@ -540,7 +609,7 @@ class BaseUnit extends BaseObject {
         }
 
         return {
-            percent: +(this.attackData.lastTimeCastStamp/this.attackData.currentAction.castTime*100).toFixed(0),
+            percent: +(this.attackData.lastTimeCastStamp / this.attackData.currentAction.castTime*100).toFixed(0),
             time: (this.attackData.currentAction.castTime - this.attackData.lastTimeCastStamp)/1000,
             endOfCast: false,
             id: this.attackData.currentAction.iconName
@@ -762,10 +831,15 @@ class BaseUnit extends BaseObject {
 
     _getOnlyCommonData(unit) {
         if(!unit) return unit;
-        const { name, color, charData, baseGeometry, uuid } = unit;
-        const distance = this.calculateDistance(baseGeometry);
+        const { map, wayGrid, behaviourData, ...props } = unit;
+        const distance = this.calculateDistance(props.baseGeometry);
 
-        return { name, color, charData, baseGeometry, uuid, distance };
+        // TODO скопировать юнита целиком кроме трех первых свойств (так рекурсия на карту), а не копировать верхний уровень
+        // придумать что-нибудь поизящней
+        const res = { ...props, distance };
+        res.__proto__ = this.__proto__;
+
+        return res;
 
     }
 

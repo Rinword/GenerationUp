@@ -71,8 +71,8 @@ module.exports = {
                     castTime: 0,
                     coolDownTime: 10000,
                     coolDownCurrTime: 0,
-                    calcDamage: function(stats, skill) {
-                        return +( ((skill.damage + this.charData.gear.leftHand.damage * 0.5) * (1 + 0.02 * stats.attackPower)).toFixed(0) )
+                    calcDamage: function(stats, skill, gear) {
+                        return +( ((skill.damage + gear.leftHand.damage * 0.5) * (1 + 0.02 * stats.attackPower)).toFixed(0) )
                     },
                     damage: 15,
                     range: 1,

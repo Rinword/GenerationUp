@@ -161,7 +161,7 @@ class Game {
             const y = helpers.randomInteger(1, map.ways.width - 1);
 
             if(map.ways.nodes[x][y].walkable) {
-                const bot = new BotUnit(name, x, y, map.ways, map.grid, { rc: this.rc});
+                const bot = new BotUnit(name, x, y, map.ways, map.grid, { rc: this.rc });
                 bots[bot.uuid] = bot;
                 map.grid[x][y].inside = bot.uuid;
                 map.ways.nodes[x][y].walkable = false;
