@@ -60,9 +60,9 @@ class Game {
             this.socket.emit('update_selected_unit', {data: this.interface.selectedUnit})
         }
 
-        if(!(this.isGameOver || this.isGamePause)) {
-            setTimeout(this.main, 1000 / FPS);
-        }
+        // if(!(this.isGameOver || this.isGamePause)) {
+        //     setTimeout(this.main, 1000 / FPS);
+        // }
     }
 
     update() {

@@ -89,7 +89,7 @@ module.exports = {
                 castTime: 1000, //время осуществления атаки
                 coolDownTime: 1500, //время между атаками
                 requires: [{strength: 3}],
-                stats:[],
+                stats: [],
                 description: 'Просто. Дешево. Сердито',
                 iconName: '_items_leftHand_0'
             },
@@ -107,7 +107,7 @@ module.exports = {
                 castTime: 500,
                 coolDownTime: 500,
                 requires: [{agility: 5}],
-                stats:[{critRating: 1}],
+                stats: [{critRating: 1}],
                 description: '',
                 iconName: '_items_leftHand_1'
             },
@@ -125,7 +125,7 @@ module.exports = {
                 castTime: 1000,
                 coolDownTime: 1500,
                 requires: [{strength: 6}, {agility: 4}],
-                stats:[{attackPower:2}, {critRating: 1}, {hpMax: 10}],
+                stats: [{attackPower: 2}, {critRating: 1}, {hpMax: 10}],
                 description: '',
                 iconName: '_items_leftHand_2'
             },
@@ -143,7 +143,7 @@ module.exports = {
                 castTime: 700,
                 coolDownTime: 500,
                 requires: [{intellect: 8}],
-                stats:[{spellPower:4},{ critRating: 2}, {mpMax: 10}],
+                stats: [{spellPower: 4}, { critRating: 2}, {mpMax: 10}],
                 description: 'Запах грозы струится по его лезвию',
                 iconName: '_items_leftHand_3'
             },
@@ -161,7 +161,7 @@ module.exports = {
                 castTime: 2000,
                 coolDownTime: 2000,
                 requires: [{strength: 9}],
-                stats:[{attackPower:9}, {critRating: 6}, {epMax: 15}],
+                stats: [{attackPower: 9}, {critRating: 6}, {epMax: 15}],
                 description: 'Иногда едва уловимый голос шепчет о руинах и пепле давно погибшего мира',
                 iconName: '_items_leftHand_4'
             },
@@ -177,7 +177,7 @@ module.exports = {
                 armorType: 1, //1 - средний
                 armor: 17,
                 requires: [{strength: 7}],
-                stats:[{attackPower:2}, {critRating: 2}, {hpMax: 25}],
+                stats: [{attackPower: 2}, {critRating: 2}, {hpMax: 25}],
                 description: 'Герб сгинувшей во тьме империи все еще угрожающе сияет на груди',
                 iconName: '_items_chest_0'
             },
@@ -191,7 +191,7 @@ module.exports = {
                 armorType: 1, //1 - средний
                 armor: 4,
                 requires: [{strength: 3}],
-                stats:[{attackPower:1}],
+                stats: [{attackPower: 1}],
                 description: '',
                 iconName: '_items_chest_1'
             },
@@ -205,7 +205,7 @@ module.exports = {
                 armorType: 2, //1 - средний
                 armor: 14,
                 requires: [{strength: 5}, {stamina: 4}],
-                stats:[{attackPower:1}, {defenceRating: 3}],
+                stats: [{attackPower: 1}, {defenceRating: 3}],
                 description: '',
                 iconName: '_items_chest_2'
             },
@@ -248,7 +248,7 @@ module.exports = {
                 rare: 3,
                 armorType: 1,
                 armor: 12,
-                requires: [{intellect: 8}, {spirit:4}],
+                requires: [{intellect: 8}, {spirit: 4}],
                 stats: [{spellPower: 4}, {critRating: 4}, {mpRegen: 1.5}],
                 description: 'Сила огня яростью срывается с кончиков пальцев',
                 iconName: '_items_gloves_2'
@@ -265,7 +265,7 @@ module.exports = {
                 armorType: 0,
                 armor: 1,
                 requires: [],
-                stats:[],
+                stats: [],
                 description: '',
                 iconName: '_items_boots_0'
             },
@@ -279,7 +279,7 @@ module.exports = {
                 armorType: 1,
                 armor: 4,
                 requires: [{stamina: 6}],
-                stats:[{hpMax: 30}],
+                stats: [{hpMax: 30}],
                 description: '',
                 iconName: '_items_boots_1'
             },
@@ -293,7 +293,7 @@ module.exports = {
                 armorType: 0,
                 armor: 4,
                 requires: [{intellect: 5}, {spirit: 6}],
-                stats:[{mpMax: 30}, {mpRegen: 1}],
+                stats: [{mpMax: 30}, {mpRegen: 1}],
                 description: '',
                 iconName: '_items_boots_2'
             },
@@ -309,7 +309,7 @@ module.exports = {
                 armorType: 1,
                 armor: 3,
                 requires: [],
-                stats:[],
+                stats: [],
                 description: 'Чики-брики и в дамки',
                 iconName: '_items_pants_0'
             },
@@ -323,7 +323,7 @@ module.exports = {
                 armorType: 0,
                 armor: 4,
                 requires: [{intellect: 6}, {spirit: 4}],
-                stats:[{mpMax: 20}, {mpRegen: 1}],
+                stats: [{mpMax: 20}, {mpRegen: 1}],
                 description: 'Искусная работа. Сейчас таких не делают',
                 iconName: '_items_pants_1'
             },
@@ -337,7 +337,7 @@ module.exports = {
                 armorType: 2,
                 armor: 12,
                 requires: [{strength: 7}, {stamina: 7}],
-                stats:[ {hpMax:30}, {hpRegen: 0.5}, {defenceRating: 2}],
+                stats: [ {hpMax: 30}, {hpRegen: 0.5}, {defenceRating: 2}],
                 description: 'Случайно попавший в наш мир могущественный предмет',
                 iconName: '_items_pants_2'
             },

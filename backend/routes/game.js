@@ -3,7 +3,6 @@ const router = express.Router();
 // const url = require('url');
 const Game = require('../modules/game')
 
-/* GET users listing. */
 module.exports = function(url, app, socket) {
     const game = new Game({app, socket});
     console.log('Create game')

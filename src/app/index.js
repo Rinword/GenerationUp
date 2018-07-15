@@ -8,6 +8,7 @@ import { Route, Switch } from 'react-router';
 import moment from 'moment';
 import Game from './game';
 import About from './about';
+import Armory from './armory';
 import NoPage from './noPage';
 
 import './uxComponent/uxStyles/index.scss';
@@ -32,12 +33,14 @@ class App extends React.Component {
                         <NavLink to='/'>Generation Up</NavLink>
                     </Row>
                     <NavLink className="main__link" activeClassName='main__link_active' to='/game'>GAME</NavLink>
+                    <NavLink className="main__link" activeClassName='main__link_active' to='/armory'>ARMORY</NavLink>
                     <NavLink className="main__link" activeClassName='main__link_active' to='/about'>о проекте</NavLink>
                 </Row>
                 <Row className="main__body" overflow="auto" minHeight="calc(100vh - 120px)">
                     <Switch>
-                        <Route exact path='/' component={Game} />
+                        <Route exact path='/' component={Armory} />
                         <Route path='/game' component={Game} />
+                        <Route path='/armory' component={Armory} />
                         <Route path='/about' component={About} />
                         <Route component={NoPage} />
                     </Switch>
