@@ -12,7 +12,10 @@ import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-ro
 
 // import statisticReducer from './js/redux/statisticReducer';
 
+import 'ui/uxStyles/mixins.scss';
+
 import App from './app';
+
 
 const history = createHistory();
 

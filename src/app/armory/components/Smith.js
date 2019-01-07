@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { Row, Column, Btn } from 'ui/UxBox';
 
-import GearItem from './GearItem';
+import Anvil from './smith/Anvil';
 
 import './smith.scss';
 
@@ -18,9 +18,9 @@ class Smith extends React.PureComponent {
 
     render() {
         return (
-            <Column className={cx('smith', this.props.className)}>
-                Кузница/мастерская
-            </Column>
+            <Row className={cx('smith', this.props.className)}>
+                <Anvil className="smith__anvil"/>
+            </Row>
         );
     }
 }

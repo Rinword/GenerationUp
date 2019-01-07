@@ -1,7 +1,5 @@
 import Btn from './Btn'
 import Tooltip from './Tooltip'
-// import Field from './fields/baseField'
-// import DatePicker from './fields/datePicker'
 
 import L from './Layout'
 const Layout = L.Layout;

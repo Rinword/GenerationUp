@@ -1,0 +1,38 @@
+.ux-field {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+
+  &_focused {
+    border: 2px solid white;
+  }
+
+  &__left-content,
+  &__right-content {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+
+    //@include no-select();
+  }
+
+  &__left-content {
+    margin-right: 8px;
+    height: 100%;
+
+    //@include flex();
+  }
+
+  &__right-content {
+    margin-left: 8px;
+    position: absolute;
+    right: 15px;
+    display: flex;
+    top: 0;
+    height: 100%;
+
+    * {
+      //@include flex();
+    }
+  }
+}

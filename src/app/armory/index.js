@@ -26,15 +26,15 @@ class About extends React.PureComponent {
                 <Column className={cx('armory__content')} ai="flex-start">
                     <Tabs>
                         <TabList>
-                            <Tab>Склад</Tab>
                             <Tab>Кузница</Tab>
+                            <Tab>Склад</Tab>
                             <Tab>Персонажи</Tab>
                         </TabList>
                         <TabPanel>
-                            <Storage />
+                            <Smith />
                         </TabPanel>
                         <TabPanel>
-                            <Smith />
+                            <Storage />
                         </TabPanel>
                         <TabPanel>
                             Персонажи

@@ -1,0 +1,51 @@
+$colorLight: #ddd;
+$colorTextMain: white;
+$colorWhite: white;
+$colorError: rgba(255, 95, 78, 0.57);
+
+.ux-input {
+  position: relative;
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  font-size: 14px;
+  text-align: left;
+  padding: 0 13px;
+  line-height: 44px;
+  color: $colorWhite;
+  height: 100%;
+  opacity: 1;
+
+  &:focus {
+    color: $colorTextMain;
+    outline: 0;
+  }
+
+  &_error {
+    border: 1px solid $colorError;
+  }
+
+  &_disabled {
+    background-color: $colorLight;
+    color: rgba(130, 142, 180, 0.5);
+    border-radius: 5px;
+  }
+
+  &_renderer_left {
+    padding-left: 50px;
+  }
+
+  &_renderer_right {
+    padding-right: 44px;
+  }
+}
+
+.ux-field-wrap {
+  .ux-field__container {
+    .ux-field {
+      .ux-input_disabled {
+        color: rgba(40, 49, 91, 0.5) !important;
+      }
+    }
+  }
+}

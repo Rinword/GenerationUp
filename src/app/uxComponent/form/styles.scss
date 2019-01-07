@@ -1,0 +1,63 @@
+@import "../uxStyles/mixins";
+
+$colorError: rgba(255, 95, 78, 0.57);
+$colorTextFields: #fff;
+$colorWhite: white;
+
+.ux-field-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  @include base-sizes();
+  @include margins();
+
+  &__field {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+
+  &__errors-area {
+    margin-top: 10px;
+    padding: 0 0 15px 0;
+    font-size: 14px;
+    text-align: left;
+    color: $colorError;
+    display: none;
+
+    &_shown {
+      display: block;
+    }
+  }
+
+  &_invalid {
+    .ux-field,
+    input,
+    .Select-control,
+    .ux-textarea {
+      border-color: $colorError !important;
+      box-shadow: 0 0 10px -2px $colorError;
+    }
+
+    .ux-field input {
+      box-shadow: none;
+    }
+  }
+
+  &_hidden {
+    display: none !important;
+  }
+}
+
+@mixin ux-label-mix($textColor) {
+  position: relative;
+  font-size: 12px;
+  text-transform: uppercase;
+  line-height: 1;
+  color: $textColor;
+  margin-bottom: 10px;
+}
