@@ -13,6 +13,7 @@ class GearItem extends React.PureComponent {
 
     render() {
         const { name, level, rare } = this.props;
+
         return (
             <div className={cx('gear-item', this.props.className)}>
                 <div className='gear-item__content'>

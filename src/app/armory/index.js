@@ -6,6 +6,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import { Row, Column } from 'ui/UxBox';
 
 import Smith from './components/Smith';
+import Storage from './components/Storage';
 
 import './styles.scss';
 
@@ -25,18 +26,18 @@ class About extends React.PureComponent {
                 <Column className={cx('armory__content')} ai="flex-start">
                     <Tabs>
                         <TabList>
+                            <Tab>Склад</Tab>
                             <Tab>Кузница</Tab>
                             <Tab>Персонажи</Tab>
-                            <Tab>Склад</Tab>
                         </TabList>
+                        <TabPanel>
+                            <Storage />
+                        </TabPanel>
                         <TabPanel>
                             <Smith />
                         </TabPanel>
                         <TabPanel>
                             Персонажи
-                        </TabPanel>
-                        <TabPanel>
-                            Склад
                         </TabPanel>
                     </Tabs>
                 </Column>

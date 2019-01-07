@@ -16,36 +16,10 @@ class Smith extends React.PureComponent {
         this.state = {data: []};
     }
 
-    componentWillMount() {
-        axios.post('/api/armory/create', {
-            num: 10,
-        }).then(res => {
-            if(res.data.data) {
-                this.setState({data: res.data.data})
-            }
-        })
-    }
-
-    onCreateClick = () => {
-        axios.post('/api/armory/create', {
-            num: 10,
-        }).then(res => {
-            if(res.data.data) {
-                this.setState({data: res.data.data})
-            }
-        })
-    }
-
     render() {
-        console.log('render', this.state);
         return (
             <Column className={cx('smith', this.props.className)}>
-                <Row className={cx('smith__header')} padding="10px 0">
-                    <Btn onClick={this.onCreateClick}>Создать предмет +</Btn>
-                </Row>
-                <Row className={cx('smith__content')} padding="10px">
-                    {this.state.data.map((item, i) => <GearItem key={i} {...item} />)}
-                </Row>
+                Кузница/мастерская
             </Column>
         );
     }

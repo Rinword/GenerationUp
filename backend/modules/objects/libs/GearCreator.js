@@ -1,6 +1,6 @@
 const helpers =  require('../../helpers');
 
-class GearCreator  {
+class GearCreator {
     constructor() {
         this.data = {
             chest: {
@@ -122,16 +122,18 @@ class GearCreator  {
 
     _getRandomStats(req, level, rare, freePoints) {
         const res = {};
-        if(req) {
-            for(let i in req) {
-                res[this._getRandomStat(req[i])] = 3 * (req[i] - 2);
-                console.log('--RAND', res)
-            }
-        }
+        console.log("REQ", req);
+        req && req.length &&req.forEach(reqItem => {
+            const stateName = Object.keys(reqItem)[0];
+            const subStatName = this._getRandomStat(reqItem).name[0];
+            res[subStatName] = 3 * (reqItem[stateName] - 2);
+            console.log('--RAND STAT',stateName, subStatName, reqItem, res)
+        })
+
         const statsNum = Object.keys(res).length;
 
         for(let i in res) {
-            res[i] = (3 * (res[i] - 2) + freePoints / statsNum) * this._getCost(res[i]);
+            res[i] = (res[i] + freePoints / statsNum) * this._getCost(i);
         }
 
         console.log('2) STATS', res);
@@ -142,9 +144,10 @@ class GearCreator  {
     _getRandomStat(stat) {
         stat = Object.keys(stat)[0];
         const num = helpers.randomInteger(0, Object.keys(this.stats[stat]).length - 1);
+        const subState = Object.keys(this.stats[stat])[num];
 
-        console.log('STAT', num, this.stats[stat][num]);
-        return this.stats[stat][num];
+        console.log('STAT', num, stat, subState, this.stats[stat][subState]);
+        return {name: [subState], value: this.stats[stat][subState]};
     }
 
     _getCost(stat) {

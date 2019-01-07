@@ -7,22 +7,19 @@ class Armory {
         this.data = itemStorage;
     }
 
-    createItem(options) {
-        const name = options.name || 'Наплеч последнего полководца';
-        const level = options.level || helpers.randomInteger(1, 10);
-        const req = options.req || null;
-        const stats = options.stats || null;
+    createItem(req) {
+        const name = req.body.name || 'Наплеч последнего полководца';
+        const level = req.body.level || helpers.randomInteger(1, 10);
+        const stats = req.body.stats || null;
 
-        if(options.num) {
-            const res = [...Array(options.num)].fill(gearCreator.createItem(name, level, req, stats));
-            console.log("RES", res);
+        console.log('OPT', req.body);
 
-            return res;
+        // if(req.body.num) {
+        //     return  Array(req.body.num).fill(gearCreator.createItem(name, level, req, stats));
+        // }
 
-        }
-
-        return gearCreator.createItem(name, level, req, stats);
+        return [gearCreator.createItem(name, level, req, stats)];
     }
 }
 
-module.exports = new Armory()
+module.exports = new Armory();
