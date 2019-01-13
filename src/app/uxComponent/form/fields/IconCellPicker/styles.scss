@@ -1,0 +1,53 @@
+.ux-icon-cell-picker {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 5px 0;
+  font-size: 16px;
+
+  &__item {
+    width: 3em;
+    height: 3em;
+    margin: 5px;
+    padding: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #a1a1a1;
+    cursor: pointer;
+    position: relative;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &_selected {
+      border: 1px solid white;
+      box-shadow: 0 0 12px 1px #c3c3c3;
+      padding: 4px;
+      cursor: auto;
+    }
+
+    &_disabled {
+      border: 1px dashed #999999;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+  }
+
+  &_noBg {
+    .ux-icon-cell-picker__icon {
+      background-image: none !important;
+    }
+  }
+}

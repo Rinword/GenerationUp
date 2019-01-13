@@ -18,7 +18,7 @@ class Anvil extends React.PureComponent {
     }
 
     onValidate = values => {
-        console.log('onChange');
+        console.log('onChange', values);
     }
 
     getDefaultStateWithRare = (rare = 1) => {
@@ -36,9 +36,12 @@ class Anvil extends React.PureComponent {
 
     render() {
         return (
-            <Column className={cx('anvil', this.props.className)}>
+            <Column ai="flex-start" className={cx('anvil', this.props.className)}>
                 <Formik
-                    initialValues={{}}
+                    initialValues={{
+                        name: 'Name',
+                        type: 'oneHandWeapon'
+                    }}
                     validate={this.onValidate}
                 >
                     {formikProps => (

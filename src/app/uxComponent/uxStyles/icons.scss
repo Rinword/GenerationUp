@@ -1,3 +1,6 @@
+
+$color-usual: white;
+$color-unusual: #1cbb53;
 $color-rare: #07428b;
 $color-epic: #6d1695;
 $color-legendary: #e28a1e;
@@ -31,6 +34,10 @@ $dark-grey: #4f4f4f;
       @include size($i);
       @include bg-size($i);
     }
+  }
+
+  &_default {
+    background-color: $dark-grey;
   }
 
   &_type_passive {
@@ -70,6 +77,87 @@ $dark-grey: #4f4f4f;
   //&_skills_autoattack {
   //  background-image: url("//wow.zamimg.com/images/wow/icons/large/ability_meleedamage.jpg");
   //}
+
+  &_common {
+    &_usual {
+      background-color: $color-usual;
+    }
+
+    &_unusual {
+      background-color: $color-unusual;
+    }
+
+    &_rare {
+      background-color: $color-rare;
+    }
+
+    &_epic {
+      background-color: $color-epic;
+    }
+
+    &_legendary {
+      background-color: $color-legendary;
+    }
+  }
+
+  &_weapon {
+    &_one_hand {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/ability_meleedamage.jpg");
+    }
+
+    &_two_hand {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_axe_04.jpg");
+    }
+
+    &_dagger {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_weapon_shortblade_01.jpg");
+    }
+
+    &_sword {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_sword_26.jpg");
+    }
+
+    &_staff {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_staff_14.jpg");
+    }
+
+    &_bow {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_weapon_bow_07.jpg");
+    }
+
+  }
+
+  &_armor {
+    &_light {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_cloth_24.jpg");
+    }
+    &_medium {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_leather_09.jpg");
+    }
+    &_heavy {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_plate13.jpg");
+    }
+
+    &_shield {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_shield_06.jpg");
+    }
+
+    &_gloves {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_gauntlets_18.jpg");
+    }
+
+    &_chest {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_chest_leather_10.jpg");
+    }
+
+    &_pants {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_pants_02.jpg");
+    }
+
+    &_boots {
+      background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_boots_08.jpg");
+    }
+  }
 }
 
 [data-imgid='_items_leftHand_0'] {

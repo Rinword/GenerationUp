@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 
 import BaseInput from './Input';
-import style from './styles.scss';
+import './styles.scss';
 
 function renderOnlyWithComponent({ onClick, className, Component }) {
     if (!Component) {
@@ -64,7 +64,7 @@ class BaseField extends React.PureComponent {
         const { renderLeft, onLeftClick } = this.props;
 
         return renderOnlyWithComponent({
-            className: style['ux-field__left-content'],
+            className: 'ux-field__left-content',
             Component: renderLeft,
             onClick: onLeftClick,
         });
@@ -74,7 +74,7 @@ class BaseField extends React.PureComponent {
         const { renderRight, onRightClick } = this.props;
 
         return renderOnlyWithComponent({
-            className: style['ux-field__right-content'],
+            className: 'ux-field__right-content',
             Component: renderRight,
             onClick: onRightClick,
         });
@@ -84,23 +84,23 @@ class BaseField extends React.PureComponent {
         const { renderTooltip } = this.props;
 
         return renderOnlyWithComponent({
-            className: style['ux-field__info-content'],
+            className: 'ux-field__info-content',
             Component: renderTooltip,
         });
     };
 
     render() {
-        const { theme, focused, Tooltip, overflow, className } = this.props;
+        const { theme, focused, Tooltip, overflow, className, style } = this.props;
 
         return (
-            <div className={cx(style['ux-field__container'], style[`theme_${theme}`])}>
+            <div className={cx('ux-field__container', `theme_${theme}`)}>
                 <div
                     className={cx(
                         className,
-                        style['ux-field'],
-                        style['ux-field-wrap__field'],
-                        style[`ux-field_overflow_${overflow}`],
-                        { [style['ux-field_focused']]: focused }
+                        'ux-field',
+                        'ux-field-wrap__field',
+                        `ux-field_overflow_${overflow}`,
+                        { 'ux-field_focused': focused }
                     )}
                 >
                     {this.renderLeft()}
@@ -127,6 +127,7 @@ BaseField.propTypes = {
     focused: PropTypes.bool,
     className: PropTypes.string,
     overflow: PropTypes.string,
+    style: PropTypes.shape({}),
 
     theme: PropTypes.oneOf(['light', 'dark']),
     renderLeft: PropTypes.oneOfType([PropTypes.bool, PropTypes.element]),
@@ -141,6 +142,7 @@ BaseField.defaultProps = {
     renderRight: false,
     renderTooltip: false,
     overflow: 'hidden',
+    style: {},
 
     Tooltip: null,
     Input: BaseInput,

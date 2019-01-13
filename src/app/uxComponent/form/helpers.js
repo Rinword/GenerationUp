@@ -5,10 +5,11 @@ import { get, isEmpty } from 'lodash';
  * @param {object} data - object with data
  * @param {string} path - path for match
  * @param {any} value
+ * @param {array} oneOfValues
  * @param {bool} isDefined - returns true is value in path is not lead to false
  * @return {boolean}
  */
-function checkInDataWithPath(data, path, value, isDefined) {
+function checkInDataWithPath(data, path, value, oneOfValues, isDefined) {
     if (!path) {
         return true;
     }
@@ -19,6 +20,10 @@ function checkInDataWithPath(data, path, value, isDefined) {
 
     if (isDefined) {
         return Boolean(get(data, path, ''));
+    }
+
+    if(oneOfValues instanceof Array) {
+        return oneOfValues.indexOf(get(data, path, '')) > -1;
     }
 
     if (value !== undefined) {
@@ -63,12 +68,12 @@ function checkInProps(model, props) {
 export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
     if (!(showIf instanceof Object)) return true;
 
-    const { path, statePath, isDefined, value, hasDataInProps, noResetModelValues } = showIf;
+    const { path, statePath, isDefined, value, hasDataInProps, noResetModelValues, oneOfValues } = showIf;
     const { values } = form;
 
     const isShown =
-        checkInDataWithPath(info, statePath, value, isDefined) &&
-        checkInDataWithPath(values, path, value, isDefined) &&
+        checkInDataWithPath(info, statePath, value, oneOfValues, isDefined) &&
+        checkInDataWithPath(values, path, value, oneOfValues, isDefined) &&
         checkInProps(hasDataInProps, props);
 
     const formValue = form.values[field.name];

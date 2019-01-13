@@ -12,8 +12,10 @@ class Class extends React.PureComponent {
     }
 
     render() {
+        const { className } = this.props;
+
         return (
-            <div className={cx('class', this.props.className)}>
+            <div className={cx('class', className)}>
                 <div />
             </div>
         );

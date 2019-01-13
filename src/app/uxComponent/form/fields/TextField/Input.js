@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import style from './input.scss';
+import './input.scss';
 
 class Input extends React.PureComponent {
     onChange = event => {
@@ -37,6 +37,7 @@ class Input extends React.PureComponent {
             type,
             field, // formik field
             value,
+            inputStyle,
             onClick,
             disabled,
             readonly,
@@ -45,7 +46,7 @@ class Input extends React.PureComponent {
             onEnterPress,
         } = this.props;
 
-        const { name, value: formicValue } = field;
+        const { name, value: formikValue } = field;
 
         const _handleKeyPress = e => {
             if (e.key === 'Enter') {
@@ -53,9 +54,9 @@ class Input extends React.PureComponent {
             }
         };
 
-        const finalValue = formicValue || value;
+        const finalValue = formikValue || value;
 
-        const className = cx(style['ux-input'], { [style['ux-input_disabled']]: disabled }, extraClass);
+        const className = cx('ux-input', { 'ux-input_disabled': disabled }, extraClass);
 
         return (
             <input
@@ -70,6 +71,7 @@ class Input extends React.PureComponent {
                 placeholder={placeholder}
                 onKeyPress={_handleKeyPress}
                 onChange={this.onChange}
+                style={inputStyle}
             />
         );
     }
@@ -88,6 +90,7 @@ Input.propTypes = {
     disabled: PropTypes.bool,
     readonly: PropTypes.bool,
     extraClass: PropTypes.string,
+    inputStyle: PropTypes.shape({}),
 };
 
 function noFunc() {}
@@ -105,6 +108,7 @@ Input.defaultProps = {
     onEnterPress: noFunc,
     readonly: false,
     disabled: false,
+    inputStyle: {},
 };
 
 export default Input;

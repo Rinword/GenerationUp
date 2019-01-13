@@ -9,16 +9,23 @@ export const baseItemConfig = [
     {
         type: "text",
         model: "name",
+        inputStyle: {
+            fontSize: '32px',
+            paddingLeft: 0,
+        }
     },
     {
         type: "icon-cell-picker",
         model: "rare",
+        props: {
+            noBg: true,
+        },
         options: [
-            { name: "usual", value: 0, icon: 'rare_usual' },
-            { name: "unusual", value: 1, icon: 'rare_unusual' },
-            { name: "rare", value: 2, icon: 'rare_rare' },
-            { name: "epic", value: 3, icon: 'rare_epic' },
-            { name: "legendary", value: 4, icon: 'rare_legendary' },
+            { name: "usual", value: "usual", icon: 'common_usual' },
+            { name: "unusual", value: "unusual", icon: 'common_unusual' },
+            { name: "rare", value: "rare", icon: 'common_rare' },
+            { name: "epic", value: "epic", icon: 'common_epic' },
+            { name: "legendary", value: "legendary", icon: 'common_legendary', disabled: true },
         ]
     },
     {
@@ -47,11 +54,25 @@ export const baseItemConfig = [
     },
     {
         type: "icon-cell-picker",
-        model: "subtype",
+        model: "subtype1",
         options: [
-            { name: "dagger", value: "dagger", icon: "weapon_dagger" },
+            { name: "staff", value: "staff", icon: "weapon_staff" },
             { name: "sword", value: "sword", icon: "weapon_sword" },
-            { name: "shield", value: "shield", icon: "armor_shield" },
+            { name: "bow", value: "bow", icon: "weapon_bow" },
+        ],
+        showIf: {
+            path: "type",
+            value: "twoHandWeapon"
+        }
+    },
+    {
+        type: "icon-cell-picker",
+        model: "subtype2",
+        options: [
+            { name: "gloves", value: "gloves", icon: "armor_gloves" },
+            { name: "chest", value: "chest", icon: "armor_chest" },
+            { name: "pants", value: "pants", icon: "armor_pants" },
+            { name: "boots", value: "boots", icon: "armor_boots" },
         ],
         showIf: {
             path: "type",
