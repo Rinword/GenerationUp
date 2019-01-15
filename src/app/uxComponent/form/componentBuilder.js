@@ -32,8 +32,14 @@ function ComponentRenderer({ type, model, ...props }) {
     );
 }
 
+function getKey (item, idx) {
+    const { model = idx, subModel = '' } = item;
+
+    return `${model}_${subModel || ''}` ;
+}
+
 function ComponentBuilder ({ components, formikProps }) {
-    return components.map( item => <ComponentRenderer key={item.model} { ...item } />)
+    return components.map( item => <ComponentRenderer key={getKey(item)} { ...item } />)
 }
 
 export default ComponentBuilder;

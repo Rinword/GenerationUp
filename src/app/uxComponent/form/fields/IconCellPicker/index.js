@@ -2,39 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import { get } from 'lodash';
+import { get, set, merge } from 'lodash';
 
 import './styles.scss';
 
 class IconCellPicker extends React.Component {
-    constructor(props) {
-        super(props);
-
-        const { field, options } = props;
-        let { value } = field;
-
-        if(!value) {
-            value = get(options, '[0].value', null)
-        }
-
-        this.state = { value };
-    }
-
-    shouldComponentUpdate(nextProps) {
-        const { value: oldValue } = this.state;
-        const { field } = nextProps;
-        const { value: newValue } = field;
-
-        if(oldValue !== newValue) {
-            this.setState({ value: newValue });
-        }
-
-        return oldValue !== newValue;
-    }
-
     onChange = event => {
-        const { onChange, form, field } = this.props;
-        const { setFieldValue } = form;
+        const { onChange, form, field, resetValuesOnChange } = this.props;
+        const { setFieldValue, values = {} } = form;
         const { name } = field;
 
         event.preventDefault();
@@ -48,12 +23,21 @@ class IconCellPicker extends React.Component {
             setFieldValue(name, value);
         }
 
-        this.setState({ value });
+        if(resetValuesOnChange instanceof Array) {
+            resetValuesOnChange.forEach(path => {
+                // TODO: set correct initial subtype for each type in one setValue
+                const resetValue = undefined;
+                if(resetValue !== 'noMatch') {
+                    setFieldValue(path, resetValue);
+                }
+            })
+        }
+
     }
 
     render() {
-        const { value } = this.state;
-        const { className, options, props } = this.props;
+        const { className, options, props, field } = this.props;
+        const { name, value } = field;
         const { noBg } = props;
 
         return (
@@ -98,7 +82,7 @@ function IconCell({ name, value, icon, selected, disabled, onClick }) {
             <div
                 data-value={value}
                 className={cx('icon', `icon_${icon}`, 'ux-icon-cell-picker__icon')}
-                onClick={disabled ? '' : onClick}
+                onClick={disabled ? () => {} : onClick}
             />
             {/*<span style={{position: 'absolute', zIndex: 10, bottom: '-10%'}}>{name}</span>*/}
         </div>

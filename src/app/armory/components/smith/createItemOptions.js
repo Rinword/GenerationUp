@@ -1,14 +1,16 @@
 export const pointsFromRare = {
-    0: { points: 6, stats: 1, maxRequiredStats: 1 },
-    1: { points: 12, stats: 2, maxRequiredStats: 2 },
-    2: { points: 18, stats: 2, maxRequiredStats: 2 },
-    3: { points: 24, stats: 3, maxRequiredStats: 2 }
+    usual: { points: 6, stats: 1, maxRequiredStats: 1 },
+    unusual: { points: 12, stats: 2, maxRequiredStats: 2 },
+    rare: { points: 18, stats: 2, maxRequiredStats: 2 },
+    epic: { points: 24, stats: 3, maxRequiredStats: 2 },
+    legendary: { points: 24, stats: 3, maxRequiredStats: 2 }
 }
 
 export const baseItemConfig = [
     {
         type: "text",
         model: "name",
+        defaultValue: "Name",
         inputStyle: {
             fontSize: '32px',
             paddingLeft: 0,
@@ -20,6 +22,7 @@ export const baseItemConfig = [
         props: {
             noBg: true,
         },
+        defaultValue: "usual",
         options: [
             { name: "usual", value: "usual", icon: 'common_usual' },
             { name: "unusual", value: "unusual", icon: 'common_unusual' },
@@ -31,17 +34,21 @@ export const baseItemConfig = [
     {
         type: "icon-cell-picker",
         model: "type",
+        defaultValue: "oneHandWeapon",
         options: [
             { name: "one-hand weapon", value: "oneHandWeapon", icon: "weapon_one_hand" },
             { name: "two-hand weapon", value: "twoHandWeapon", icon: "weapon_two_hand" },
             { name: "light armor", value: "lightArmor", icon: "armor_light" },
             { name: "medium armor", value: "mediumArmor", icon: "armor_medium" },
             { name: "heavy armor", value: "heavyArmor", icon: "armor_heavy" },
-        ]
+        ],
+        resetValuesOnChange: ['subtype']
     },
     {
         type: "icon-cell-picker",
         model: "subtype",
+        subModel: "oneHandWeapon",
+        defaultValue: "dagger",
         options: [
             { name: "dagger", value: "dagger", icon: "weapon_dagger" },
             { name: "sword", value: "sword", icon: "weapon_sword" },
@@ -54,7 +61,9 @@ export const baseItemConfig = [
     },
     {
         type: "icon-cell-picker",
-        model: "subtype1",
+        model: "subtype",
+        subModel: "twoHandWeapon",
+        defaultValue: "staff",
         options: [
             { name: "staff", value: "staff", icon: "weapon_staff" },
             { name: "sword", value: "sword", icon: "weapon_sword" },
@@ -67,7 +76,9 @@ export const baseItemConfig = [
     },
     {
         type: "icon-cell-picker",
-        model: "subtype2",
+        model: "subtype",
+        subModel: "armor",
+        defaultValue: "gloves",
         options: [
             { name: "gloves", value: "gloves", icon: "armor_gloves" },
             { name: "chest", value: "chest", icon: "armor_chest" },

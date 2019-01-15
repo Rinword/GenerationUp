@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash';
+import { get, set, isEmpty } from 'lodash';
 
 /**
  * Check value in path for match value or isDefined
@@ -80,11 +80,33 @@ export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
 
     // remove value from form if this field not shown, otherwise it will be inside form.values and
     // can make wrong wizard loading with dependent selects
-    if (!noResetModelValues && !isShown && formValue) {
-        delete form.values[field.name];
-        if (form.resetForm instanceof Function) {
-            form.resetForm(form.values);
-        }
-    }
+    // if (!noResetModelValues && !isShown && formValue) {
+    //     delete form.values[field.name];
+    //     if (form.resetForm instanceof Function) {
+    //         form.resetForm(form.values);
+    //     }
+    // }
+
     return isShown;
+}
+
+/**
+ * Returns object with defaultValuesForm
+ * @param config
+ * @returns {{}}
+ */
+export function generateDefaultValues(config) {
+    const formModel = {};
+
+    config.forEach( field => {
+        const { model, defaultValue, subModel, showIf } = field;
+
+        const isShown = showIfChecker({ form: { values: JSON.parse(JSON.stringify(formModel)) }, field: { name: model }, showIf });
+
+        if(defaultValue !== undefined && isShown) {
+            set(formModel, model, defaultValue);
+        }
+    })
+
+    return formModel;
 }

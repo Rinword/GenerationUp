@@ -26,9 +26,6 @@ const FieldWrapperHOC = Component => {
                 return null;
             }
 
-            // this.checkDefaultValue();
-
-            // const errorText = this.checkError() ? errorMessage : '';
             const errorText = '';
 
             return (

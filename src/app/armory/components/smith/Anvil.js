@@ -5,6 +5,7 @@ import { Formik, Form } from 'formik';
 
 import { Row, Column, Btn } from 'ui/UxBox';
 import ComponentBuilder from 'ui/form/componentBuilder';
+import { generateDefaultValues } from 'ui/form/helpers';
 
 import { pointsFromRare, baseItemConfig } from './createItemOptions';
 
@@ -14,34 +15,36 @@ class Anvil extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = this.getDefaultStateWithRare();
+        this.state = this.getStateWithRare(generateDefaultValues(baseItemConfig));
     }
 
     onValidate = values => {
-        console.log('onChange', values);
+        this.setState(this.getStateWithRare(values));
     }
 
-    getDefaultStateWithRare = (rare = 1) => {
+    getStateWithRare = (values) => {
+        const { rare = 'usual' } = values;
         const { points, stats, maxRequiredStats } = pointsFromRare[rare];
 
         return {
-            selectedRare: rare,
             maxPoints: points,
             freePoints: points,
-            data: {
-
-            }
+            stats,
+            maxRequiredStats,
+            values: values,
+            data: {}
         }
     }
 
     render() {
+        const { values, maxPoints, freePoints, stats, maxRequiredStats } = this.state;
+        const { name, rare, type, subtype } = values;
+        const initialValues = generateDefaultValues(baseItemConfig);
+
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>
                 <Formik
-                    initialValues={{
-                        name: 'Name',
-                        type: 'oneHandWeapon'
-                    }}
+                    initialValues={initialValues}
                     validate={this.onValidate}
                 >
                     {formikProps => (
@@ -53,6 +56,10 @@ class Anvil extends React.PureComponent {
                         </Form>
                     )}
                 </Formik>
+                <p><b>{name}</b>, {rare} {subtype} ( {type} )</p>
+                <p>Points: {freePoints}/{maxPoints}</p>
+                <p>(Max stats: {stats})</p>
+                <p>(Max required stats: {maxRequiredStats})</p>
             </Column>
         );
     }
