@@ -91,3 +91,122 @@ export const baseItemConfig = [
         }
     }
 ]
+
+export const specialItemConfig = {
+    weapon: [
+        {
+            type: 'counter-row',
+            model: 'damage',
+            defaultValue: 0,
+            props: {
+                label: 'Damage'
+            }
+        },
+        {
+            type: 'counter-row',
+            model: 'DPS',
+            defaultValue: 0,
+            props: {
+                label: 'DPS'
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat1',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 0
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat2',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 1
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat3',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 2
+            }
+        },
+        {
+            type: 'select-row',
+            model: 'require1',
+            showIf: {
+                statePath: 'maxRequiredStats',
+                moreThan: 0
+            }
+        },
+        {
+            type: 'select-row',
+            model: 'require2',
+            showIf: {
+                statePath: 'maxRequiredStats',
+                moreThan: 1
+            }
+        }
+    ],
+    armor: [
+        {
+            type: 'counter-row',
+            model: 'physicalArmor',
+            defaultValue: 0,
+            props: {
+                label: 'Physical armor'
+            }
+        },
+        {
+            type: 'counter-row',
+            model: 'magicArmor',
+            defaultValue: 0,
+            props: {
+                label: 'Magic armor'
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat1',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 0
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat2',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 1
+            }
+        },
+        {
+            type: 'select-and-counter',
+            model: 'stat3',
+            showIf: {
+                statePath: 'stats',
+                moreThan: 2
+            }
+        },
+        {
+            type: 'select-row',
+            model: 'require1',
+            showIf: {
+                statePath: 'maxRequiredStats',
+                moreThan: 0
+            }
+        },
+        {
+            type: 'select-row',
+            model: 'require2',
+            showIf: {
+                statePath: 'maxRequiredStats',
+                moreThan: 1
+            }
+        }
+    ]
+}
