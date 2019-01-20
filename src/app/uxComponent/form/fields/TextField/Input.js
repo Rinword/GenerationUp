@@ -54,7 +54,7 @@ class Input extends React.PureComponent {
             }
         };
 
-        const finalValue = formikValue || value;
+        const finalValue = formikValue !== undefined ? formikValue : value;
 
         const className = cx('ux-input', { 'ux-input_disabled': disabled }, extraClass);
 

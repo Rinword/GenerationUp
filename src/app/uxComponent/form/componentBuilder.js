@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import styles from './styles.scss';
+import './styles.scss';
 
-import { TextField, IconCellPicker } from 'ui/form/fields'
+import { TextField, Counter, IconCellPicker } from 'ui/form/fields'
 
 const componentMap = {
     text: TextField,
+    counter: Counter,
     'icon-cell-picker': IconCellPicker,
 }
 
@@ -18,7 +19,8 @@ const componentMap = {
  * @param {object} props - Props to be passed to the child component.
  * @returns {React.Component}
  */
-function ComponentRenderer({ type, model, ...props }) {
+function ComponentRenderer(props) {
+    const { type, model } = props;
     const Component = componentMap[type];
 
     if (Component) {
@@ -26,7 +28,7 @@ function ComponentRenderer({ type, model, ...props }) {
     }
 
     return (
-        <div className={cx(styles.wizard__itemWrap, styles.wizard__itemWrap_itemNotFound)}>
+        <div className={cx('wizard__itemWrap', 'wizard__itemWrap_itemNotFound')}>
             No render for <b>{type}</b>
         </div>
     );
@@ -38,8 +40,8 @@ function getKey (item, idx) {
     return `${model}_${subModel || ''}` ;
 }
 
-function ComponentBuilder ({ components, formikProps }) {
-    return components.map( item => <ComponentRenderer key={getKey(item)} { ...item } />)
+function ComponentBuilder ({ components, formikProps, info }) {
+    return components.map( item => <ComponentRenderer key={getKey(item)} { ...item } info={info} />)
 }
 
 export default ComponentBuilder;

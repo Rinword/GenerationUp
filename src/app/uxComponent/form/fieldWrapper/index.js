@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import FieldError from './FieldError';
 import FieldLabel from './FieldLabel';
@@ -20,7 +19,9 @@ const FieldWrapperHOC = Component => {
     return class Wrapped extends React.Component {
 
         render() {
-            const { hidden, errorMessage, label, name, size, theme, overflow, margin } = this.props;
+            const { props = {}, style = {}, model = {} } = this.props;
+            const { label } = props;
+            const { size, theme, hidden, margin, overflow, display } = style;
 
             if (!showIfChecker(this.props)) {
                 return null;
@@ -38,9 +39,9 @@ const FieldWrapperHOC = Component => {
                     overflow={overflow}
                     hasError={Boolean(errorText)}
                 >
-                    <FieldLabel text={label} theme={theme} />
+                    <FieldLabel text={label} theme={theme} display={display} />
                     <Component {...this.props} />
-                    <FieldError text={errorText} name={name} />
+                    <FieldError text={errorText} name={model} />
                 </FieldContainer>
             );
         }

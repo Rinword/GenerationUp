@@ -11,6 +11,9 @@ export const baseItemConfig = [
         type: "text",
         model: "name",
         defaultValue: "Name",
+        style: {
+            size: 'auto'
+        },
         inputStyle: {
             fontSize: '32px',
             paddingLeft: 0,
@@ -21,6 +24,9 @@ export const baseItemConfig = [
         model: "rare",
         props: {
             noBg: true,
+        },
+        style: {
+            size: 'auto'
         },
         defaultValue: "usual",
         options: [
@@ -35,6 +41,9 @@ export const baseItemConfig = [
         type: "icon-cell-picker",
         model: "type",
         defaultValue: "oneHandWeapon",
+        style: {
+            size: 'auto'
+        },
         options: [
             { name: "one-hand weapon", value: "oneHandWeapon", icon: "weapon_one_hand" },
             { name: "two-hand weapon", value: "twoHandWeapon", icon: "weapon_two_hand" },
@@ -49,6 +58,9 @@ export const baseItemConfig = [
         model: "subtype",
         subModel: "oneHandWeapon",
         defaultValue: "dagger",
+        style: {
+            size: 'auto'
+        },
         options: [
             { name: "dagger", value: "dagger", icon: "weapon_dagger" },
             { name: "sword", value: "sword", icon: "weapon_sword" },
@@ -64,6 +76,9 @@ export const baseItemConfig = [
         model: "subtype",
         subModel: "twoHandWeapon",
         defaultValue: "staff",
+        style: {
+            size: 'auto'
+        },
         options: [
             { name: "staff", value: "staff", icon: "weapon_staff" },
             { name: "sword", value: "sword", icon: "weapon_sword" },
@@ -95,17 +110,33 @@ export const baseItemConfig = [
 export const specialItemConfig = {
     weapon: [
         {
-            type: 'counter-row',
+            type: 'counter',
             model: 'damage',
             defaultValue: 0,
+            minValue: -2,
+            maxValue: 2,
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            externalStateIncreaseControl: 'blockedRows',
             props: {
-                label: 'Damage'
-            }
+                label: 'Damage',
+            },
         },
         {
-            type: 'counter-row',
+            type: 'counter',
             model: 'DPS',
             defaultValue: 0,
+            minValue: -2,
+            maxValue: 2,
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            externalStateIncreaseControl: 'blockedRows',
             props: {
                 label: 'DPS'
             }
@@ -113,6 +144,11 @@ export const specialItemConfig = {
         {
             type: 'select-and-counter',
             model: 'stat1',
+            style: {
+                display: 'row',
+                margin: 'top_20',
+                size: 'full',
+            },
             showIf: {
                 statePath: 'stats',
                 moreThan: 0
@@ -121,6 +157,11 @@ export const specialItemConfig = {
         {
             type: 'select-and-counter',
             model: 'stat2',
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
             showIf: {
                 statePath: 'stats',
                 moreThan: 1
@@ -129,22 +170,51 @@ export const specialItemConfig = {
         {
             type: 'select-and-counter',
             model: 'stat3',
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
             showIf: {
                 statePath: 'stats',
                 moreThan: 2
             }
         },
         {
-            type: 'select-row',
+            type: 'counter',
             model: 'require1',
+            defaultValue: 0,
+            minValue: -5,
+            maxValue: 5,
+            externalStateIncreaseControl: 'blockedRows',
+            style: {
+                display: 'row',
+                margin: 'top_20',
+                size: 'full',
+            },
+            props: {
+                label: "Require1",
+            },
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 0
             }
         },
         {
-            type: 'select-row',
+            type: 'counter',
             model: 'require2',
+            defaultValue: 0,
+            minValue: -5,
+            maxValue: 5,
+            externalStateIncreaseControl: 'blockedRows',
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            props: {
+                label: "Require2",
+            },
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 1

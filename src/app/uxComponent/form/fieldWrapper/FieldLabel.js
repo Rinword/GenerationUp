@@ -11,8 +11,8 @@ import styles from '../styles.scss';
  * @return {*}
  * @constructor
  */
-export default function FieldLabel({ theme, text }) {
-    if (!text) return null;
+export default function FieldLabel({ theme, text, display }) {
+    if (!text || display === 'row') return null;
 
     return <p className={cx(styles['ux-field-wrap__label'], styles[`theme_${theme}`])}>{text}</p>;
 }

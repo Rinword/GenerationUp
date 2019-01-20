@@ -16,7 +16,7 @@ class Anvil extends React.PureComponent {
         super(props);
 
         this.state = {
-            data: {}
+            itemStats: {}
         };
 
     }
@@ -29,29 +29,51 @@ class Anvil extends React.PureComponent {
         this.setState(this.getStateWithRare(values));
     }
 
-    onDateValidate = data => {
+    onDateValidate = itemStats => {
         // validate for max points
-        this.setState({ data });
+        const { maxPoints } = this.state;
+        const freePoints = this.calculateFreePoints(itemStats, maxPoints);
+        const blockedRows =  this.calculateBlockedRows(itemStats, maxPoints);
+        this.setState({ itemStats, freePoints, blockedRows});
     }
 
-    getStateWithRare = (values) => {
-        const { data } = this.state;
-        const { rare = 'usual' } = values;
+    getStateWithRare = (itemProps) => {
+        const { itemStats } = this.state;
+        const { rare = 'usual' } = itemProps;
         const { points, stats, maxRequiredStats } = pointsFromRare[rare];
 
         return {
             maxPoints: points,
-            freePoints: points,
             stats,
             maxRequiredStats,
-            values: values,
-            data
+            freePoints: this.calculateFreePoints(itemStats, points),
+            blockedRows: this.calculateBlockedRows(itemStats, points),
+            itemProps,
+            itemStats,
         }
     }
 
+    calculateFreePoints = (stats, maxPoints) => {
+        return maxPoints - Object.values(stats).reduce((sum, current) => sum + current, 0);
+    }
+
+    calculateBlockedRows = (stats, maxPoints) => {
+        const freePoints = this.calculateFreePoints(stats, maxPoints);
+        const toReturn = {};
+
+        // если нет свободных очков - блочим все стрелки на прибавку
+        if(freePoints <= 0) {
+            for(const i in stats) {
+                toReturn[i] = { increase: true }
+            }
+        }
+
+        return toReturn;
+    }
+
     getSpecialTypeConfig = () => {
-        const { values } = this.state;
-        const { type } = values;
+        const { itemProps } = this.state;
+        const { type } = itemProps;
         let slotType = 'armor';
         switch (type) {
             case 'oneHandWeapon':
@@ -63,12 +85,13 @@ class Anvil extends React.PureComponent {
     }
 
     render() {
-        const { values, maxPoints, freePoints, stats, maxRequiredStats } = this.state;
-        const { name, rare, type, subtype } = values;
+        const { itemProps, maxPoints, freePoints, stats, maxRequiredStats } = this.state;
+        const { name, rare, type, subtype } = itemProps;
         const initialValues = generateDefaultValues(baseItemConfig);
 
         const initialData = {};
         const specialItemConfig = this.getSpecialTypeConfig();
+        const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig());
 
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>
@@ -85,6 +108,7 @@ class Anvil extends React.PureComponent {
                         </Form>
                     )}
                 </Formik>
+
                 <p><b>{name}</b>, {rare} {subtype} [ {type} ] (stats: {stats} / req. stats: {maxRequiredStats})</p>
                 <hr/>
                 <Row jc="space-between" padding="0 20px 0 0">
@@ -94,11 +118,11 @@ class Anvil extends React.PureComponent {
                 <hr/>
 
                 <Formik
-                    initialValues={initialData}
+                    initialValues={specialInitialValues}
                     validate={this.onDateValidate}
                 >
                     {formikProps => (
-                        <Form>
+                        <Form className="anvil__special-form">
                             <ComponentBuilder
                                 components={specialItemConfig}
                                 formikProps={formikProps}

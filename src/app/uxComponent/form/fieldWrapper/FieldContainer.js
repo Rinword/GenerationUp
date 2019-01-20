@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
-import styles from '../styles.scss';
+import '../styles.scss';
 
 /**
  * Wrap the field container and apply visible staff like size, margin,
@@ -18,16 +18,17 @@ import styles from '../styles.scss';
  */
 export default function FieldContainer({ children, size, hasError, hidden, name, overflow, margin }) {
     const className = cx(
-        styles['ux-field-wrap'],
-        styles[`ux-field-wrap_size_${size}`],
-        styles[`ux-field-wrap_overflow_${overflow}`],
+        'ux-field-wrap',
+        `ux-field-wrap_size_${size}`,
+        `ux-field-wrap_overflow_${overflow}`,
         {
-            [styles['ux-field-wrap_invalid']]: hasError,
-            [styles['ux-field-wrap_hidden']]: hidden,
-            [styles[`ux-field-wrap_margin_${margin}`]]: margin,
+            ['ux-field-wrap_invalid']: hasError,
+            ['ux-field-wrap_hidden']: hidden,
+            [`ux-field-wrap_margin_${margin}`]: margin,
         }
     );
     const id = name ? `container_${name.replace('.', '-')}` : null;
+
     return (
         <div id={id} className={className}>
             {children}
