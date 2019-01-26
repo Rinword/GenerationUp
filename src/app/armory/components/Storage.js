@@ -42,7 +42,7 @@ class Storage extends React.PureComponent {
 
     render() {
         const { data } = this.state;
-        console.log('render', data);
+
         return (
             <Column className={cx('storage', this.props.className)}>
                 <Row className={cx('storage__header')} padding="10px 0">

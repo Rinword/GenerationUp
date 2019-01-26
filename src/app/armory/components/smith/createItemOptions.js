@@ -142,39 +142,112 @@ export const specialItemConfig = {
             }
         },
         {
-            type: 'select-and-counter',
-            model: 'stat1',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_20',
-                size: 'full',
+                jc: 'space-between',
+                margin: '20px 0 0 0',
             },
-            showIf: {
-                statePath: 'stats',
-                moreThan: 0
-            }
+            list: [
+                {
+                    type: 'select',
+                    model: 'stat1type',
+                    style: {
+                        display: 'row',
+                        size: 'full',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 0
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat1',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 0
+                    }
+                },
+            ],
         },
         {
-            type: 'select-and-counter',
-            model: 'stat2',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_10',
-                size: 'full',
+                jc: 'space-between',
+                margin: '10px 0 0'
             },
-            showIf: {
-                statePath: 'stats',
-                moreThan: 1
-            }
+            list: [
+                {
+                    type: 'select',
+                    model: 'stat2type',
+                    style: {
+                        display: 'row',
+                        size: 'full',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 1
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat2',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 1
+                    }
+                },
+            ]
         },
         {
-            type: 'select-and-counter',
-            model: 'stat3',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_10',
-                size: 'full',
+                jc: 'space-between',
+                margin: '10px 0 0'
             },
+            list: [
+                {
+                    type: 'select',
+                    model: 'stat3type',
+                    style: {
+                        display: 'row',
+                        size: 'full',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 2
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat3',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'stats',
+                        moreThan: 2
+                    }
+                },
+            ],
             showIf: {
                 statePath: 'stats',
                 moreThan: 2

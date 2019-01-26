@@ -1,4 +1,5 @@
 import React from 'react';
+import get from 'lodash/get';
 
 import FieldError from './FieldError';
 import FieldLabel from './FieldLabel';
@@ -17,9 +18,18 @@ const FieldWrapperHOC = Component => {
     }
 
     return class Wrapped extends React.Component {
+        checkDefaultValue = () => {
+            const { model, form, defaultValue } = this.props;
+            const { setFieldValue, values } = form;
+            const value = get(values, model);
+
+            if( defaultValue !== undefined && value === undefined) {
+                setFieldValue(model, defaultValue);
+            }
+        }
 
         render() {
-            const { props = {}, style = {}, model = {} } = this.props;
+            const { props = {}, style = {}, model = {}, form } = this.props;
             const { label } = props;
             const { size, theme, hidden, margin, overflow, display } = style;
 
@@ -27,6 +37,7 @@ const FieldWrapperHOC = Component => {
                 return null;
             }
 
+            this.checkDefaultValue()
             const errorText = '';
 
             return (

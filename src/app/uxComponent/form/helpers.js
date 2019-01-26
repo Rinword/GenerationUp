@@ -6,10 +6,11 @@ import { get, set, isEmpty } from 'lodash';
  * @param {string} path - path for match
  * @param {any} value
  * @param {array} oneOfValues
- * @param {bool} isDefined - returns true is value in path is not lead to false
+ * @param {boolean} isDefined - returns true is value in path is not lead to false
+ * @param {number} moreThan - returns true is value in path is not lead to false
  * @return {boolean}
  */
-function checkInDataWithPath(data, path, value, oneOfValues, isDefined) {
+function checkInDataWithPath(data, path, value, oneOfValues, isDefined, moreThan) {
     if (!path) {
         return true;
     }
@@ -20,6 +21,11 @@ function checkInDataWithPath(data, path, value, oneOfValues, isDefined) {
 
     if (isDefined) {
         return Boolean(get(data, path, ''));
+    }
+
+    if(!Number.isNaN(moreThan) && moreThan !== undefined) {
+        // console.log('!!!', moreThan, get(data, path, 0), get(data, path, 0) > moreThan);
+        return get(data, path, 0) > moreThan;
     }
 
     if(oneOfValues instanceof Array) {
@@ -68,12 +74,12 @@ function checkInProps(model, props) {
 export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
     if (!(showIf instanceof Object)) return true;
 
-    const { path, statePath, isDefined, value, hasDataInProps, noResetModelValues, oneOfValues } = showIf;
+    const { path, statePath, isDefined, value, hasDataInProps, noResetModelValues, oneOfValues, moreThan } = showIf;
     const { values } = form;
 
     const isShown =
-        checkInDataWithPath(info, statePath, value, oneOfValues, isDefined) &&
-        checkInDataWithPath(values, path, value, oneOfValues, isDefined) &&
+        checkInDataWithPath(info, statePath, value, oneOfValues, isDefined, moreThan) &&
+        checkInDataWithPath(values, path, value, oneOfValues, isDefined, moreThan) &&
         checkInProps(hasDataInProps, props);
 
     const formValue = form.values[field.name];
@@ -95,17 +101,27 @@ export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
  * @param config
  * @returns {{}}
  */
-export function generateDefaultValues(config) {
+export function generateDefaultValues(config, info) {
     const formModel = {};
 
-    config.forEach( field => {
-        const { model, defaultValue, subModel, showIf } = field;
+    const checkRow = field => {
+        const { type, model, defaultValue, subModel, showIf } = field;
 
-        const isShown = showIfChecker({ form: { values: JSON.parse(JSON.stringify(formModel)) }, field: { name: model }, showIf });
+        const isShown =
+            showIfChecker({ form: { values: JSON.parse(JSON.stringify(formModel)) }, field: { name: model }, showIf, info });
 
         if(defaultValue !== undefined && isShown) {
             set(formModel, model, defaultValue);
         }
+    }
+
+    config.forEach(field => {
+        const { type, list = [] } = field;
+        if(type === 'row') {
+            list.forEach(checkRow)
+        }
+
+        return checkRow(field)
     })
 
     return formModel;

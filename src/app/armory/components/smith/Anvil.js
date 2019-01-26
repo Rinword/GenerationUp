@@ -91,7 +91,7 @@ class Anvil extends React.PureComponent {
 
         const initialData = {};
         const specialItemConfig = this.getSpecialTypeConfig();
-        const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig());
+        const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig(), this.state);
 
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>

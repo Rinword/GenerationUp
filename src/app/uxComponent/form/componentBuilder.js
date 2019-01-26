@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
+
+import { Row } from 'ui/UxBox';
 
 import './styles.scss';
 
-import { TextField, Counter, IconCellPicker } from 'ui/form/fields'
+import { TextField, Counter, IconCellPicker } from 'ui/form/fields';
 
 const componentMap = {
     text: TextField,
@@ -12,10 +13,39 @@ const componentMap = {
     'icon-cell-picker': IconCellPicker,
 }
 
+function getKey (item, idx) {
+    const { model = idx, subModel = '' } = item;
+
+    return `${model}_${subModel || ''}` ;
+}
+
+function RowComponentRender(props) {
+    const { list, style, info } = props;
+    
+    return (
+        <Row {...style}>
+            {list.map( (item, i) => <ComponentRenderer key={getKey(item, i)} { ...item } info={info} />)}
+        </Row>
+    )
+}
+
+RowComponentRender.propTypes = {
+    list: PropTypes.arrayOf(PropTypes.shape({})),
+    style: PropTypes.shape({}),
+    info: PropTypes.shape({}),
+}
+
+RowComponentRender.defaultProps = {
+    list: [],
+    style: {},
+    info: {},
+}
+
 /**
  * Handles selection and rendering of components from a string name.
- * @param {string} type - String type which will be used to select from the componentsMap.
- * @param {string} model - String with model path in form state, also use for field name in formik.
+ *
+ * @param {string} props.type - String type which will be used to select from the componentsMap.
+ * @param {string} props.model - String with model path in form state, also use for field name in formik.
  * @param {object} props - Props to be passed to the child component.
  * @returns {React.Component}
  */
@@ -28,20 +58,20 @@ function ComponentRenderer(props) {
     }
 
     return (
-        <div className={cx('wizard__itemWrap', 'wizard__itemWrap_itemNotFound')}>
-            No render for <b>{type}</b>
-        </div>
+        <div>No render for <b>{type}</b></div>
     );
 }
 
-function getKey (item, idx) {
-    const { model = idx, subModel = '' } = item;
-
-    return `${model}_${subModel || ''}` ;
-}
-
 function ComponentBuilder ({ components, formikProps, info }) {
-    return components.map( item => <ComponentRenderer key={getKey(item)} { ...item } info={info} />)
+    return components.map( (item, i) => {
+        const { type } = item;
+        switch (type) {
+            case 'row':
+                return <RowComponentRender key={getKey(item, i)} { ...item } info={info} />
+            default:
+                return <ComponentRenderer key={getKey(item)} { ...item } info={info} />
+        }
+    })
 }
 
 export default ComponentBuilder;

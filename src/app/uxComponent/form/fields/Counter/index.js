@@ -70,7 +70,7 @@ class Class extends React.PureComponent {
         if( display === 'row') {
             return (
                 <div className={cx('ux-counter', className, 'ux-counter_display_row')}>
-                    <span>{label}:</span>
+                    <span>{label ? `${label}:` : ''}</span>
                     <TextField
                         {...restProps}
                         size="s"
@@ -100,10 +100,14 @@ class Class extends React.PureComponent {
 
 Class.propTypes = {
     className: PropTypes.string,
+    form: PropTypes.shape({}),
+    field: PropTypes.shape({}),
 };
 
 Class.defaultProps = {
     className: '',
+    form: {},
+    field: {},
 };
 
 export default Class;
