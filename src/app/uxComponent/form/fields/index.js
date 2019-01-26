@@ -4,7 +4,9 @@ import FormikFieldWrapperHOC from '../fieldWrapper/FormikFieldWrapper';
 import _TextField from './TextField';
 import _Counter from './Counter';
 import _IconCellPicker from './IconCellPicker';
+import _Select from './Select';
 
 export const TextField = FormikFieldWrapperHOC(FieldWrapperHOC(_TextField));
+export const Select = FormikFieldWrapperHOC(FieldWrapperHOC(_Select));
 export const Counter = FormikFieldWrapperHOC(FieldWrapperHOC(_Counter));
 export const IconCellPicker = FormikFieldWrapperHOC(FieldWrapperHOC(_IconCellPicker));

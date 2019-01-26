@@ -93,6 +93,8 @@ class Anvil extends React.PureComponent {
         const specialItemConfig = this.getSpecialTypeConfig();
         const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig(), this.state);
 
+        console.log(specialInitialValues);
+
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>
                 <Formik

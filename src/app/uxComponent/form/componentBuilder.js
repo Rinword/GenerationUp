@@ -5,11 +5,12 @@ import { Row } from 'ui/UxBox';
 
 import './styles.scss';
 
-import { TextField, Counter, IconCellPicker } from 'ui/form/fields';
+import { TextField, Counter, IconCellPicker, Select } from 'ui/form/fields';
 
 const componentMap = {
     text: TextField,
     counter: Counter,
+    select: Select,
     'icon-cell-picker': IconCellPicker,
 }
 

@@ -107,6 +107,64 @@ export const baseItemConfig = [
     }
 ]
 
+export const ratingsList = [
+    {
+        label: 'Рейт. крит. удара',
+        value: 'critChance',
+        sources: [{ agility: 0.5 }, { intellect: 0.5 }]
+    },
+    {
+        label: 'Множитель крит. урона',
+        value: 'critMultiplier',
+        sources: [{ agility: 1 }]
+    },
+    {
+        label: 'Сила атаки',
+        value: 'attackPower',
+        sources: [{ strength: 0.5 }]
+    },
+    {
+        label: 'Сила заклинаний',
+        value: 'epRegen',
+        sources: [{ spellPower: 0.5 }]
+    },
+    {
+        label: 'Макс. здоровье',
+        value: 'hpMax',
+        sources: [{ strength: 7 }, { stamina: 10 }]
+    },
+    {
+        label: 'Макс. мана',
+        value: 'mpMax',
+        sources: [{ intellect: 10 }]
+    },
+    {
+        label: 'Макс. энергия',
+        value: 'epMax',
+        sources: [{ agility: 2 }]
+    },
+    {
+        label: 'Восстан. здоровья',
+        value: 'hpRegen',
+        sources: [{ stamina: 0.5 }, { spirit: 0.7 }]
+    },
+    {
+        label: 'Восстан. маны',
+        value: 'mpRegen',
+        sources: [{ stamina: 0.5 }, { spirit: 0.7 }]
+    },
+    {
+        label: 'Восстан. энегрии',
+        value: 'epRegen',
+        sources: [{ spirit: 1 }]
+    },
+    {
+        label: 'Рейтинг защиты',
+        value: 'defenceRating',
+        sources: [{ strength: 1, stamina: 2 }]
+    }
+]
+
 export const specialItemConfig = {
     weapon: [
         {
@@ -151,10 +209,12 @@ export const specialItemConfig = {
                 {
                     type: 'select',
                     model: 'stat1type',
+                    defaultValue: 'critChance',
                     style: {
                         display: 'row',
-                        size: 'full',
+                        size: 'l',
                     },
+                    options: ratingsList,
                     showIf: {
                         statePath: 'stats',
                         moreThan: 0
@@ -189,8 +249,10 @@ export const specialItemConfig = {
                     model: 'stat2type',
                     style: {
                         display: 'row',
-                        size: 'full',
+                        size: 'l',
                     },
+                    defaultValue: 'critMultiplier',
+                    options: ratingsList,
                     showIf: {
                         statePath: 'stats',
                         moreThan: 1
@@ -223,10 +285,12 @@ export const specialItemConfig = {
                 {
                     type: 'select',
                     model: 'stat3type',
+                    defaultValue: 'attackPower',
                     style: {
                         display: 'row',
-                        size: 'full',
+                        size: 'l',
                     },
+                    options: ratingsList,
                     showIf: {
                         statePath: 'stats',
                         moreThan: 2
