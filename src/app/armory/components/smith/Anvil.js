@@ -18,15 +18,15 @@ class Anvil extends React.PureComponent {
         this.state = {
             itemStats: {}
         };
-
     }
 
     componentWillMount() {
-        this.setState(this.getStateWithRare(generateDefaultValues(baseItemConfig)));
+        this.setState(this.getStateWithRare(generateDefaultValues(baseItemConfig)), () => this.onChange());
     }
 
     onValidate = values => {
-        this.setState(this.getStateWithRare(values));
+        this.setState(this.getStateWithRare(values), () => this.onChange());
+
     }
 
     onDateValidate = itemStats => {
@@ -36,7 +36,14 @@ class Anvil extends React.PureComponent {
         const blockedRows =  this.calculateBlockedRows(itemStats, maxPoints);
         const blockedStats = this.calculateBlockedStats(itemStats);
 
-        this.setState({ itemStats, freePoints, blockedRows, blockedStats});
+        this.setState({ itemStats, freePoints, blockedRows, blockedStats}, () => this.onChange());
+    }
+
+    onChange = () => {
+        const { onChange } = this.props;
+        const { itemProps, itemStats } = this.state;
+
+        onChange({...itemProps, ...itemStats});
     }
 
     getStateWithRare = itemProps => {

@@ -16,3 +16,12 @@
     padding-right: 15px;
   }
 }
+
+.show-room {
+  &__header {
+
+  }
+  &__content {
+    flex-wrap: wrap;
+  }
+}
