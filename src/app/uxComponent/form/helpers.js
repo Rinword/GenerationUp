@@ -87,9 +87,9 @@ export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
     // remove value from form if this field not shown, otherwise it will be inside form.values and
     // can make wrong wizard loading with dependent selects
     // if (!noResetModelValues && !isShown && formValue) {
-    //     delete form.values[field.name];
-    //     if (form.resetForm instanceof Function) {
-    //         form.resetForm(form.values);
+    //     // delete form.values[field.name];
+    //     if (form.setFieldValue instanceof Function) {
+    //         form.setFieldValue(field.name, undefined);
     //     }
     // }
 

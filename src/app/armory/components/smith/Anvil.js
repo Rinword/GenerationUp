@@ -34,10 +34,12 @@ class Anvil extends React.PureComponent {
         const { maxPoints } = this.state;
         const freePoints = this.calculateFreePoints(itemStats, maxPoints);
         const blockedRows =  this.calculateBlockedRows(itemStats, maxPoints);
-        this.setState({ itemStats, freePoints, blockedRows});
+        const blockedStats = this.calculateBlockedStats(itemStats);
+
+        this.setState({ itemStats, freePoints, blockedRows, blockedStats});
     }
 
-    getStateWithRare = (itemProps) => {
+    getStateWithRare = itemProps => {
         const { itemStats } = this.state;
         const { rare = 'usual' } = itemProps;
         const { points, stats, maxRequiredStats } = pointsFromRare[rare];
@@ -48,13 +50,16 @@ class Anvil extends React.PureComponent {
             maxRequiredStats,
             freePoints: this.calculateFreePoints(itemStats, points),
             blockedRows: this.calculateBlockedRows(itemStats, points),
+            blockedStats: this.calculateBlockedStats(itemStats),
             itemProps,
-            itemStats,
+            // itemStats,
         }
     }
 
     calculateFreePoints = (stats, maxPoints) => {
-        return maxPoints - Object.values(stats).reduce((sum, current) => sum + current, 0);
+        return maxPoints - Object.values(stats).reduce((sum, current) => {
+            return isNaN(current) ? sum : sum + current
+        }, 0);
     }
 
     calculateBlockedRows = (stats, maxPoints) => {
@@ -69,6 +74,10 @@ class Anvil extends React.PureComponent {
         }
 
         return toReturn;
+    }
+
+    calculateBlockedStats = ({ types = {}}) => {
+        return Object.values(types);
     }
 
     getSpecialTypeConfig = () => {
@@ -92,8 +101,6 @@ class Anvil extends React.PureComponent {
         const initialData = {};
         const specialItemConfig = this.getSpecialTypeConfig();
         const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig(), this.state);
-
-        console.log(specialInitialValues);
 
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>

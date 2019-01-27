@@ -1,5 +1,5 @@
 export default {
-    option: (provided, selected) => ({
+    option: provided => ({
         ...provided,
         color: 'white',
         fontWeight: '600',
@@ -16,7 +16,7 @@ export default {
         border: 'none',
         borderBottom: '1px solid white',
     }),
-    control: (provided, focused) => ({
+    control: provided => ({
         ...provided,
         backgroundColor: 'transparent',
         border: 'none',
@@ -31,6 +31,10 @@ export default {
         paddingLeft: '0',
     }),
     singleValue: provided => ({
+        ...provided,
+        color: 'white',
+    }),
+    placeholder: provided => ({
         ...provided,
         color: 'white',
     }),

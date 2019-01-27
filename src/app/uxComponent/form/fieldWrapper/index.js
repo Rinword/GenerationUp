@@ -23,9 +23,24 @@ const FieldWrapperHOC = Component => {
             const { setFieldValue, values } = form;
             const value = get(values, model);
 
-            if( defaultValue !== undefined && value === undefined) {
+            if(defaultValue !== undefined && value === undefined) {
                 setFieldValue(model, defaultValue);
             }
+        }
+
+        //TODO recursion abyss
+        removeValue = () => {
+            const { model, form } = this.props;
+            const { setFieldValue, values } = form;
+            const value = get(values, model);
+
+            if(value !== undefined) {
+                setFieldValue(model, undefined);
+            }
+        }
+
+        componentWillUnmount() {
+            console.log('unmount', this.props.field.name)
         }
 
         render() {
@@ -42,6 +57,8 @@ const FieldWrapperHOC = Component => {
 
             return (
                 <FieldContainer
+                    form={form}
+                    model={model}
                     size={size}
                     label={label}
                     theme={theme}

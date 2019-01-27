@@ -16,24 +16,36 @@ import '../styles.scss';
  * @return {XML}
  * @constructor
  */
-export default function FieldContainer({ children, size, hasError, hidden, name, overflow, margin }) {
-    const className = cx(
-        'ux-field-wrap',
-        `ux-field-wrap_size_${size}`,
-        `ux-field-wrap_overflow_${overflow}`,
-        {
-            ['ux-field-wrap_invalid']: hasError,
-            ['ux-field-wrap_hidden']: hidden,
-            [`ux-field-wrap_margin_${margin}`]: margin,
-        }
-    );
-    const id = name ? `container_${name.replace('.', '-')}` : null;
+class FieldContainer extends React.PureComponent {
 
-    return (
-        <div id={id} className={className}>
-            {children}
-        </div>
-    );
+    componentWillUnmount() {
+        const { model, form } = this.props;
+        const { setFieldValue } = form;
+        if(setFieldValue instanceof Function) {
+            setFieldValue(model, undefined);
+        }
+    }
+
+    render() {
+        const {children, size, hasError, hidden, name, overflow, margin} = this.props;
+        const className = cx(
+            'ux-field-wrap',
+            `ux-field-wrap_size_${size}`,
+            `ux-field-wrap_overflow_${overflow}`,
+            {
+                ['ux-field-wrap_invalid']: hasError,
+                ['ux-field-wrap_hidden']: hidden,
+                [`ux-field-wrap_margin_${margin}`]: margin,
+            }
+        );
+        const id = name ? `container_${name.replace('.', '-')}` : null;
+
+        return (
+            <div id={id} className={className}>
+                {children}
+            </div>
+        );
+    }
 }
 
 FieldContainer.propTypes = {
@@ -44,6 +56,8 @@ FieldContainer.propTypes = {
     name: PropTypes.string,
     overflow: PropTypes.string,
     margin: PropTypes.string,
+    model: PropTypes.string,
+    form: PropTypes.shape({}),
 };
 
 FieldContainer.defaultProps = {
@@ -53,4 +67,9 @@ FieldContainer.defaultProps = {
     name: '',
     overflow: 'hidden',
     margin: '',
+    model: '',
+    form: {},
 };
+
+
+export default FieldContainer;

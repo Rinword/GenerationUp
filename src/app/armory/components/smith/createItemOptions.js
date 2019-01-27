@@ -2,8 +2,8 @@ export const pointsFromRare = {
     usual: { points: 6, stats: 1, maxRequiredStats: 1 },
     unusual: { points: 12, stats: 2, maxRequiredStats: 2 },
     rare: { points: 18, stats: 2, maxRequiredStats: 2 },
-    epic: { points: 24, stats: 3, maxRequiredStats: 2 },
-    legendary: { points: 24, stats: 3, maxRequiredStats: 2 }
+    epic: { points: 24, stats: 3, maxRequiredStats: 3 },
+    legendary: { points: 24, stats: 3, maxRequiredStats: 3 }
 }
 
 export const baseItemConfig = [
@@ -208,13 +208,16 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'stat1type',
+                    model: 'types.stat1',
                     defaultValue: 'critChance',
                     style: {
                         display: 'row',
                         size: 'l',
                     },
                     options: ratingsList,
+                    excludedOptions: {
+                        statePath: 'blockedStats'
+                    },
                     showIf: {
                         statePath: 'stats',
                         moreThan: 0
@@ -246,10 +249,13 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'stat2type',
+                    model: 'types.stat2',
                     style: {
                         display: 'row',
                         size: 'l',
+                    },
+                    excludedOptions: {
+                        statePath: 'blockedStats'
                     },
                     defaultValue: 'critMultiplier',
                     options: ratingsList,
@@ -284,11 +290,14 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'stat3type',
+                    model: 'types.stat3',
                     defaultValue: 'attackPower',
                     style: {
                         display: 'row',
                         size: 'l',
+                    },
+                    excludedOptions: {
+                        statePath: 'blockedStats'
                     },
                     options: ratingsList,
                     showIf: {
@@ -355,6 +364,26 @@ export const specialItemConfig = {
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 1
+            }
+        },
+        {
+            type: 'counter',
+            model: 'require3',
+            defaultValue: 0,
+            minValue: -5,
+            maxValue: 5,
+            externalStateIncreaseControl: 'blockedRows',
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            props: {
+                label: "Require3",
+            },
+            showIf: {
+                statePath: 'maxRequiredStats',
+                moreThan: 2
             }
         }
     ],
