@@ -99,9 +99,10 @@ export function showIfChecker({ form, field = {}, info, showIf, ...props }) {
 /**
  * Returns object with defaultValuesForm
  * @param config
- * @returns {{}}
+ * @param info
+ * @returns {object}
  */
-export function generateDefaultValues(config, info) {
+export function generateDefaultValues(config, info = {}) {
     const formModel = {};
 
     const checkRow = field => {

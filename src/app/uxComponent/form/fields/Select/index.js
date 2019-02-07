@@ -4,7 +4,21 @@ import Select from 'react-select';
 import cx from 'classnames';
 import get from 'lodash/get';
 
-import styles from './customStyles';
+import stylesJS from './customStyles';
+import styles from './styles.scss';
+
+function Sticker({ option = {}, currentOption = {}, onChange }) {
+    const { label, value, disabled = false } = option;
+    const { value: currentValue } = currentOption;
+    const isSelected = currentValue === value;
+
+    const className = cx('ux-select__sticker', {
+        ['ux-select__sticker_selected']: isSelected,
+        ['ux-select__sticker_disabled']: disabled,
+    });
+
+    return <div className={className} onClick={() => disabled ? '' : onChange(option)}>{label}</div>
+}
 
 class SelectField extends React.PureComponent {
     constructor(props) {
@@ -25,7 +39,39 @@ class SelectField extends React.PureComponent {
         const stateExOptions = get(info, statePath, []);
 
         return options.filter(opt => !(stateExOptions.indexOf(opt.value) > -1) || opt.value === value);
+    }
 
+    disabledOptions = filteredOptions => {
+        const { disabledOptions = ["intellect"], info } = this.props;
+
+        if(disabledOptions instanceof Array) {
+            return filteredOptions.map(opt => {
+                if(disabledOptions.indexOf(opt.value) < 0) {
+                    return opt;
+                }
+
+                return {
+                    ...opt,
+                    disabled: true,
+                }
+            } );
+        }
+
+        const { statePath } = disabledOptions;
+        const stateDisOptions = get(info, statePath, ["intellect"]);
+
+        console.log(filteredOptions, stateDisOptions)
+
+        return filteredOptions.map(opt => {
+            if(stateDisOptions.indexOf(opt.value) < 0) {
+                return opt;
+            }
+
+            return {
+                ...opt,
+                disabled: true,
+            }
+        });
     }
 
     onChange = optionValue => {
@@ -41,22 +87,38 @@ class SelectField extends React.PureComponent {
     }
 
     render() {
-        const { className, options, field } = this.props;
+        const { className, options, field, style } = this.props;
+        const { displayMode = 'default' } = style;
+
         const { value } = field;
 
         const filteredOptions = this.filteredOptions();
-        const optionValue = this.filteredOptions().find( i => i.value === value);
+        const finalOptions = this.disabledOptions(filteredOptions);
+        const currentOption = this.filteredOptions().find( i => i.value === value) || filteredOptions[0];
 
-        return (
-            <Select
-                className={cx('ux-select', className)}
-                classNamePrefix="react-select"
-                styles={styles}
-                value={optionValue}
-                onChange={this.onChange}
-                options={this.filteredOptions()}
-            />
-        );
+        switch(displayMode) {
+            case 'stickers':
+                return ( <div className={cx('ux-select', 'ux-select_stickers')}>
+                    {finalOptions.map((option, i) =>
+                        <Sticker
+                            key={option.value}
+                            option={option}
+                            currentOption={currentOption}
+                            onChange={this.onChange}
+                        />)}
+                </div>);
+
+            default:
+                return (
+                    <Select
+                        className={cx(className)}
+                        styles={stylesJS}
+                        value={currentOption}
+                        onChange={this.onChange}
+                        options={finalOptions}
+                    />
+                );
+        }
     }
 }
 
@@ -74,7 +136,7 @@ SelectField.propTypes = {
             name: PropTypes.string,
             value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         }))
-        ]),
+    ]),
 };
 
 SelectField.defaultProps = {

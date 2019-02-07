@@ -28,7 +28,7 @@ export const baseItemConfig = [
         style: {
             size: 'auto'
         },
-        defaultValue: "usual",
+        defaultValue: "rare",
         options: [
             { name: "usual", value: "usual", icon: 'common_usual' },
             { name: "unusual", value: "unusual", icon: 'common_unusual' },
@@ -107,62 +107,68 @@ export const baseItemConfig = [
     }
 ]
 
-export const ratingsList = [
-    {
+export const ratingsList = {
+    critChance: {
         label: 'Рейт. крит. удара',
-        value: 'critChance',
-        sources: [{ agility: 0.5 }, { intellect: 0.5 }]
+        sources: {
+            agility: 0.5,
+            intellect: 0.5
+        }
     },
-    {
+    critMultiplier: {
         label: 'Множитель крит. урона',
-        value: 'critMultiplier',
-        sources: [{ agility: 1 }]
+        sources: { agility: 1 }
     },
-    {
+    hasteRating: {
+        label: 'Рейтинг скорсти',
+        sources: { agility: 1, stamina: 0.7 }
+    },
+    attackPower: {
         label: 'Сила атаки',
-        value: 'attackPower',
-        sources: [{ strength: 0.5 }]
+        sources: {strength: 0.5, agility: 0.5 }
     },
-    {
+    spellPower: {
         label: 'Сила заклинаний',
-        value: 'epRegen',
-        sources: [{ spellPower: 0.5 }]
+        sources: { intellect: 0.5 }
     },
-    {
+    hpMax: {
         label: 'Макс. здоровье',
-        value: 'hpMax',
-        sources: [{ strength: 7 }, { stamina: 10 }]
+        sources: {strength: 7, stamina: 10}
     },
-    {
+    mpMax: {
         label: 'Макс. мана',
-        value: 'mpMax',
-        sources: [{ intellect: 10 }]
+        sources: {intellect: 10}
     },
-    {
+    epMax: {
         label: 'Макс. энергия',
-        value: 'epMax',
-        sources: [{ agility: 2 }]
+        sources: {agility: 2}
     },
-    {
+    hpRegen: {
         label: 'Восстан. здоровья',
-        value: 'hpRegen',
-        sources: [{ stamina: 0.5 }, { spirit: 0.7 }]
+        sources: {stamina: 0.5, spirit: 0.7}
     },
-    {
+    mpRegen: {
         label: 'Восстан. маны',
-        value: 'mpRegen',
-        sources: [{ stamina: 0.5 }, { spirit: 0.7 }]
+        sources: {stamina: 0.5,spirit: 0.7}
     },
-    {
+    epRegen: {
         label: 'Восстан. энегрии',
-        value: 'epRegen',
-        sources: [{ spirit: 1 }]
+        sources: {spirit: 1}
     },
-    {
+    defenceRating: {
         label: 'Рейтинг защиты',
-        value: 'defenceRating',
-        sources: [{ strength: 1, stamina: 2 }]
+        sources: { strength: 1, stamina: 2 }
     }
+}
+
+const convertedRatingList = Object.keys(ratingsList).map(value => ({ ...ratingsList[value], value}))
+
+export const statsOptions = [
+    { label: 'Сила', value: 'strength' },
+    { label: 'Ловкость', value: 'agility' },
+    { label: 'Интеллект', value: 'intellect' },
+    { label: 'Выносливость', value: 'stamina' },
+    { label: 'Дух', value: 'spirit' },
 ]
 
 export const specialItemConfig = {
@@ -208,13 +214,13 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'types.stat1',
-                    defaultValue: 'critChance',
+                    model: 'names.stat1',
+                    defaultValue: 'attackPower',
                     style: {
                         display: 'row',
                         size: 'l',
                     },
-                    options: ratingsList,
+                    options: convertedRatingList,
                     excludedOptions: {
                         statePath: 'blockedStats'
                     },
@@ -249,7 +255,7 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'types.stat2',
+                    model: 'names.stat2',
                     style: {
                         display: 'row',
                         size: 'l',
@@ -257,8 +263,8 @@ export const specialItemConfig = {
                     excludedOptions: {
                         statePath: 'blockedStats'
                     },
-                    defaultValue: 'critMultiplier',
-                    options: ratingsList,
+                    defaultValue: 'critChance',
+                    options: convertedRatingList,
                     showIf: {
                         statePath: 'stats',
                         moreThan: 1
@@ -290,16 +296,15 @@ export const specialItemConfig = {
             list: [
                 {
                     type: 'select',
-                    model: 'types.stat3',
-                    defaultValue: 'attackPower',
+                    model: 'names.stat3',
+                    defaultValue: 'hpMax',
                     style: {
-                        display: 'row',
                         size: 'l',
                     },
                     excludedOptions: {
                         statePath: 'blockedStats'
                     },
-                    options: ratingsList,
+                    options: convertedRatingList,
                     showIf: {
                         statePath: 'stats',
                         moreThan: 2
@@ -312,7 +317,6 @@ export const specialItemConfig = {
                     minValue: -5,
                     maxValue: 5,
                     style: {
-                        display: 'row',
                         size: 's',
                     },
                     showIf: {
@@ -327,60 +331,150 @@ export const specialItemConfig = {
             }
         },
         {
-            type: 'counter',
-            model: 'require1',
-            defaultValue: 0,
-            minValue: -5,
-            maxValue: 5,
-            externalStateIncreaseControl: 'blockedRows',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_20',
-                size: 'full',
+                jc: 'space-between',
+                margin: '20px 0 0'
             },
-            props: {
-                label: "Require1",
-            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'nameReq.require1',
+                    defaultValue: 'strength',
+                    style: {
+                        displayMode: 'stickers',
+                        size: 'full',
+                    },
+                    excludedOptions: {
+                        statePath: 'blockedRequiredStats.require1'
+                    },
+                    disabledOptions: {
+                        statePath: 'disabledRequiredStats.require1'
+                    },
+                    options: statsOptions,
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 0
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'require1',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'blockedRows',
+                    style: {
+                        display: 'row',
+                        margin: 'top_20',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 0
+                    }
+                },
+            ],
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 0
             }
         },
         {
-            type: 'counter',
-            model: 'require2',
-            defaultValue: 0,
-            minValue: -5,
-            maxValue: 5,
-            externalStateIncreaseControl: 'blockedRows',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_10',
-                size: 'full',
+                jc: 'space-between',
+                margin: '10px 0 0'
             },
-            props: {
-                label: "Require2",
-            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'nameReq.require2',
+                    defaultValue: 'agility',
+                    style: {
+                        displayMode: 'stickers',
+                        size: 'full',
+                    },
+                    excludedOptions: {
+                        statePath: 'blockedRequiredStats.require2'
+                    },
+                    disabledOptions: {
+                        statePath: 'disabledRequiredStats.require2'
+                    },
+                    options: statsOptions,
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 1
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'require2',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'blockedRows',
+                    style: {
+                        display: 'row',
+                        margin: 'top_10',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 1
+                    }
+                },
+            ],
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 1
             }
         },
         {
-            type: 'counter',
-            model: 'require3',
-            defaultValue: 0,
-            minValue: -5,
-            maxValue: 5,
-            externalStateIncreaseControl: 'blockedRows',
+            type: 'row',
             style: {
-                display: 'row',
-                margin: 'top_10',
-                size: 'full',
+                jc: 'space-between',
+                margin: '10px 0 0'
             },
-            props: {
-                label: "Require3",
-            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'nameReq.require3',
+                    defaultValue: 'stamina',
+                    style: {
+                        displayMode: 'stickers',
+                        size: 'full',
+                    },
+                    excludedOptions: {
+                        statePath: 'blockedRequiredStats.require3'
+                    },
+                    disabledOptions: {
+                        statePath: 'disabledRequiredStats.require3'
+                    },
+                    options: statsOptions,
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 2
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'require3',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'blockedRows',
+                    style: {
+                        display: 'row',
+                        margin: 'top_10',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'maxRequiredStats',
+                        moreThan: 2
+                    }
+                },
+            ],
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 2

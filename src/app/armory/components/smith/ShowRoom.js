@@ -36,8 +36,8 @@ class ShowRoom extends React.PureComponent {
                 <Row className="show-room__header">
                     header
                 </Row>
-                <Row className="show-room__content" >
-                    {data.map(item => <ForgedItem key={item.rare + item.lvl} {...item} />)}
+                <Row className="show-room__content">
+                    {data.map(item => <ForgedItem key={item.quality + item.lvl} {...item} />)}
                 </Row>
             </Column>
         );

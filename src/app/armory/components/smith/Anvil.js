@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { Formik, Form } from 'formik';
+import get from 'lodash/get';
+import without from 'lodash/without';
 
 import { Row, Column, Btn } from 'ui/UxBox';
 import ComponentBuilder from 'ui/form/componentBuilder';
 import { generateDefaultValues } from 'ui/form/helpers';
 
-import { pointsFromRare, baseItemConfig, specialItemConfig } from './createItemOptions';
+import { pointsFromRare, baseItemConfig, specialItemConfig, ratingsList, statsOptions } from './createItemOptions';
 
 import './styles.scss';
 
@@ -35,8 +37,9 @@ class Anvil extends React.PureComponent {
         const freePoints = this.calculateFreePoints(itemStats, maxPoints);
         const blockedRows =  this.calculateBlockedRows(itemStats, maxPoints);
         const blockedStats = this.calculateBlockedStats(itemStats);
+        const blockedRequiredStats = this.calculateBlockedRequiredStats(itemStats)
 
-        this.setState({ itemStats, freePoints, blockedRows, blockedStats}, () => this.onChange());
+        this.setState({ itemStats, freePoints, blockedRows, blockedStats, blockedRequiredStats}, () => this.onChange());
     }
 
     onChange = () => {
@@ -46,9 +49,9 @@ class Anvil extends React.PureComponent {
         onChange({...itemProps, ...itemStats});
     }
 
-    getStateWithRare = itemProps => {
+    getStateWithRare = (itemProps = {}) => {
         const { itemStats } = this.state;
-        const { rare = 'usual' } = itemProps;
+        const { rare = 'rare' } = itemProps;
         const { points, stats, maxRequiredStats } = pointsFromRare[rare];
 
         return {
@@ -58,8 +61,8 @@ class Anvil extends React.PureComponent {
             freePoints: this.calculateFreePoints(itemStats, points),
             blockedRows: this.calculateBlockedRows(itemStats, points),
             blockedStats: this.calculateBlockedStats(itemStats),
+            blockedRequiredStats: this.calculateBlockedRequiredStats(itemStats),
             itemProps,
-            // itemStats,
         }
     }
 
@@ -83,8 +86,23 @@ class Anvil extends React.PureComponent {
         return toReturn;
     }
 
-    calculateBlockedStats = ({ types = {}}) => {
-        return Object.values(types);
+    calculateBlockedRequiredStats = stats => {
+        const { names = {}, nameReq = {} } = stats;
+        const { stat1, stat2, stat3 } = names;
+        const optionsArray = statsOptions.map(option => option.value);
+        const stat1Sources = Object.keys(get(ratingsList, `${stat1}.sources`, {})) || [];
+        const stat2Sources = Object.keys(get(ratingsList, `${stat2}.sources`, {})) || [];
+        const stat3Sources = Object.keys(get(ratingsList, `${stat3}.sources`, {})) || [];
+
+        return {
+            require1: without(optionsArray, ...stat1Sources),
+            require2: without(optionsArray, ...stat2Sources),
+            require3: [],
+        }
+    }
+
+    calculateBlockedStats = ({ names = {}}) => {
+        return Object.values(names);
     }
 
     getSpecialTypeConfig = () => {

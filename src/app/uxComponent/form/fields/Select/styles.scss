@@ -1,0 +1,28 @@
+.ux-select {
+  display: flex;
+  align-items: center;
+
+  &_stickers {
+    flex-wrap: wrap;
+    margin-left: -5px;
+  }
+
+  &__sticker {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid white;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    &_selected {
+      box-shadow: 0 0 12px 1px #c3c3c3;
+      cursor: auto;
+    }
+
+    &_disabled {
+      border: 1px dashed #999999;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
