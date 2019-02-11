@@ -14,7 +14,6 @@ import { pointsFromRare, baseItemConfig, specialItemConfig, ratingsList, convert
 import './styles.scss';
 
 function getAvailableStatsWithSources(selectedStats = {}, commonExcluded = []) {
-    console.log('!!!', selectedStats, convertedRatingList);
     const res = [];
     const selectedStatsArray = Object.values(selectedStats);
 
@@ -27,8 +26,9 @@ function getAvailableStatsWithSources(selectedStats = {}, commonExcluded = []) {
         })
     })
 
-    console.log('res', res);
-    return res.concat(commonExcluded);
+    // console.log(res, commonExcluded);
+
+    return res;
 }
 
 class Anvil extends React.PureComponent {
@@ -36,53 +36,81 @@ class Anvil extends React.PureComponent {
         super(props);
 
         this.state = {
-            itemStats: {},
+            baseProps: {},
+            anvilProps: {},
+            specialProps: {},
         };
     }
 
     componentWillMount() {
-        this.setState(this.getStateWithRare(generateDefaultValues(baseItemConfig)), () => {
-            this.onDateValidate();
-            this.onChange();
-        });
-    }
-
-    onValidate = values => {
-        this.setState(this.getStateWithRare(values), () => {
-            this.onDateValidate();
-            this.onChange();
+        const { anvilProps, baseProps }  = this.calculateBaseProps(generateDefaultValues(baseItemConfig));
+        const { anvilProps: forgedAnvilProps, specialProps } = this.calculateSpecialProps({
+            anvilProps,
+            baseProps,
+            specialProps: generateDefaultValues(specialItemConfig.weapon, { baseProps, anvilProps })
         });
 
+        this.setState({ baseProps, anvilProps: forgedAnvilProps, specialProps }, () => {
+            this.onChange();
+        })
     }
 
-    onDateValidate = (itemStats = this.state.itemStats) => {
+    // calculate rare, type, subtype of weapon
+    calculateBaseProps = baseProps => {
+        const { rare = 'rare' } = baseProps;
+        const { maxPoints, statsNumber, maxRequiredStats } = pointsFromRare[rare];
+
+        return {
+            anvilProps: {
+                maxPoints,
+                statsNumber,
+                maxRequiredStats,
+            },
+            baseProps
+        }
+    }
+
+    onBasePropsChange = formBaseProps => {
+        const { specialProps } = this.state;
+        const { anvilProps, baseProps }  = this.calculateBaseProps(formBaseProps);
+        const { anvilProps: forgedAnvilProps, specialProps: forgedSpecialProps } = this.calculateSpecialProps({ anvilProps, baseProps, specialProps });
+
+        this.setState({ baseProps, specialProps: forgedSpecialProps, anvilProps: forgedAnvilProps }, () => this.onChange());
+    }
+
+    calculateSpecialProps = ({ baseProps, anvilProps, specialProps }) => {
         // validate for max points
-        const { maxPoints } = this.state;
-        const freePoints = this.calculateFreePoints(itemStats, maxPoints);
-        const blockedRows =  this.calculateBlockedRows(itemStats, maxPoints);
-        const blockedStats = this.calculateBlockedStats(itemStats);
-        const blockedRequiredStats = this.calculateBlockedRequiredStats(itemStats)
+        const { maxPoints } = anvilProps;
+        const freePoints = this.calculateFreePoints(specialProps, maxPoints);
+        const blockedRows =  this.calculateBlockedRows(specialProps, maxPoints);
+        const blockedStats = this.calculateBlockedStats(specialProps);
+        const blockedRequiredStats = this.calculateBlockedRequiredStats(specialProps);
 
-        this.setState({ itemStats, freePoints, blockedRows, blockedStats, blockedRequiredStats}, () => this.onChange());
+        return {
+            specialProps,
+            anvilProps: {
+                ...anvilProps,
+                freePoints,
+                blockedRows,
+                blockedStats,
+                blockedRequiredStats
+            }
+        };
+    }
+
+    onSpecialPropsChange = specialProps => {
+        const { baseProps, anvilProps } = this.state;
+        const { anvilProps: forgedAnvilProps, specialProps: forgedSpecialProps } = this.calculateSpecialProps({ baseProps, anvilProps, specialProps });
+        this.setState(this.calculateSpecialProps({ anvilProps:forgedAnvilProps, specialProps: forgedSpecialProps }), () => this.onChange())
     }
 
     onChange = () => {
         const { onChange } = this.props;
-        const { itemProps, itemStats } = this.state;
+        const { baseProps, specialProps } = this.state;
 
-        onChange({...itemProps, ...itemStats});
-    }
+        // console.log('onChange', {...baseProps, ...specialProps});
 
-    getStateWithRare = (itemProps = this.state.itemProps) => {
-        const { rare = 'rare' } = itemProps;
-        const { points, stats, maxRequiredStats } = pointsFromRare[rare];
-
-        return {
-            maxPoints: points,
-            stats,
-            maxRequiredStats,
-            itemProps,
-        }
+        onChange({...baseProps, ...specialProps});
     }
 
     calculateFreePoints = (stats, maxPoints) => {
@@ -130,32 +158,34 @@ class Anvil extends React.PureComponent {
     }
 
     getSpecialTypeConfig = () => {
-        const { itemProps } = this.state;
-        const { type } = itemProps;
+        const { baseProps } = this.state;
+        const { type } = baseProps;
         let slotType = 'armor';
+
         switch (type) {
             case 'oneHandWeapon':
             case 'twoHandWeapon':
                 slotType = 'weapon'
         }
 
-        return specialItemConfig[slotType] || []
+        return specialItemConfig[slotType] || [];
     }
 
     render() {
-        const { itemProps, maxPoints, freePoints, stats, maxRequiredStats } = this.state;
-        const { name, rare, type, subtype } = itemProps;
-        const initialValues = generateDefaultValues(baseItemConfig);
+        const { baseProps, specialProps, anvilProps } = this.state;
+        const { name, rare, type, subtype } = baseProps;
+        const { freePoints, maxPoints, maxRequiredStats, statsNumber } = anvilProps;
 
-        const initialData = {};
+        const initialValues = generateDefaultValues(baseItemConfig);
         const specialItemConfig = this.getSpecialTypeConfig();
-        const specialInitialValues = generateDefaultValues(this.getSpecialTypeConfig(), this.state);
+
+        const specialInitialValues = generateDefaultValues(specialItemConfig, this.state);
 
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>
                 <Formik
                     initialValues={initialValues}
-                    validate={this.onValidate}
+                    validate={this.onBasePropsChange}
                 >
                     {formikProps => (
                         <Form>
@@ -167,7 +197,7 @@ class Anvil extends React.PureComponent {
                     )}
                 </Formik>
 
-                <p><b>{name}</b>, {rare} {subtype} [ {type} ] (stats: {stats} / req. stats: {maxRequiredStats})</p>
+                <p><b>{name}</b>, {rare} {subtype} [ {type} ] (stats: {statsNumber} / req. stats: {maxRequiredStats})</p>
                 <hr/>
                 <Row jc="space-between" padding="0 20px 0 0">
                     <p>Free Points: </p>
@@ -177,7 +207,7 @@ class Anvil extends React.PureComponent {
 
                 <Formik
                     initialValues={specialInitialValues}
-                    validate={this.onDateValidate}
+                    validate={this.onSpecialPropsChange}
                 >
                     {formikProps => (
                         <Form className="anvil__special-form">

@@ -1,9 +1,9 @@
 export const pointsFromRare = {
-    usual: { points: 6, stats: 1, maxRequiredStats: 1 },
-    unusual: { points: 12, stats: 2, maxRequiredStats: 2 },
-    rare: { points: 18, stats: 2, maxRequiredStats: 2 },
-    epic: { points: 24, stats: 3, maxRequiredStats: 3 },
-    legendary: { points: 24, stats: 3, maxRequiredStats: 3 }
+    usual: { maxPoints: 6, statsNumber: 1, maxRequiredStats: 1 },
+    unusual: { maxPoints: 12, statsNumber: 2, maxRequiredStats: 2 },
+    rare: { maxPoints: 18, statsNumber: 2, maxRequiredStats: 2 },
+    epic: { maxPoints: 24, statsNumber: 3, maxRequiredStats: 3 },
+    legendary: { maxPoints: 24, statsNumber: 3, maxRequiredStats: 3 }
 }
 
 export const baseItemConfig = [
@@ -184,7 +184,7 @@ export const specialItemConfig = {
                 margin: 'top_10',
                 size: 'full',
             },
-            externalStateIncreaseControl: 'blockedRows',
+            externalStateIncreaseControl: 'anvilProps.blockedRows',
             props: {
                 label: 'Damage',
             },
@@ -200,7 +200,7 @@ export const specialItemConfig = {
                 margin: 'top_10',
                 size: 'full',
             },
-            externalStateIncreaseControl: 'blockedRows',
+            externalStateIncreaseControl: 'anvilProps.blockedRows',
             props: {
                 label: 'DPS'
             }
@@ -222,10 +222,10 @@ export const specialItemConfig = {
                     },
                     options: convertedRatingList,
                     excludedOptions: {
-                        statePath: 'blockedStats.stat1'
+                        statePath: 'anvilProps.blockedStats.stat1'
                     },
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 0
                     }
                 },
@@ -239,8 +239,9 @@ export const specialItemConfig = {
                         display: 'row',
                         size: 's',
                     },
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 0
                     }
                 },
@@ -261,12 +262,12 @@ export const specialItemConfig = {
                         size: 'l',
                     },
                     excludedOptions: {
-                        statePath: 'blockedStats.stat2'
+                        statePath: 'anvilProps.blockedStats.stat2'
                     },
                     defaultValue: 'critChance',
                     options: convertedRatingList,
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 1
                     }
                 },
@@ -276,12 +277,13 @@ export const specialItemConfig = {
                     defaultValue: 0,
                     minValue: -5,
                     maxValue: 5,
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
                     style: {
                         display: 'row',
                         size: 's',
                     },
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 1
                     }
                 },
@@ -303,11 +305,14 @@ export const specialItemConfig = {
                         displayMode: 'stickers',
                     },
                     excludedOptions: {
-                        statePath: 'blockedStats.stat3'
+                        statePath: 'anvilProps.blockedStats.stat3'
+                    },
+                    props: {
+                        clearValueIfExcluded: true,
                     },
                     options: convertedRatingList,
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 2
                     }
                 },
@@ -321,14 +326,15 @@ export const specialItemConfig = {
                         display: 'row',
                         size: 's',
                     },
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
                     showIf: {
-                        statePath: 'stats',
+                        statePath: 'anvilProps.statsNumber',
                         moreThan: 2
                     }
                 },
             ],
             showIf: {
-                statePath: 'stats',
+                statePath: 'anvilProps.statsNumber',
                 moreThan: 2
             }
         },
@@ -351,14 +357,14 @@ export const specialItemConfig = {
                         clearValueIfExcluded: true,
                     },
                     excludedOptions: {
-                        statePath: 'blockedRequiredStats.require1'
+                        statePath: 'anvilProps.blockedRequiredStats.require1'
                     },
                     disabledOptions: {
-                        statePath: 'disabledRequiredStats.require1'
+                        statePath: 'anvilProps.disabledRequiredStats.require1'
                     },
                     options: statsOptions,
                     showIf: {
-                        statePath: 'maxRequiredStats',
+                        statePath: 'anvilProps.maxRequiredStats',
                         moreThan: 0
                     }
                 },
@@ -368,20 +374,20 @@ export const specialItemConfig = {
                     defaultValue: 0,
                     minValue: -5,
                     maxValue: 5,
-                    externalStateIncreaseControl: 'blockedRows',
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
                     style: {
                         display: 'row',
                         margin: 'top_20',
                         size: 's',
                     },
                     showIf: {
-                        statePath: 'maxRequiredStats',
+                        statePath: 'anvilProps.maxRequiredStats',
                         moreThan: 0
                     }
                 },
             ],
             showIf: {
-                statePath: 'maxRequiredStats',
+                statePath: 'anvilProps.maxRequiredStats',
                 moreThan: 0
             }
         },
@@ -404,14 +410,14 @@ export const specialItemConfig = {
                         clearValueIfExcluded: true,
                     },
                     excludedOptions: {
-                        statePath: 'blockedRequiredStats.require2'
+                        statePath: 'anvilProps.blockedRequiredStats.require2'
                     },
                     disabledOptions: {
-                        statePath: 'disabledRequiredStats.require2'
+                        statePath: 'anvilProps.disabledRequiredStats.require2'
                     },
                     options: statsOptions,
                     showIf: {
-                        statePath: 'maxRequiredStats',
+                        statePath: 'anvilProps.maxRequiredStats',
                         moreThan: 1
                     }
                 },
@@ -421,20 +427,20 @@ export const specialItemConfig = {
                     defaultValue: 0,
                     minValue: -5,
                     maxValue: 5,
-                    externalStateIncreaseControl: 'blockedRows',
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
                     style: {
                         display: 'row',
                         margin: 'top_10',
                         size: 's',
                     },
                     showIf: {
-                        statePath: 'maxRequiredStats',
+                        statePath: 'anvilProps.maxRequiredStats',
                         moreThan: 1
                     }
                 },
             ],
             showIf: {
-                statePath: 'maxRequiredStats',
+                statePath: 'anvilProps.maxRequiredStats',
                 moreThan: 1
             }
         }
@@ -460,7 +466,7 @@ export const specialItemConfig = {
             type: 'select-and-counter',
             model: 'stat1',
             showIf: {
-                statePath: 'stats',
+                statePath: 'anvilProps.statsNumber',
                 moreThan: 0
             }
         },
@@ -468,7 +474,7 @@ export const specialItemConfig = {
             type: 'select-and-counter',
             model: 'stat2',
             showIf: {
-                statePath: 'stats',
+                statePath: 'anvilProps.statsNumber',
                 moreThan: 1
             }
         },
@@ -476,7 +482,7 @@ export const specialItemConfig = {
             type: 'select-and-counter',
             model: 'stat3',
             showIf: {
-                statePath: 'stats',
+                statePath: 'anvilProps.statsNumber',
                 moreThan: 2
             }
         },

@@ -123,7 +123,7 @@ export function generateDefaultValues(config, info = {}) {
         }
 
         return checkRow(field)
-    })
+    });
 
     return formModel;
 }
