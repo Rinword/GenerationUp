@@ -28,7 +28,7 @@ export const baseItemConfig = [
         style: {
             size: 'auto'
         },
-        defaultValue: "rare",
+        defaultValue: "epic",
         options: [
             { name: "usual", value: "usual", icon: 'common_usual' },
             { name: "unusual", value: "unusual", icon: 'common_unusual' },
@@ -141,7 +141,7 @@ export const ratingsList = {
     },
     epMax: {
         label: 'Макс. энергия',
-        sources: {agility: 2}
+        sources: {agility: 2, stamina: 2}
     },
     hpRegen: {
         label: 'Восстан. здоровья',
@@ -149,11 +149,11 @@ export const ratingsList = {
     },
     mpRegen: {
         label: 'Восстан. маны',
-        sources: {stamina: 0.5,spirit: 0.7}
+        sources: {stamina: 0.5, spirit: 0.7}
     },
     epRegen: {
         label: 'Восстан. энегрии',
-        sources: {spirit: 1}
+        sources: {spirit: 1, stamina: 1}
     },
     defenceRating: {
         label: 'Рейтинг защиты',
@@ -161,7 +161,7 @@ export const ratingsList = {
     }
 }
 
-const convertedRatingList = Object.keys(ratingsList).map(value => ({ ...ratingsList[value], value}))
+export const convertedRatingList = Object.keys(ratingsList).map(value => ({ ...ratingsList[value], value}))
 
 export const statsOptions = [
     { label: 'Сила', value: 'strength' },
@@ -177,8 +177,8 @@ export const specialItemConfig = {
             type: 'counter',
             model: 'damage',
             defaultValue: 0,
-            minValue: -2,
-            maxValue: 2,
+            minValue: -5,
+            maxValue: 5,
             style: {
                 display: 'row',
                 margin: 'top_10',
@@ -193,8 +193,8 @@ export const specialItemConfig = {
             type: 'counter',
             model: 'DPS',
             defaultValue: 0,
-            minValue: -2,
-            maxValue: 2,
+            minValue: -5,
+            maxValue: 5,
             style: {
                 display: 'row',
                 margin: 'top_10',
@@ -222,7 +222,7 @@ export const specialItemConfig = {
                     },
                     options: convertedRatingList,
                     excludedOptions: {
-                        statePath: 'blockedStats'
+                        statePath: 'blockedStats.stat1'
                     },
                     showIf: {
                         statePath: 'stats',
@@ -261,7 +261,7 @@ export const specialItemConfig = {
                         size: 'l',
                     },
                     excludedOptions: {
-                        statePath: 'blockedStats'
+                        statePath: 'blockedStats.stat2'
                     },
                     defaultValue: 'critChance',
                     options: convertedRatingList,
@@ -297,12 +297,13 @@ export const specialItemConfig = {
                 {
                     type: 'select',
                     model: 'names.stat3',
-                    defaultValue: 'hpMax',
+                    defaultValue: 'critMultiplier',
                     style: {
-                        size: 'l',
+                        size: 'full',
+                        displayMode: 'stickers',
                     },
                     excludedOptions: {
-                        statePath: 'blockedStats'
+                        statePath: 'blockedStats.stat3'
                     },
                     options: convertedRatingList,
                     showIf: {
@@ -313,10 +314,11 @@ export const specialItemConfig = {
                 {
                     type: 'counter',
                     model: 'stat3',
-                    defaultValue: 0,
-                    minValue: -5,
+                    defaultValue: 3,
+                    minValue: 3,
                     maxValue: 5,
                     style: {
+                        display: 'row',
                         size: 's',
                     },
                     showIf: {
@@ -344,6 +346,9 @@ export const specialItemConfig = {
                     style: {
                         displayMode: 'stickers',
                         size: 'full',
+                    },
+                    props: {
+                        clearValueIfExcluded: true,
                     },
                     excludedOptions: {
                         statePath: 'blockedRequiredStats.require1'
@@ -395,6 +400,9 @@ export const specialItemConfig = {
                         displayMode: 'stickers',
                         size: 'full',
                     },
+                    props: {
+                        clearValueIfExcluded: true,
+                    },
                     excludedOptions: {
                         statePath: 'blockedRequiredStats.require2'
                     },
@@ -428,56 +436,6 @@ export const specialItemConfig = {
             showIf: {
                 statePath: 'maxRequiredStats',
                 moreThan: 1
-            }
-        },
-        {
-            type: 'row',
-            style: {
-                jc: 'space-between',
-                margin: '10px 0 0'
-            },
-            list: [
-                {
-                    type: 'select',
-                    model: 'nameReq.require3',
-                    defaultValue: 'stamina',
-                    style: {
-                        displayMode: 'stickers',
-                        size: 'full',
-                    },
-                    excludedOptions: {
-                        statePath: 'blockedRequiredStats.require3'
-                    },
-                    disabledOptions: {
-                        statePath: 'disabledRequiredStats.require3'
-                    },
-                    options: statsOptions,
-                    showIf: {
-                        statePath: 'maxRequiredStats',
-                        moreThan: 2
-                    }
-                },
-                {
-                    type: 'counter',
-                    model: 'require3',
-                    defaultValue: 0,
-                    minValue: -5,
-                    maxValue: 5,
-                    externalStateIncreaseControl: 'blockedRows',
-                    style: {
-                        display: 'row',
-                        margin: 'top_10',
-                        size: 's',
-                    },
-                    showIf: {
-                        statePath: 'maxRequiredStats',
-                        moreThan: 2
-                    }
-                },
-            ],
-            showIf: {
-                statePath: 'maxRequiredStats',
-                moreThan: 2
             }
         }
     ],

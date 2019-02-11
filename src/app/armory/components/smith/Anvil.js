@@ -9,29 +9,53 @@ import { Row, Column, Btn } from 'ui/UxBox';
 import ComponentBuilder from 'ui/form/componentBuilder';
 import { generateDefaultValues } from 'ui/form/helpers';
 
-import { pointsFromRare, baseItemConfig, specialItemConfig, ratingsList, statsOptions } from './createItemOptions';
+import { pointsFromRare, baseItemConfig, specialItemConfig, ratingsList, convertedRatingList, statsOptions } from './createItemOptions';
 
 import './styles.scss';
+
+function getAvailableStatsWithSources(selectedStats = {}, commonExcluded = []) {
+    console.log('!!!', selectedStats, convertedRatingList);
+    const res = [];
+    const selectedStatsArray = Object.values(selectedStats);
+
+    convertedRatingList.forEach(rating => {
+        const { sources = {}, value } = rating;
+        Object.keys(sources).forEach( stat => {
+            if(selectedStatsArray.indexOf(stat) < 0) {
+                res.push(value);
+            }
+        })
+    })
+
+    console.log('res', res);
+    return res.concat(commonExcluded);
+}
 
 class Anvil extends React.PureComponent {
     constructor(props) {
         super(props);
 
         this.state = {
-            itemStats: {}
+            itemStats: {},
         };
     }
 
     componentWillMount() {
-        this.setState(this.getStateWithRare(generateDefaultValues(baseItemConfig)), () => this.onChange());
+        this.setState(this.getStateWithRare(generateDefaultValues(baseItemConfig)), () => {
+            this.onDateValidate();
+            this.onChange();
+        });
     }
 
     onValidate = values => {
-        this.setState(this.getStateWithRare(values), () => this.onChange());
+        this.setState(this.getStateWithRare(values), () => {
+            this.onDateValidate();
+            this.onChange();
+        });
 
     }
 
-    onDateValidate = itemStats => {
+    onDateValidate = (itemStats = this.state.itemStats) => {
         // validate for max points
         const { maxPoints } = this.state;
         const freePoints = this.calculateFreePoints(itemStats, maxPoints);
@@ -49,8 +73,7 @@ class Anvil extends React.PureComponent {
         onChange({...itemProps, ...itemStats});
     }
 
-    getStateWithRare = (itemProps = {}) => {
-        const { itemStats } = this.state;
+    getStateWithRare = (itemProps = this.state.itemProps) => {
         const { rare = 'rare' } = itemProps;
         const { points, stats, maxRequiredStats } = pointsFromRare[rare];
 
@@ -58,10 +81,6 @@ class Anvil extends React.PureComponent {
             maxPoints: points,
             stats,
             maxRequiredStats,
-            freePoints: this.calculateFreePoints(itemStats, points),
-            blockedRows: this.calculateBlockedRows(itemStats, points),
-            blockedStats: this.calculateBlockedStats(itemStats),
-            blockedRequiredStats: this.calculateBlockedRequiredStats(itemStats),
             itemProps,
         }
     }
@@ -92,17 +111,22 @@ class Anvil extends React.PureComponent {
         const optionsArray = statsOptions.map(option => option.value);
         const stat1Sources = Object.keys(get(ratingsList, `${stat1}.sources`, {})) || [];
         const stat2Sources = Object.keys(get(ratingsList, `${stat2}.sources`, {})) || [];
-        const stat3Sources = Object.keys(get(ratingsList, `${stat3}.sources`, {})) || [];
 
         return {
             require1: without(optionsArray, ...stat1Sources),
             require2: without(optionsArray, ...stat2Sources),
-            require3: [],
         }
     }
 
-    calculateBlockedStats = ({ names = {}}) => {
-        return Object.values(names);
+    calculateBlockedStats = ({ names = {}, nameReq = {}}) => {
+        const stat3Available = getAvailableStatsWithSources(nameReq);
+        const commonExcluded = Object.values(names);
+
+        return {
+            stat1: commonExcluded,
+            stat2: commonExcluded,
+            stat3: getAvailableStatsWithSources(nameReq, commonExcluded),
+        }
     }
 
     getSpecialTypeConfig = () => {

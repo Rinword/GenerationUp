@@ -28,21 +28,24 @@ class SelectField extends React.PureComponent {
     }
 
     filteredOptions = () => {
-        const { options, excludedOptions, info, field } = this.props;
+        const { options, excludedOptions, props, info, field } = this.props;
+        const { clearValueIfExcluded = false } = props;
         const { value } = field;
 
         if(excludedOptions instanceof Array) {
-            return options.filter(opt => !(excludedOptions.indexOf(opt.value) > -1) || opt.value === value);
+            return options.filter(opt =>
+                !(excludedOptions.indexOf(opt.value) > -1) || (opt.value === value && !clearValueIfExcluded));
         }
 
         const { statePath } = excludedOptions;
         const stateExOptions = get(info, statePath, []);
 
-        return options.filter(opt => !(stateExOptions.indexOf(opt.value) > -1) || opt.value === value);
+        return options.filter(opt =>
+            !(stateExOptions.indexOf(opt.value) > -1) || (opt.value === value && !clearValueIfExcluded));
     }
 
     disabledOptions = filteredOptions => {
-        const { disabledOptions = ["intellect"], info } = this.props;
+        const { disabledOptions = [], info } = this.props;
 
         if(disabledOptions instanceof Array) {
             return filteredOptions.map(opt => {
@@ -58,9 +61,7 @@ class SelectField extends React.PureComponent {
         }
 
         const { statePath } = disabledOptions;
-        const stateDisOptions = get(info, statePath, ["intellect"]);
-
-        console.log(filteredOptions, stateDisOptions)
+        const stateDisOptions = get(info, statePath, []);
 
         return filteredOptions.map(opt => {
             if(stateDisOptions.indexOf(opt.value) < 0) {
@@ -128,6 +129,9 @@ SelectField.propTypes = {
         name: PropTypes.string,
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     })),
+    props: PropTypes.shape({
+        clearValueIfExcluded: PropTypes.bool,
+    }),
     excludedOptions: PropTypes.oneOfType([
         PropTypes.shape({
 
@@ -142,6 +146,8 @@ SelectField.propTypes = {
 SelectField.defaultProps = {
     className: '',
     options: [],
+    props: {},
+    style: {},
     excludedOptions: [],
 };
 
