@@ -1,0 +1,14 @@
+{
+  "statPoints": {
+    "Xt": 10,
+    "Yt": 1,
+    "a": 1,
+    "func": "atan"
+  },
+  "level": {
+    "Xt": 10,
+    "Yt": 1,
+    "a": 0,
+    "func": "atan"
+  }
+}

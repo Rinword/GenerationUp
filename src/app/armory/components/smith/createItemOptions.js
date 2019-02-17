@@ -28,7 +28,7 @@ export const baseItemConfig = [
         style: {
             size: 'auto'
         },
-        defaultValue: "epic",
+        defaultValue: "rare",
         options: [
             { name: "usual", value: "usual", icon: 'common_usual' },
             { name: "unusual", value: "unusual", icon: 'common_unusual' },

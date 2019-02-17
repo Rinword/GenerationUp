@@ -26,8 +26,6 @@ function getAvailableStatsWithSources(selectedStats = {}, commonExcluded = []) {
         })
     })
 
-    // console.log(res, commonExcluded);
-
     return res;
 }
 

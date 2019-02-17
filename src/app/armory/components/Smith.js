@@ -18,7 +18,7 @@ class Smith extends React.PureComponent {
     }
 
     onChange = itemOptions => {
-        // console.log(itemOptions)
+        console.log(itemOptions)
 
         this.setState({ itemOptions });
     }

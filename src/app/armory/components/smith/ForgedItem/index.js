@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 
 import { Row, Column } from 'ui/UxBox';
+import { createItem }  from './ItemGenerator';
 
 import './styles.scss';
 
@@ -15,9 +16,14 @@ class ForgedItem extends React.PureComponent {
 
     render() {
         const { className } = this.props;
-        const { options, lvl, quality, stat1, stat2 } = this.props;
+        const { options, lvl } = this.props;
         const { name, type, subtype, names } = options;
         // const { stat1, stat2 } = types;
+        const forgedItem = createItem(options, lvl);
+
+        const { damage, damageMin, damageMax, speed, DPS } = forgedItem;
+
+        // console.log('forgedItem', forgedItem);
 
         return (
             <Column padding="10px" margin="5px" className={cx('forged-item', className)}>
@@ -28,7 +34,11 @@ class ForgedItem extends React.PureComponent {
                 <hr/>
                 <Row jc="space-between">
                     <span>Урон:</span>
-                    <span>5-7</span>
+                    <span>{`${damageMin} - ${damageMax} (${damage})`}</span>
+                </Row>
+                <Row jc="space-between">
+                    <span>{`DPS: ${DPS}`}</span>
+                    <span>{`${speed} sec`}</span>
                 </Row>
                 <Row jc="space-between">
                     <span>Уровень предмета:</span>
