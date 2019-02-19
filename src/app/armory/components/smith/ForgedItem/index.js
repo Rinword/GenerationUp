@@ -21,7 +21,11 @@ class ForgedItem extends React.PureComponent {
         // const { stat1, stat2 } = types;
         const forgedItem = createItem(options, lvl);
 
-        const { damage, damageMin, damageMax, speed, DPS } = forgedItem;
+        const { damage, damageMin, damageMax, speed, DPS, stat1, stat2, req1, req2 } = forgedItem;
+        const { label: stat1Name, value: stat1Value } = stat1;
+        const { label: stat2Name, value: stat2Value } = stat2;
+        const { label: req1Name, value: req1Value } = req1;
+        const { label: req2Name, value: req2Value } = req2;
 
         // console.log('forgedItem', forgedItem);
 
@@ -34,7 +38,7 @@ class ForgedItem extends React.PureComponent {
                 <hr/>
                 <Row jc="space-between">
                     <span>Урон:</span>
-                    <span>{`${damageMin} - ${damageMax} (${damage})`}</span>
+                    <span>{`${damageMin} - ${damageMax}`}</span>
                 </Row>
                 <Row jc="space-between">
                     <span>{`DPS: ${DPS}`}</span>
@@ -47,6 +51,22 @@ class ForgedItem extends React.PureComponent {
                 <Row jc="space-between">
                     <span>{type}</span>
                     <span>{subtype}</span>
+                </Row>
+                <Row jc="space-between" margin="10px 0 0" className={cx('forged-item__row', 'forged-item__row_positive')}>
+                    <span>{stat1Name}</span>
+                    <span>{stat1Value}</span>
+                </Row>
+                <Row jc="space-between" className={cx('forged-item__row', 'forged-item__row_positive')}>
+                    <span>{stat2Name}</span>
+                    <span>{stat2Value}</span>
+                </Row>
+                <Row jc="space-between" margin="10px 0 0" className={cx('forged-item__row', 'forged-item__row_required')}>
+                    <span>{req1Name}</span>
+                    <span>{req1Value}</span>
+                </Row>
+                <Row jc="space-between" className={cx('forged-item__row', 'forged-item__row_required')}>
+                    <span>{req2Name}</span>
+                    <span>{req2Value}</span>
                 </Row>
             </Column>
         );

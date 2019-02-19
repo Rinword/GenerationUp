@@ -2,31 +2,31 @@
   "oneHandWeapon_dagger": {
     "baseSpeed": 1.4,
     "baseDamage": 1.5,
-    "baseDamageGrow": 0.8,
-    "baseSpeedGrow": 0.1
+    "baseDamageGrow": 1.2,
+    "baseSpeedGrow": -0.08
   },
   "oneHandWeapon_sword": {
     "baseSpeed": 2.2,
     "baseDamage": 4,
-    "baseDamageGrow": 0.8,
-    "baseSpeedGrow": 0.12
+    "baseDamageGrow": 1.6,
+    "baseSpeedGrow": -0.12
   },
   "twoHandWeapon_sword": {
     "baseSpeed": 3.4,
     "baseDamage": 7,
-    "baseDamageGrow": 1.1,
-    "baseSpeedGrow": 0.15
+    "baseDamageGrow": 5.2,
+    "baseSpeedGrow": -0.15
   },
   "twoHandWeapon_bow": {
     "baseSpeed": 3.0,
     "baseDamage": 5,
     "baseDamageGrow": 0.9,
-    "baseSpeedGrow": 0.15
+    "baseSpeedGrow": -0.15
   },
   "twoHandWeapon_staff": {
     "baseSpeed": 3.4,
     "baseDamage": 6,
     "baseDamageGrow": 1.1,
-    "baseSpeedGrow": 0.15
+    "baseSpeedGrow": -0.15
   }
 }
