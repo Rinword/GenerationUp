@@ -133,7 +133,7 @@ export const ratingsList = {
     },
     hpMax: {
         label: 'Макс. здоровье',
-        sources: {strength: 7, stamina: 10}
+        sources: {strength: 4, stamina: 6}
     },
     mpMax: {
         label: 'Макс. мана',

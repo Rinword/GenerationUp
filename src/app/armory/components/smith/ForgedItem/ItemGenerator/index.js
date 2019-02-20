@@ -1,5 +1,10 @@
+import get from 'lodash/get';
+import set from 'lodash/set';
+
 import baseItemsOptions from './baseItemsOptions.json';
 import baseGenericOptions from './baseGenericOptions.json';
+
+import { statsOptions, ratingsList } from 'src/app/armory/components/smith/createItemOptions';
 
 function getDefaultItemProps(id = '') {
     return baseItemsOptions[id] || {};
@@ -54,26 +59,47 @@ function calculateDamageProps(typeId, options, lvl) {
     }
 }
 
-function calculateRequireStats () {
-    return {
-        req1: { id: 'strength', label: 'Сила', value: 12 },
-        req2: { id: 'stamina', label: 'Выносливость', value: 9 },
-    }
+function calculateRequireStats(options, lvl) {
+    const { nameReq = {} } = options;
+
+    const res = {};
+
+    Object.values(nameReq).forEach((name, i) => {
+        const points = get(options, `require${i + 1}`, 0);
+        const value = +(calculateRating(3, 0.91, lvl, -points).toFixed(0));
+        const label = statsOptions.find(i => i.value === name).label;
+        const req = { id: name, label, value };
+        set(res, `req${i + 1}`, req);
+    })
+
+    return res;
 }
 
-function calculatePositiveStats () {
-    return {
-        stat1: { id: 'critChance', label: 'Рейт.крит. удара', value: 12 },
-        stat2: { id: 'epRegen', label: 'Восстан. энергии', value: '+0.8/сек' },
-        stat3: { },
-    }
+function calculatePositiveStats (type, options, lvl) {
+    const { names = {}, nameReq } = options;
+
+    const res = {};
+
+    Object.values(names).forEach((name, i) => {
+        const { label, sources } = ratingsList[name];
+        const points = get(options, `stat${i + 1}`, 0);
+        const baseStatForGrow = get(nameReq, `require${i + 1}`, 'none');
+        const baseGrow = get(sources, baseStatForGrow, 0);
+        const value = +(calculateRating(baseGrow, baseGrow, lvl, points).toFixed(2));
+        const req = { id: name, label, value };
+        set(res, `stat${i + 1}`, req);
+    })
+
+    console.log('RESSS', res);
+
+    return res;
 }
 
 function createItem(options, lvl) {
     const { type, subtype, name } = options;
     const { damage, damageMin, damageMax, speed, DPS } = calculateDamageProps(`${type}_${subtype}`, options, lvl);
-    const { stat1, stat2, stat3 } = calculatePositiveStats(`${type}_${subtype}`, options, lvl);
-    const { req1, req2 } = calculateRequireStats(`${type}_${subtype}`, options, lvl);
+    const { stat1, stat2, stat3 } = calculatePositiveStats(type, options, lvl);
+    const { req1, req2 } = calculateRequireStats(options, lvl);
 
     return {
         name,
