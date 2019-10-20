@@ -268,3 +268,43 @@ $dark-grey: #4f4f4f;
   border: 2px solid $color-legendary;
   box-shadow: 0 0 8px 2px $color-legendary;
 }
+
+[data-rareText='0'], [data-rareText='usual'] {
+  color: white;
+}
+
+[data-rareText='unusual'], [data-rareText='1'] {
+  color: $color-unusual;
+}
+
+[data-rareText='1'], [data-rareText='rare'] {
+  color: $color-rare;
+}
+
+[data-rareText='2'], [data-rareText='epic'] {
+  color: $color-epic;
+}
+
+[data-rareText='3'], [data-rareText='legendary'] {
+  color: $color-legendary;
+}
+
+[data-rareBg='usual'] {
+  border-color: white;
+}
+
+[data-rareBg='unusual'] {
+  border-color: $color-unusual;
+}
+
+[data-rareBg='rare'] {
+  border-color: $color-rare;
+}
+
+[data-rareBg='epic'] {
+  border-color: $color-epic;
+}
+
+[data-rareBg='legendary'] {
+  border-color: $color-legendary;
+}

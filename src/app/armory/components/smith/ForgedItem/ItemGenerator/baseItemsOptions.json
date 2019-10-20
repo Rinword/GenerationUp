@@ -11,6 +11,83 @@
     "baseDamageGrow": 1.6,
     "baseSpeedGrow": -0.12
   },
+
+  "lightArmor_gloves": {
+    "baseArmor": 1,
+    "baseArmorGrow": 0.5,
+    "baseMagicArmor": 2,
+    "baseMagicArmorGrow": 1
+  },
+  "mediumArmor_gloves": {
+    "baseArmor": 1.5,
+    "baseArmorGrow": 0.75,
+    "baseMagicArmor": 1.5,
+    "baseMagicArmorGrow": 0.75
+  },
+  "heavyArmor_gloves": {
+    "baseArmor": 2,
+    "baseArmorGrow": 1,
+    "baseMagicArmor": 1,
+    "baseMagicArmorGrow": 0.5
+  },
+
+  "lightArmor_chest": {
+    "baseArmor": 2,
+    "baseArmorGrow": 1.8,
+    "baseMagicArmor": 4,
+    "baseMagicArmorGrow": 3.6
+  },
+  "mediumArmor_chest": {
+    "baseArmor": 3,
+    "baseArmorGrow": 2.4,
+    "baseMagicArmor": 3,
+    "baseMagicArmorGrow": 2.4
+  },
+  "heavyArmor_chest": {
+    "baseArmor": 4,
+    "baseArmorGrow": 3.6,
+    "baseMagicArmor": 2,
+    "baseMagicArmorGrow": 1.8
+  },
+
+  "lightArmor_pants": {
+    "baseArmor": 2,
+    "baseArmorGrow": 1.8,
+    "baseMagicArmor": 4,
+    "baseMagicArmorGrow": 3.6
+  },
+  "mediumArmor_pants": {
+    "baseArmor": 3,
+    "baseArmorGrow": 2.4,
+    "baseMagicArmor": 3,
+    "baseMagicArmorGrow": 2.4
+  },
+  "heavyArmor_pants": {
+    "baseArmor": 4,
+    "baseArmorGrow": 3.6,
+    "baseMagicArmor": 2,
+    "baseMagicArmorGrow": 1.8
+  },
+
+  "lightArmor_boots": {
+    "baseArmor": 1,
+    "baseArmorGrow": 0.5,
+    "baseMagicArmor": 2,
+    "baseMagicArmorGrow": 1
+  },
+  "mediumArmor_boots": {
+    "baseArmor": 1.5,
+    "baseArmorGrow": 0.75,
+    "baseMagicArmor": 1.5,
+    "baseMagicArmorGrow": 0.75
+  },
+  "heavyArmor_boots": {
+    "baseArmor": 2,
+    "baseArmorGrow": 1,
+    "baseMagicArmor": 1,
+    "baseMagicArmorGrow": 0.5
+  },
+
   "twoHandWeapon_sword": {
     "baseSpeed": 3.4,
     "baseDamage": 7,
@@ -20,13 +97,20 @@
   "twoHandWeapon_bow": {
     "baseSpeed": 3.0,
     "baseDamage": 5,
-    "baseDamageGrow": 0.9,
+    "baseDamageGrow": 5.6,
     "baseSpeedGrow": -0.15
   },
   "twoHandWeapon_staff": {
     "baseSpeed": 3.4,
     "baseDamage": 6,
-    "baseDamageGrow": 1.1,
-    "baseSpeedGrow": -0.15
+    "baseDamageGrow": 5.0,
+    "baseSpeedGrow": -0.12
+  },
+
+  "oneHandWeapon_shield": {
+    "baseArmor": 4,
+    "baseArmorGrow": 2,
+    "baseMagicArmor": 4,
+    "baseMagicArmorGrow": 2
   }
 }

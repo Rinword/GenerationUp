@@ -94,6 +94,9 @@ export const baseItemConfig = [
         model: "subtype",
         subModel: "armor",
         defaultValue: "gloves",
+        style: {
+            size: 'auto'
+        },
         options: [
             { name: "gloves", value: "gloves", icon: "armor_gloves" },
             { name: "chest", value: "chest", icon: "armor_chest" },
@@ -301,8 +304,8 @@ export const specialItemConfig = {
                     model: 'names.stat3',
                     defaultValue: 'critMultiplier',
                     style: {
-                        size: 'full',
-                        displayMode: 'stickers',
+                        display: 'row',
+                        size: 'l',
                     },
                     excludedOptions: {
                         statePath: 'anvilProps.blockedStats.stat3'
@@ -447,58 +450,273 @@ export const specialItemConfig = {
     ],
     armor: [
         {
-            type: 'counter-row',
-            model: 'physicalArmor',
+            type: 'counter',
+            model: 'armor',
             defaultValue: 0,
+            minValue: -5,
+            maxValue: 5,
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            externalStateIncreaseControl: 'anvilProps.blockedRows',
             props: {
-                label: 'Physical armor'
-            }
+                label: 'Armor',
+            },
         },
         {
-            type: 'counter-row',
+            type: 'counter',
             model: 'magicArmor',
             defaultValue: 0,
+            minValue: -5,
+            maxValue: 5,
+            style: {
+                display: 'row',
+                margin: 'top_10',
+                size: 'full',
+            },
+            externalStateIncreaseControl: 'anvilProps.blockedRows',
             props: {
-                label: 'Magic armor'
+                label: 'Magic Armor'
             }
         },
         {
-            type: 'select-and-counter',
-            model: 'stat1',
-            showIf: {
-                statePath: 'anvilProps.statsNumber',
-                moreThan: 0
-            }
+            type: 'row',
+            style: {
+                jc: 'space-between',
+                margin: '20px 0 0 0',
+            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'names.stat1',
+                    defaultValue: 'attackPower',
+                    style: {
+                        display: 'row',
+                        size: 'l',
+                    },
+                    options: convertedRatingList,
+                    excludedOptions: {
+                        statePath: 'anvilProps.blockedStats.stat1'
+                    },
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 0
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat1',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 0
+                    }
+                },
+            ],
         },
         {
-            type: 'select-and-counter',
-            model: 'stat2',
-            showIf: {
-                statePath: 'anvilProps.statsNumber',
-                moreThan: 1
-            }
+            type: 'row',
+            style: {
+                jc: 'space-between',
+                margin: '10px 0 0'
+            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'names.stat2',
+                    style: {
+                        display: 'row',
+                        size: 'l',
+                    },
+                    excludedOptions: {
+                        statePath: 'anvilProps.blockedStats.stat2'
+                    },
+                    defaultValue: 'critChance',
+                    options: convertedRatingList,
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 1
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat2',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 1
+                    }
+                },
+            ]
         },
         {
-            type: 'select-and-counter',
-            model: 'stat3',
+            type: 'row',
+            style: {
+                jc: 'space-between',
+                margin: '10px 0 0'
+            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'names.stat3',
+                    defaultValue: 'critMultiplier',
+                    style: {
+                        display: 'row',
+                        size: 'l',
+                    },
+                    excludedOptions: {
+                        statePath: 'anvilProps.blockedStats.stat3'
+                    },
+                    props: {
+                        clearValueIfExcluded: true,
+                    },
+                    options: convertedRatingList,
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 2
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'stat3',
+                    defaultValue: 3,
+                    minValue: 3,
+                    maxValue: 5,
+                    style: {
+                        display: 'row',
+                        size: 's',
+                    },
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
+                    showIf: {
+                        statePath: 'anvilProps.statsNumber',
+                        moreThan: 2
+                    }
+                },
+            ],
             showIf: {
                 statePath: 'anvilProps.statsNumber',
                 moreThan: 2
             }
         },
         {
-            type: 'select-row',
-            model: 'require1',
+            type: 'row',
+            style: {
+                jc: 'space-between',
+                margin: '20px 0 0'
+            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'nameReq.require1',
+                    defaultValue: 'strength',
+                    style: {
+                        displayMode: 'stickers',
+                        size: 'full',
+                    },
+                    props: {
+                        clearValueIfExcluded: true,
+                    },
+                    excludedOptions: {
+                        statePath: 'anvilProps.blockedRequiredStats.require1'
+                    },
+                    disabledOptions: {
+                        statePath: 'anvilProps.disabledRequiredStats.require1'
+                    },
+                    options: statsOptions,
+                    showIf: {
+                        statePath: 'anvilProps.maxRequiredStats',
+                        moreThan: 0
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'require1',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
+                    style: {
+                        display: 'row',
+                        margin: 'top_20',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'anvilProps.maxRequiredStats',
+                        moreThan: 0
+                    }
+                },
+            ],
             showIf: {
-                statePath: 'maxRequiredStats',
+                statePath: 'anvilProps.maxRequiredStats',
                 moreThan: 0
             }
         },
         {
-            type: 'select-row',
-            model: 'require2',
+            type: 'row',
+            style: {
+                jc: 'space-between',
+                margin: '10px 0 0'
+            },
+            list: [
+                {
+                    type: 'select',
+                    model: 'nameReq.require2',
+                    defaultValue: 'agility',
+                    style: {
+                        displayMode: 'stickers',
+                        size: 'full',
+                    },
+                    props: {
+                        clearValueIfExcluded: true,
+                    },
+                    excludedOptions: {
+                        statePath: 'anvilProps.blockedRequiredStats.require2'
+                    },
+                    disabledOptions: {
+                        statePath: 'anvilProps.disabledRequiredStats.require2'
+                    },
+                    options: statsOptions,
+                    showIf: {
+                        statePath: 'anvilProps.maxRequiredStats',
+                        moreThan: 1
+                    }
+                },
+                {
+                    type: 'counter',
+                    model: 'require2',
+                    defaultValue: 0,
+                    minValue: -5,
+                    maxValue: 5,
+                    externalStateIncreaseControl: 'anvilProps.blockedRows',
+                    style: {
+                        display: 'row',
+                        margin: 'top_10',
+                        size: 's',
+                    },
+                    showIf: {
+                        statePath: 'anvilProps.maxRequiredStats',
+                        moreThan: 1
+                    }
+                },
+            ],
             showIf: {
-                statePath: 'maxRequiredStats',
+                statePath: 'anvilProps.maxRequiredStats',
                 moreThan: 1
             }
         }

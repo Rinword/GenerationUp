@@ -157,13 +157,13 @@ class Anvil extends React.PureComponent {
 
     getSpecialTypeConfig = () => {
         const { baseProps } = this.state;
-        const { type } = baseProps;
+        const { type, subtype } = baseProps;
         let slotType = 'armor';
 
         switch (type) {
             case 'oneHandWeapon':
             case 'twoHandWeapon':
-                slotType = 'weapon'
+                slotType = subtype === 'shield'? 'armor' : 'weapon'
         }
 
         return specialItemConfig[slotType] || [];

@@ -1,5 +1,4 @@
-import get from 'lodash/get';
-import set from 'lodash/set';
+import { get, set, isEmpty } from 'lodash';
 
 import baseItemsOptions from './baseItemsOptions.json';
 import baseGenericOptions from './baseGenericOptions.json';
@@ -59,6 +58,18 @@ function calculateDamageProps(typeId, options, lvl) {
     }
 }
 
+function calculateArmorProps(typeId, options, lvl) {
+    const { armor: armorPoints, magicArmor: magicArmorPoints, rare } = options;
+    const { baseArmor, baseArmorGrow, baseMagicArmor, baseMagicArmorGrow } = getDefaultItemProps(typeId);
+    const armor = calculateRating(baseArmor, baseArmorGrow, lvl, armorPoints);
+    const magicArmor = calculateRating(baseMagicArmor, baseMagicArmorGrow, lvl, magicArmorPoints);
+
+    return {
+        armor: +armor.toFixed(2),
+        magicArmor: +magicArmor.toFixed(2),
+    }
+}
+
 function calculateRequireStats(options, lvl) {
     const { nameReq = {} } = options;
 
@@ -79,35 +90,40 @@ function calculatePositiveStats (type, options, lvl) {
     const { names = {}, nameReq } = options;
 
     const res = {};
+    const typeMultiplier = type === 'twoHandWeapon' ? 2 : 1;
 
     Object.values(names).forEach((name, i) => {
         const { label, sources } = ratingsList[name];
-        const points = get(options, `stat${i + 1}`, 0);
+        let points = get(options, `stat${i + 1}`, 0);
         const baseStatForGrow = get(nameReq, `require${i + 1}`, 'none');
-        const baseGrow = get(sources, baseStatForGrow, 0);
-        const value = +(calculateRating(baseGrow, baseGrow, lvl, points).toFixed(2));
+        let baseGrow = get(sources, baseStatForGrow, 0);
+        // так как третья стата не опирается на напрямую на одну из источников, присваеваем ей первую из возможных
+        // и вычитаем 3 поинта как шраф за новую стату
+        if(i === 2) {
+            baseGrow = Object.values(sources)[0];
+            points -= 3;
+        }
+        const value = +(calculateRating(baseGrow, baseGrow, lvl, points).toFixed(2)) * typeMultiplier;
         const req = { id: name, label, value };
         set(res, `stat${i + 1}`, req);
     })
-
-    console.log('RESSS', res);
 
     return res;
 }
 
 function createItem(options, lvl) {
     const { type, subtype, name } = options;
-    const { damage, damageMin, damageMax, speed, DPS } = calculateDamageProps(`${type}_${subtype}`, options, lvl);
+
+    if(isEmpty(options)) {
+        return {};
+    }
+
     const { stat1, stat2, stat3 } = calculatePositiveStats(type, options, lvl);
     const { req1, req2 } = calculateRequireStats(options, lvl);
 
-    return {
+    let resultProps = {
         name,
-        damage,
-        damageMin,
-        damageMax,
-        speed,
-        DPS,
+        itemClass: { type, subtype },
         lvl,
         stat1,
         stat2,
@@ -116,6 +132,42 @@ function createItem(options, lvl) {
         req2,
         breedingPrint: JSON.stringify(options),
     }
+
+    switch(type) {
+        case 'oneHandWeapon':
+        case 'twoHandWeapon':
+            if(subtype === 'shield') {
+                const { armor, magicArmor } = calculateArmorProps(`${type}_${subtype}`, options, lvl);
+                return {
+                    ...resultProps,
+                    armor, magicArmor
+                }
+            }
+
+            const { damage, damageMin, damageMax, speed, DPS } = calculateDamageProps(`${type}_${subtype}`, options, lvl);
+            resultProps = {
+                ...resultProps,
+                damage, damageMin, damageMax, speed, DPS,
+            }
+            break;
+
+        case 'lightArmor':
+        case 'mediumArmor':
+        case 'heavyArmor':
+            const { armor, magicArmor } = calculateArmorProps(`${type}_${subtype}`, options, lvl);
+            resultProps = {
+                ...resultProps,
+                armor, magicArmor,
+            }
+            break;
+
+        default:
+            console.warn('unrecognized type', type);
+    }
+
+    console.log('AFTER CREATE', resultProps);
+
+    return resultProps;
 }
 
 export { createItem };
