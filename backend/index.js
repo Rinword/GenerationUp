@@ -1,74 +1,38 @@
-const express = require('express');
 const debug = require('debug')('geneticdiamond:server');
 const http = require('http');
-const logger = require('morgan');
-const port = 3001;
-// const MongoClient = require('mongodb').MongoClient;
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const path = require('path')
-const socketIO = require('socket.io')
+// const cookieParser = require('cookie-parser');
+// const socketIO = require('socket.io');
+const firebaseAdmin = require("firebase-admin");
+const serviceAccount = require('./adminFirebaseKey.json')
+// const { applyRoutes } = require('./api');
 
-const router = require('./router');
+const port = process.env.PORT || '3002';
+
+firebaseAdmin.initializeApp({
+    credential: firebaseAdmin.credential.cert(serviceAccount),
+    databaseURL: 'https://generationup-a7d04.firebaseio.com',
+});
 
 console.log('-----------N-O-D-E--J-S-----------');
 
-const app = express();
+const app = require('./server');
+const server = http.createServer(app).listen(port);
 
-const server = http.createServer(app);
-const io = socketIO(server);
+// const io = socketIO(server);
 
-io.on('connection', socket => {
-    console.log('IO: User connected')
-    router(app, socket);
-
-    socket.on('disconnect', () => {
-        console.log('IO: user disconnected')
-    })
-})
-
-app.use(bodyParser.json());
-
-app.use(logger('dev'));
-app.use(express.static(path.join(__dirname, '../', 'public')));
-
-app.set('view engine', 'html');
-app.engine('html', require('ejs').renderFile);
-
-app.set('port', port);
-
-// MongoClient.connect('mongodb://localhost:27017/root', (err, database) => {
-//     if (err) return console.log(err);
-//     console.log('DB server has started on :27017');
+// io.on('connection', socket => {
+//     console.log('IO: User connected')
+//     applyRoutes(app, socket);
 //
-//     router(app, database);
-//
-//     app.listen(port, () => {
-//         console.log('server has started on :' + port);
-//     });
-//
-//     app.on('error', onError);
-//     app.on('listening', onListening);
-//
-//     /**
-//      * Event listener for HTTP server "listening" event.
-//      */
-//
-//     function onListening() {
-//         const addr = server.address();
-//         const bind = typeof addr === 'string'
-//             ? 'pipe ' + addr
-//             : 'port ' + addr.port;
-//         debug('Listening on ' + bind);
-//     }
-//
-//     // database.close();
+//     socket.on('disconnect', () => {
+//         console.log('IO: user disconnected')
+//     })
 // })
 
-server.listen(port, () => console.log(`Listening on port ${port}`))
+console.log('server has successfully started on ' + port);
 
-app.on('error', onError);
-app.on('listening', onListening);
+server.on('error', onError);
+server.on('listening', onListening);
 
 /**
  * Event listener for HTTP server "listening" event.
