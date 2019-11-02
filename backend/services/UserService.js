@@ -23,36 +23,36 @@ class UserService {
         // })
     }
 
-    async setUserData(data) {
+    async createUser(data) {
         const { name = 'player2' } = data;
         try {
             await userRef.update({
-                    [name]: {
-                        blueprints: [
-                            {
-                                name: 'Devotion',
-                                rare: 1,
-                                stat1: 'strength'
-                            },
-                            {
-                                name: 'Silence',
-                                rare: 2,
-                                stat1: 'spirit'
-                            }
-                        ],
-                        characters: [
-                            {
-                                name: 'Joe',
-                                level: 12,
-                                class: '14'
-                            },
-                            {
-                                name: 'Aeryn',
-                                level: 8,
-                                class: '05'
-                            }
-                        ]
-                    }
+                [name]: {
+                    blueprints: [
+                        {
+                            name: 'Devotion',
+                            rare: 1,
+                            stat1: 'strength'
+                        },
+                        {
+                            name: 'Silence',
+                            rare: 2,
+                            stat1: 'spirit'
+                        }
+                    ],
+                    characters: [
+                        {
+                            name: 'Joe',
+                            level: 12,
+                            class: '14'
+                        },
+                        {
+                            name: 'Aeryn',
+                            level: 8,
+                            class: '05'
+                        }
+                    ]
+                }
             });
         } catch (err) {
             console.log('ERROR DB UPDATE setUserData');

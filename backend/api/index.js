@@ -13,12 +13,13 @@ function createRoutes(route) {
 
     GET.forEach(function(route) {
         const [url, ...callbacks] = route;
-        console.log('--', url, callbacks);
+        console.log('--GET:', url);
         router.get(url, ...[callbacks]);
     });
 
     POST.forEach(function(route) {
         const [url, ...callbacks] = route;
+        console.log('--POST:', url);
         router.post(url, ...[callbacks]);
     });
 }
@@ -26,8 +27,6 @@ function createRoutes(route) {
 function applyRoutes(app, socket) {
     // createRoutes(armoryApi, router);
     createRoutes(userApi, router);
-
-    console.log('APPLY', userApi);
 
     router.get('/api/*', (req, res, next) => {
         res.json({ success: true, message: 'This api url is not declared' });

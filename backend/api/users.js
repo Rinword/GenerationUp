@@ -10,9 +10,9 @@ async function getAllUsers(req, res, next) {
     res.json({ success: true, data: users });
 }
 
-async function setUserData(req, res, next) {
+async function createUser(req, res, next) {
     const data = req.body;
-    const user = await userService.setUserData(req.body);
+    const user = await userService.createUser(req.body);
 
     res.json({ success: true, data: user });
 }
@@ -22,6 +22,6 @@ module.exports = {
         ['/api/v1/users', getAllUsers],
     ],
     POST: [
-        ['/api/v1/user/create', setUserData]
+        ['/api/v1/user/create', createUser]
     ],
 };
