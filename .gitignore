@@ -6,3 +6,4 @@
 build/
 node_modules/
 backend/credentials.js
+backend/adminFirebaseKey.json

@@ -8,7 +8,6 @@ class UserService {
     async getAllUsers() {
         let users = null;
         await userRef.once('value', snapshot => {
-            console.log('!service', snapshot.val())
             users = snapshot.val();
         }, error => {
             return { message: error.message }

@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Row, Column, Btn } from 'ui/UxBox';
 
 import Anvil from './smith/Anvil';
+import { LoadPrintPanel } from './smith/LoadPrintPanel';
 import ShowRoom from './smith/ShowRoom';
 
 import './smith.scss';
@@ -23,13 +24,22 @@ class Smith extends React.PureComponent {
         this.setState({ itemOptions });
     }
 
+    onChangeBlueprint = itemOptions => {
+        console.log(itemOptions)
+
+        this.setState({ itemOptions });
+    }
+
     render() {
         const { itemOptions } = this.state;
 
         return (
             <Row ai="flex-start" className={cx('smith', this.props.className)}>
-                <Anvil className="smith__anvil" onChange={this.onChange}/>
-                <ShowRoom className="smith__show-room" itemOptions={itemOptions}/>
+                <Anvil className="smith__anvil" onChange={this.onChange} />
+                <Column>
+                    <LoadPrintPanel className="smith__blueprint-panel" itemOptions={itemOptions} onChange={this.onChangeBlueprint}/>
+                    <ShowRoom className="smith__show-room" itemOptions={itemOptions}/>
+                </Column>
             </Row>
         );
     }

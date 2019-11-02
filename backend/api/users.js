@@ -5,8 +5,6 @@ const userService = new UserService();
 async function getAllUsers(req, res, next) {
     const users = await userService.getAllUsers();
 
-    console.log('DDDD', users);
-
     res.json({ success: true, data: users });
 }
 

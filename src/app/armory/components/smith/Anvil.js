@@ -106,8 +106,6 @@ class Anvil extends React.PureComponent {
         const { onChange } = this.props;
         const { baseProps, specialProps } = this.state;
 
-        // console.log('onChange', {...baseProps, ...specialProps});
-
         onChange({...baseProps, ...specialProps});
     }
 

@@ -28,9 +28,14 @@ class SelectField extends React.PureComponent {
     }
 
     filteredOptions = () => {
-        const { options, excludedOptions, props, info, field } = this.props;
+        const { excludedOptions, props, info, field } = this.props;
         const { clearValueIfExcluded = false } = props;
         const { value } = field;
+
+        let options = this.props.options;
+        if (options instanceof Object && options.path) {
+            options = get(this.props, options.path, []);
+        }
 
         if(excludedOptions instanceof Array) {
             return options.filter(opt =>
@@ -96,7 +101,7 @@ class SelectField extends React.PureComponent {
         const filteredOptions = this.filteredOptions();
         const finalOptions = this.disabledOptions(filteredOptions);
         const currentOption = this.filteredOptions().find( i => i.value === value) || filteredOptions[0];
-
+        
         switch(displayMode) {
             case 'stickers':
                 return ( <div className={cx('ux-select', 'ux-select_stickers')}>
