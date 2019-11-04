@@ -2,6 +2,7 @@ import { get, set, isEmpty } from 'lodash';
 
 import baseItemsOptions from './baseItemsOptions.json';
 import baseGenericOptions from './baseGenericOptions.json';
+import baseItemSlotsStatWeight from './baseItemSlotsStatWeight.json';
 
 import { statsOptions, ratingsList } from 'src/app/armory/components/smith/createItemOptions';
 
@@ -22,6 +23,10 @@ function getStatPowerByLvl(lvl = 1, quality = 'usual') {
     }
 
     return 0;
+}
+
+function getItemSlotsStatWeightByType (type, subtype) {
+    return baseItemSlotsStatWeight[subtype] || baseItemSlotsStatWeight[type] || 0;
 }
 
 function getStatPowerByPoints(points = 0, quality = 'usual') {
@@ -86,11 +91,11 @@ function calculateRequireStats(options, lvl) {
     return res;
 }
 
-function calculatePositiveStats (type, options, lvl) {
+function calculatePositiveStats (type, subtype, options, lvl) {
     const { names = {}, nameReq } = options;
 
     const res = {};
-    const typeMultiplier = type === 'twoHandWeapon' ? 2 : 1;
+    const typeMultiplier = getItemSlotsStatWeightByType(type, subtype);
 
     Object.values(names).forEach((name, i) => {
         const { label, sources } = ratingsList[name];
@@ -103,7 +108,7 @@ function calculatePositiveStats (type, options, lvl) {
             baseGrow = Object.values(sources)[0];
             points -= 3;
         }
-        const value = +(calculateRating(baseGrow, baseGrow, lvl, points).toFixed(2)) * typeMultiplier;
+        const value = +((calculateRating(baseGrow, baseGrow, lvl, points) * typeMultiplier).toFixed(2));
         const req = { id: name, label, value };
         set(res, `stat${i + 1}`, req);
     })
@@ -118,7 +123,7 @@ function createItem(options, lvl) {
         return {};
     }
 
-    const { stat1, stat2, stat3 } = calculatePositiveStats(type, options, lvl);
+    const { stat1, stat2, stat3 } = calculatePositiveStats(type, subtype, options, lvl);
     const { req1, req2 } = calculateRequireStats(options, lvl);
 
     let resultProps = {
@@ -165,7 +170,7 @@ function createItem(options, lvl) {
             console.warn('unrecognized type', type);
     }
 
-    console.log('AFTER CREATE', resultProps);
+    // console.log('AFTER CREATE', resultProps);
 
     return resultProps;
 }

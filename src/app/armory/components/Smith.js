@@ -18,27 +18,28 @@ class Smith extends React.PureComponent {
         this.state = {data: []};
     }
 
-    onChange = itemOptions => {
-        console.log(itemOptions)
+    onChange = blueprint => {
+        if(blueprint) {
+            this.setState({ blueprint });
 
-        this.setState({ itemOptions });
+        }
     }
 
-    onChangeBlueprint = itemOptions => {
-        console.log(itemOptions)
-
-        this.setState({ itemOptions });
+    onChangeBlueprint = (blueprint, id) => {
+        if(blueprint && id) {
+            this.setState({ blueprint: {...blueprint, id} });
+        }
     }
 
     render() {
-        const { itemOptions } = this.state;
+        const { blueprint } = this.state;
 
         return (
             <Row ai="flex-start" className={cx('smith', this.props.className)}>
-                <Anvil className="smith__anvil" onChange={this.onChange} />
+                <Anvil className="smith__anvil" blueprint={blueprint} onChange={this.onChange} />
                 <Column>
-                    <LoadPrintPanel className="smith__blueprint-panel" itemOptions={itemOptions} onChange={this.onChangeBlueprint}/>
-                    <ShowRoom className="smith__show-room" itemOptions={itemOptions}/>
+                    <LoadPrintPanel className="smith__blueprint-panel" itemOptions={blueprint} onChange={this.onChangeBlueprint}/>
+                    <ShowRoom className="smith__show-room" itemOptions={blueprint}/>
                 </Column>
             </Row>
         );

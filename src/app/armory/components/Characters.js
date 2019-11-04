@@ -21,7 +21,6 @@ class Storage extends React.PureComponent {
         axios.get('/api/v1/users/', {
             num: 1,
         }).then(res => {
-            console.log('!!!', res);
             if(res.data.data) {
                 this.setState( {data: data.concat(res.data.data) })
             }
@@ -43,7 +42,6 @@ class Storage extends React.PureComponent {
             random: true,
         }).then(res => {
             if(res.data.data) {
-                console.log(res);
                 this.setState({ data: data.concat(res.data.data)})
             }
         })

@@ -40,6 +40,14 @@ class Anvil extends React.PureComponent {
         };
     }
 
+    getBaseFormRef = ref =>  {
+        this.baseFormRef = ref;
+    }
+
+    getSpecialFormRef = ref =>  {
+        this.specialFormRef = ref;
+    }
+
     componentWillMount() {
         const { anvilProps, baseProps }  = this.calculateBaseProps(generateDefaultValues(baseItemConfig));
         const { anvilProps: forgedAnvilProps, specialProps } = this.calculateSpecialProps({
@@ -167,6 +175,17 @@ class Anvil extends React.PureComponent {
         return specialItemConfig[slotType] || [];
     }
 
+    componentWillReceiveProps = nextProps => {
+        if( this.props.blueprint && (nextProps.blueprint.id !== this.props.blueprint.id)) {
+            const { name, rare, type, subtype, ...specialProps } = nextProps.blueprint;
+            const baseProps = { name, rare, type, subtype };
+            this.setState({ baseProps, specialProps }, () => {
+                this.baseFormRef.setValues(baseProps);
+                this.specialFormRef.setValues(specialProps);
+            })
+        }
+    }
+
     render() {
         const { baseProps, specialProps, anvilProps } = this.state;
         const { name, rare, type, subtype } = baseProps;
@@ -182,6 +201,7 @@ class Anvil extends React.PureComponent {
                 <Formik
                     initialValues={initialValues}
                     validate={this.onBasePropsChange}
+                    ref={this.getBaseFormRef}
                 >
                     {formikProps => (
                         <Form>
@@ -204,6 +224,7 @@ class Anvil extends React.PureComponent {
                 <Formik
                     initialValues={specialInitialValues}
                     validate={this.onSpecialPropsChange}
+                    ref={this.getSpecialFormRef}
                 >
                     {formikProps => (
                         <Form className="anvil__special-form">

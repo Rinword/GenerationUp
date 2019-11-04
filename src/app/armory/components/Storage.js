@@ -34,7 +34,6 @@ class Storage extends React.PureComponent {
             random: true,
         }).then(res => {
             if(res.data.data) {
-                console.log(res);
                 this.setState({ data: data.concat(res.data.data)})
             }
         })

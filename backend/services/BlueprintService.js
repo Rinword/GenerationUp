@@ -30,12 +30,9 @@ class BlueprintService {
         }
     }
 
-    async deleteBlueprint(data) {
-        const id = uuidv4();
+    async deleteBlueprint(id) {
         try {
-            await blueprintsRef.update({
-                [id]: data
-            });
+            await blueprintsRef.child(id).remove();
         } catch (err) {
             console.log('ERROR DB UPDATE deleteBlueprint');
             console.log(err);

@@ -29,7 +29,7 @@ class ForgedItem extends React.PureComponent {
         const { label: req1Name, value: req1Value } = req1;
         const { label: req2Name, value: req2Value } = req2;
 
-        console.log(this.props);
+        // console.log(this.props);
 
         return (
             <Column padding="10px" margin="5px" className={cx('forged-item', className)} data-rareBg={rare}>

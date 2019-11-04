@@ -1,12 +1,28 @@
+import _ from 'lodash';
+
+const colors = {
+    usual: 'white',
+    unusual: '#1cbb53',
+    rare: '#07428b',
+    epic: '#6d1695',
+    legendary: '#e28a1e',
+}
+
+function getRareColor (color) {
+    return colors[color];
+}
+
 export default {
-    option: provided => ({
-        ...provided,
-        color: 'white',
-        fontWeight: '600',
-        '&:hover': {
-            backgroundColor: '#424242'
+    option: (provided, state) => {
+        return {
+            ...provided,
+            color: getRareColor(_.get(state, 'data.rare', 'white')),
+            fontWeight: '600',
+            '&:hover': {
+                backgroundColor: '#424242'
+            }
         }
-    }),
+    },
     menu: provided => ({
         ...provided,
         backgroundColor: 'black',
