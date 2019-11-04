@@ -1,5 +1,6 @@
 import Btn from './Btn'
 import Tooltip from './Tooltip'
+import { Form } from './form'
 
 import L from './Layout'
 const Layout = L.Layout;
@@ -11,3 +12,4 @@ exports.Layout = Layout;
 exports.Row = Row;
 exports.Column = Column;
 exports.Tooltip = Tooltip;
+exports.Form = Form;

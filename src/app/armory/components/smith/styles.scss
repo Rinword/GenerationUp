@@ -1,31 +1,93 @@
-.anvil {
-  position: relative;
+.smith {
 
-  &__points {
-    font-size: 42px;
-    font-weight: 600;
-    line-height: 1;
+  &__anvil {
+    max-width: 500px;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid white;
   }
 
-  hr {
-    width: 100%;
+  &__create-item-panel {
+    align-items: stretch !important;
   }
 
-  &__special-form {
-    width: 100%;
-    padding-right: 15px;
+  &__item-props {
+    margin: 10px 0 10px 15px;
+    border: 1px solid white;
+  }
+
+  &__show-room {
+    margin: 10px 10px 5px;
+    padding: 10px;
+    border-top: 1px solid white;
+  }
+
+  .anvil {
+    position: relative;
+
+    &__points {
+      font-size: 42px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    hr {
+      width: 100%;
+    }
+
+    &__special-form {
+      width: 100%;
+      padding-right: 15px;
+    }
+  }
+
+  .show-room {
+    &__header {
+
+    }
+    &__content {
+      flex-wrap: wrap;
+    }
+  }
+
+  .create-item-form {
+    position: relative;
+
+    .forged-item {
+      margin: 0 0 10px !important;
+    }
+
+    &__reagents {
+      .craft-item {
+        margin: 5px 0;
+        padding: 5px 10px 5px 5px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
+        width: 240px;
+
+        &__icon {
+          flex: 1 0 32px;
+          width: 32px;
+          height: 32px;
+          margin-right: 5px;
+        }
+
+        &__title {
+          font-weight: 600;
+          font-size: 16px;
+          flex: 1 1 100%;
+        }
+
+        &__quantity {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 22px;
+          font-weight: 700;
+        }
+      }
+    }
   }
 }
 
-.show-room {
-  &__header {
 
-  }
-  &__content {
-    flex-wrap: wrap;
-  }
-}
 
-.load-print-form {
-
-}

@@ -32,10 +32,7 @@ class ShowRoom extends React.PureComponent {
         const { data } = this.state;
 
         return (
-            <Column className={cx('show-room', this.props.className)} padding="15px">
-                <Row className="show-room__header">
-                    header
-                </Row>
+            <Column className={cx('show-room', this.props.className)} padding="10px">
                 <Row className="show-room__content">
                     {data.map(item => <ForgedItem key={item.lvl} {...item} />)}
                 </Row>

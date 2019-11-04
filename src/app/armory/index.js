@@ -5,7 +5,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import { Row, Column } from 'ui/UxBox';
 
-import Smith from './components/Smith';
+import Smith from './components/smith';
 import Storage from './components/Storage';
 import Characters from './components/Characters';
 

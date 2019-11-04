@@ -7,7 +7,7 @@ import './uxStyles/Layout.scss';
 class Layout extends React.PureComponent {
     render() {
         const { direction, jc, ai, noFlex, multiStr, hidden, disabled, className, margin, padding, tagName, flexGrow,
-            minHeight, ...params } = this.props;
+            minHeight, flex, ...params } = this.props;
 
         const classNames = cx(
             'ux-layout',
@@ -22,7 +22,7 @@ class Layout extends React.PureComponent {
         );
 
         return (
-            <div className={classNames} style={{margin: margin, padding: padding}} {...params}>
+            <div className={classNames} style={{margin: margin, padding: padding, flex }} {...params}>
                 {this.props.children}
             </div>
         );

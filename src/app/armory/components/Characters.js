@@ -7,7 +7,7 @@ import { Row, Column, Btn } from 'ui/UxBox';
 
 import GearItem from './GearItem';
 
-import './smith.scss';
+// import './smith.scss';
 
 class Storage extends React.PureComponent {
     constructor(props) {

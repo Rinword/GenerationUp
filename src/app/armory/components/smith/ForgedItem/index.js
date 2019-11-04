@@ -17,6 +17,9 @@ class ForgedItem extends React.PureComponent {
     render() {
         const { className } = this.props;
         const { options, lvl } = this.props;
+        if(!options || !lvl ) {
+            return null;
+        }
         const { name, type, subtype, rare = 2 } = options;
         // const { stat1, stat2 } = types;
         const forgedItem = createItem(options, lvl);

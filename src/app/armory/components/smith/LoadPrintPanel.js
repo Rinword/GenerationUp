@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Formik, Form } from 'formik';
 import axios from 'axios';
 
-import ComponentBuilder from 'ui/form/componentBuilder';
-import { Row, Column, Btn } from 'ui/UxBox';
+import { Row, Column, Btn, Form } from 'ui/UxBox';
 import { generateItems } from './helpers';
 
 import './styles.scss';
@@ -71,39 +69,21 @@ class LoadPrintPanel extends React.PureComponent {
         }
     }
 
-    createItem = () => {
-        console.log('CREATE ITEM');
-    }
-
     render() {
         return (
             <Column className={cx('load-print-form', this.props.className)} padding="15px">
                 <Row>
                     <Row>
-                        <Formik
-                            initialValues={{}}
+                        <Form
                             validate={this.onChange}
-                        >
-                            {formikProps => (
-                                <Form>
-                                    <ComponentBuilder
-                                        components={formConfig}
-                                        formikProps={formikProps}
-                                        info={this.state}
-                                    />
-                                </Form>
-                            )}
-                        </Formik>
+                            config={formConfig}
+                            info={this.state}
+                        />
                     </Row>
                     <Row jc="flex-end">
                         <Btn onClick={this.saveBlueprint}>Сохранить чертеж</Btn>
                         <Btn onClick={this.deleteBlueprint}>Удалить чертеж</Btn>
                     </Row>
-                </Row>
-                <Row className="load-print-form__create-button" margin="20px 0">
-                    <span>уровень: 14</span>
-                    <span>количество: 6</span>
-                    <Btn onClick={this.createItem}>Создать предмет</Btn>
                 </Row>
             </Column>
         );

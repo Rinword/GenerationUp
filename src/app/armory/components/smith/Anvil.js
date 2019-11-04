@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { Formik, Form } from 'formik';
 import get from 'lodash/get';
 import without from 'lodash/without';
 
-import { Row, Column, Btn } from 'ui/UxBox';
-import ComponentBuilder from 'ui/form/componentBuilder';
+import { Row, Column, Btn, Form } from 'ui/UxBox';
 import { generateDefaultValues } from 'ui/form/helpers';
 
 import { pointsFromRare, baseItemConfig, specialItemConfig, ratingsList, convertedRatingList, statsOptions } from './createItemOptions';
@@ -40,11 +38,11 @@ class Anvil extends React.PureComponent {
         };
     }
 
-    getBaseFormRef = ref =>  {
+    getBaseFormRef = ref => {
         this.baseFormRef = ref;
     }
 
-    getSpecialFormRef = ref =>  {
+    getSpecialFormRef = ref => {
         this.specialFormRef = ref;
     }
 
@@ -198,44 +196,27 @@ class Anvil extends React.PureComponent {
 
         return (
             <Column ai="flex-start" className={cx('anvil', this.props.className)}>
-                <Formik
+                <Form
                     initialValues={initialValues}
                     validate={this.onBasePropsChange}
-                    ref={this.getBaseFormRef}
-                >
-                    {formikProps => (
-                        <Form>
-                            <ComponentBuilder
-                                components={baseItemConfig}
-                                formikProps={formikProps}
-                            />
-                        </Form>
-                    )}
-                </Formik>
-
-                <p><b>{name}</b>, {rare} {subtype} [ {type} ] (stats: {statsNumber} / req. stats: {maxRequiredStats})</p>
+                    getRef={this.getBaseFormRef}
+                    config={baseItemConfig}
+                />
+                {/*<p><b>{name}</b>, {rare} {subtype} [ {type} ] (stats: {statsNumber} / req. stats: {maxRequiredStats})</p>*/}
                 <hr/>
                 <Row jc="space-between" padding="0 20px 0 0">
                     <p>Free Points: </p>
                     <p className="anvil__points">{freePoints}/{maxPoints}</p>
                 </Row>
                 <hr/>
-
-                <Formik
+                <Form
                     initialValues={specialInitialValues}
                     validate={this.onSpecialPropsChange}
-                    ref={this.getSpecialFormRef}
-                >
-                    {formikProps => (
-                        <Form className="anvil__special-form">
-                            <ComponentBuilder
-                                components={specialItemConfig}
-                                formikProps={formikProps}
-                                info={this.state}
-                            />
-                        </Form>
-                    )}
-                </Formik>
+                    getRef={this.getSpecialFormRef}
+                    config={specialItemConfig}
+                    info={this.state}
+                    className="anvil__special-form"
+                />
             </Column>
         );
     }

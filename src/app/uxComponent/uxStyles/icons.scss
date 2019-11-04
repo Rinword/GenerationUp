@@ -158,6 +158,33 @@ $dark-grey: #4f4f4f;
       background-image: url("//wow.zamimg.com/images/wow/icons/medium/inv_boots_08.jpg");
     }
   }
+
+  &_reagent {
+    &_white-steel {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/large/inv_ingot_steel.jpg");
+    }
+    &_copper {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/large/inv_ingot_02.jpg");
+    }
+    &_usual-steel {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/large/inv_ingot_iron.jpg");
+    }
+    &_light-leather {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/large/inv_misc_leatherscrap_03.jpg");
+    }
+  }
+
+  &_work {
+    &_thin-bs {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/medium/trade_blacksmithing.jpg");
+    }
+    &_rough-bs {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/medium/trade_blacksmithing.jpg");
+    }
+    &_balancing {
+      background-image: url("https://wow.zamimg.com/images/wow/icons/large/inv_stone_grindingstone_01.jpg");
+    }
+  }
 }
 
 [data-imgid='_items_leftHand_0'] {
@@ -251,20 +278,25 @@ $dark-grey: #4f4f4f;
 }
 
 [data-rare='0'] {
-  border: 2px solid $dark-grey;
+  border: 2px solid white;
 }
 
-.icon_rare_rare, [data-rare='1'] {
+.icon_rare_unusual, [data-rare='1'] {
+  border: 2px solid $color-unusual;
+  box-shadow: 0 0 8px 2px $color-unusual;
+}
+
+.icon_rare_rare, [data-rare='2'] {
   border: 2px solid $color-rare;
   box-shadow: 0 0 8px 2px $color-rare;
 }
 
-.icon_rare_epic, [data-rare='2'] {
+.icon_rare_epic, [data-rare='3'] {
   border: 2px solid $color-epic;
   box-shadow: 0 0 8px 2px #6d1695;
 }
 
-.icon_rare_legendary, [data-rare='3'] {
+.icon_rare_legendary, [data-rare='4'] {
   border: 2px solid $color-legendary;
   box-shadow: 0 0 8px 2px $color-legendary;
 }
@@ -273,19 +305,19 @@ $dark-grey: #4f4f4f;
   color: white;
 }
 
-[data-rareText='unusual'], [data-rareText='1'] {
+[data-rareText='1'], [data-rareText='unusual'] {
   color: $color-unusual;
 }
 
-[data-rareText='1'], [data-rareText='rare'] {
+[data-rareText='2'], [data-rareText='rare'] {
   color: $color-rare;
 }
 
-[data-rareText='2'], [data-rareText='epic'] {
+[data-rareText='3'], [data-rareText='epic'] {
   color: $color-epic;
 }
 
-[data-rareText='3'], [data-rareText='legendary'] {
+[data-rareText='4'], [data-rareText='legendary'] {
   color: $color-legendary;
 }
 
