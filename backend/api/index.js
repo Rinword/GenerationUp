@@ -5,6 +5,7 @@ const router = express.Router();
 // const userApi = require('./user');
 const userApi = require('./users');
 const blueprintApi = require('./blueprints');
+const storageApi = require('./storage');
 // const appStateApi = require('./appState');
 
 // const authService = auth();
@@ -32,6 +33,7 @@ function applyRoutes(app, socket) {
     // createRoutes(armoryApi, router);
     createRoutes(userApi, router);
     createRoutes(blueprintApi, router);
+    createRoutes(storageApi, router);
 
     router.get('/api/*', (req, res, next) => {
         res.json({ success: true, message: 'This api url is not declared' });

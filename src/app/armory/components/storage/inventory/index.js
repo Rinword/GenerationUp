@@ -1,0 +1,48 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import cx from 'classnames';
+
+import { Row, Column } from 'ui/UxBox';
+
+import InventoryCell from './InventoryCell';
+
+const DEFAULT_INVENTORY_SIZE = 207;
+
+import './styles.scss';
+
+class Inventory extends React.PureComponent {
+    render() {
+        const { data, size = 207 } = this.props;
+        const emptySlots = [...(new Array(size - data.length))].map((_, id) =>({ id }))
+
+        return (
+            <Row className={cx('inventory', this.props.className)} ai="flex-start">
+                <Column className="inventory__actions-tab" padding="10px" margin="10px 0 0 0">
+                    Actions tab
+                </Column>
+                <Column className="inventory__container-wrap">
+                    <Row className="inventory__filters" padding="10px">
+                        filters tab
+                    </Row>
+                    <Row className="inventory__container" multiStr={true} ai="flex-start" padding="10px">
+                        {data.concat(emptySlots).map(i => <InventoryCell key={i.id} item={i} />)}
+                    </Row>
+                </Column>
+            </Row>
+        );
+    }
+}
+
+Inventory.propTypes = {
+    className: PropTypes.string,
+    data: PropTypes.arrayOf(PropTypes.shape({})),
+    size: PropTypes.number,
+};
+
+Inventory.defaultProps = {
+    className: '',
+    data: [],
+    size: DEFAULT_INVENTORY_SIZE
+};
+
+export default Inventory;

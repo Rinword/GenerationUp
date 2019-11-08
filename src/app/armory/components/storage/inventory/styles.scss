@@ -1,0 +1,27 @@
+.inventory {
+  position: relative;
+  &__filters {
+    border: 1px solid grey;
+  }
+  &__actions-tab {
+    flex: 1 0 450px;
+    border: 1px solid white;
+  }
+
+  &__container-wrap {
+    margin: 10px;
+    flex: 1 1 auto;
+    border: 1px solid white;
+  }
+
+  &__container {
+    margin: 0 10px;
+  }
+
+  .inventory-cell {
+    width: 42px;
+    height: 42px;
+    margin: 3px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+}

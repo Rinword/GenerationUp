@@ -117,7 +117,7 @@ function calculatePositiveStats (type, subtype, options, lvl) {
 }
 
 function createItem(options, lvl) {
-    const { type, subtype, name } = options;
+    const { type, subtype, name, id } = options;
 
     if(isEmpty(options)) {
         return {};
@@ -135,7 +135,7 @@ function createItem(options, lvl) {
         stat3,
         req1,
         req2,
-        breedingPrint: JSON.stringify(options),
+        breedingPrint: id
     }
 
     switch(type) {

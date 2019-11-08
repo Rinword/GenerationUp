@@ -21,7 +21,6 @@ class ForgedItem extends React.PureComponent {
             return null;
         }
         const { name, type, subtype, rare = 2 } = options;
-        // const { stat1, stat2 } = types;
         const forgedItem = createItem(options, lvl);
 
         const { damageMin, damageMax, speed, DPS, armor, magicArmor } = forgedItem;

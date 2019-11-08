@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import { Row, Column, Btn, Form } from 'ui/UxBox';
 import ForgedItem from './ForgedItem';
+import { createItem }  from './ForgedItem/ItemGenerator';
 import { generateItems } from './helpers';
 
 import './styles.scss';
@@ -84,23 +85,25 @@ class CreateItemPanel extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = { };
-    }
-
-    onChange = model => {
-        const { onChange } = this.props;
-        const { pureOptions } = this.state;
-        this.setState({ pickedBlueprint: model.blueprints });
-        onChange(pureOptions[model.blueprints], model.blueprints)
+        this.state = { level: 4 };
     }
 
     createItem = () => {
-        console.log('CREATE ITEM');
+        const { blueprint } = this.props;
+        const { level, pickedBlueprint } = this.state;
+        const forgedItem = createItem(blueprint, level);
+        console.log('FORGED', forgedItem);
+        axios.post('/api/v1/storage/item/create', forgedItem).then(res => {
+            if(res.data.data) {
+                console.log('SUC');
+            }
+        })
     }
 
     render() {
         const { blueprint = null } = this.props;
-        console.log('FORGE', blueprint);
+        const { level } = this.state;
+
         if(!blueprint) {
             return null;
         }
@@ -118,7 +121,7 @@ class CreateItemPanel extends React.PureComponent {
                     </Column>
                 </Row>
                 <Column className="load-print-form__create-button" ai="flex-end" flex="1 1 auto">
-                    <ForgedItem options={blueprint} lvl={2}/>
+                    <ForgedItem options={blueprint} lvl={level} />
                     <Btn onClick={this.createItem}>Создать предмет</Btn>
                 </Column>
             </Row>

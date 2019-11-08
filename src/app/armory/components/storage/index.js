@@ -5,51 +5,52 @@ import axios from 'axios';
 
 import { Row, Column, Btn } from 'ui/UxBox';
 
-import GearItem from './GearItem';
+import Inventory from './inventory';
 
-import '../styles.scss';
+import '../../styles.scss';
 
 class Storage extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        this.state = { data: [] };
+        this.state = { storage: [] };
     }
 
     componentWillMount() {
-        const { data } = this.state;
-        axios.post('/api/armory/create/item', {
-            num: 1,
-        }).then(res => {
+        const { storage } = this.state;
+        axios.get('/api/v1/storage/items').then(res => {
             if(res.data.data) {
-                this.setState( {data: data.concat(res.data.data) })
+                this.setState({ 
+                    storage: Object.entries(res.data.data)
+                    .map( ([key, value]) => ( { ...value, id: key} ))
+                })
             }
         })
     }
 
     onCreateClick = () => {
         const { data } = this.state;
-        axios.post('/api/armory/create/item', {
-            num: 1,
-            random: true,
-        }).then(res => {
-            if(res.data.data) {
-                this.setState({ data: data.concat(res.data.data)})
-            }
-        })
+        // axios.post('/api/armory/create/item', {
+        //     num: 1,
+        //     random: true,
+        // }).then(res => {
+        //     if(res.data.data) {
+        //         this.setState({ data: data.concat(res.data.data)})
+        //     }
+        // })
     }
 
     render() {
-        const { data } = this.state;
+        const { storage } = this.state;
+
+        console.log('AAA', storage);
 
         return (
             <Column className={cx('storage', this.props.className)}>
                 <Row className={cx('storage__header')} padding="10px 0">
                     <Btn onClick={this.onCreateClick}>Создать случайный предмет +</Btn>
                 </Row>
-                <Row className={cx('storage__content')} padding="10px">
-                    {data.map((item, i) => <GearItem key={i} {...item} />)}
-                </Row>
+                <Inventory data={storage} />
             </Column>
         );
     }
