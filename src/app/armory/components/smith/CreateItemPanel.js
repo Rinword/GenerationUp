@@ -23,7 +23,7 @@ const formConfig = [
     },
 ]
 
-const reagents = [
+export const reagents = [
     {
         icon: 'reagent_white-steel',
         title: 'Белая сталь',
@@ -50,7 +50,7 @@ const reagents = [
     },
 ]
 
-const work = [
+export const work = [
     {
         icon: 'work_thin-bs',
         title: 'Тонкая ковка',
@@ -71,7 +71,7 @@ const work = [
     },
 ]
 
-function CraftItem ({ icon, rare, title, quantity }) {
+export function CraftItem ({ icon, rare, title, quantity }) {
     return (
         <Row jc="space-between" className="craft-item">
             <div className={`craft-item__icon icon icon_size_24 icon_bg-size_32 icon_${icon}`} />
@@ -121,7 +121,7 @@ class CreateItemPanel extends React.PureComponent {
                     </Column>
                 </Row>
                 <Column className="load-print-form__create-button" ai="flex-end" flex="1 1 auto">
-                    <ForgedItem options={blueprint} lvl={level} />
+                    <ForgedItem item={createItem(blueprint, level)} />
                     <Btn onClick={this.createItem}>Создать предмет</Btn>
                 </Column>
             </Row>

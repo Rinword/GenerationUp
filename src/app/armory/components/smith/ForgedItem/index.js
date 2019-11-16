@@ -15,23 +15,22 @@ class ForgedItem extends React.PureComponent {
     }
 
     render() {
-        const { className } = this.props;
-        const { options, lvl } = this.props;
-        if(!options || !lvl ) {
+        const { className, item } = this.props;
+        if(!item) {
             return null;
         }
-        const { name, type, subtype, rare = 2 } = options;
-        const forgedItem = createItem(options, lvl);
 
-        const { damageMin, damageMax, speed, DPS, armor, magicArmor } = forgedItem;
-        const { stat1 = {}, stat2 = {}, stat3 = {}, req1 = {}, req2 = {} } = forgedItem;
+        const { name, itemClass = {}, rare = 2, lvl } = item;
+        const { type, subtype } = itemClass;
+        const { damageMin, damageMax, speed, DPS, armor, magicArmor } = item;
+        const { stat1 = {}, stat2 = {}, stat3 = {}, req1 = {}, req2 = {} } = item;
         const { label: stat1Name, value: stat1Value } = stat1;
         const { label: stat2Name, value: stat2Value } = stat2;
         const { label: stat3Name, value: stat3Value } = stat3;
         const { label: req1Name, value: req1Value } = req1;
         const { label: req2Name, value: req2Value } = req2;
 
-        // console.log(this.props);
+        console.log('FORGED', this.props);
 
         return (
             <Column padding="10px" margin="5px" className={cx('forged-item', className)} data-rareBg={rare}>
@@ -96,10 +95,12 @@ class ForgedItem extends React.PureComponent {
 
 ForgedItem.propTypes = {
     className: PropTypes.string,
+    item: PropTypes.shape({})
 };
 
 ForgedItem.defaultProps = {
     className: '',
+    item: null,
 };
 
 export default ForgedItem;

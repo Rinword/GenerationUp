@@ -56,36 +56,34 @@
     .forged-item {
       margin: 0 0 10px !important;
     }
+  }
+}
 
-    &__reagents {
-      .craft-item {
-        margin: 5px 0;
-        padding: 5px 10px 5px 5px;
-        border: 1px dashed rgba(255, 255, 255, 0.1);
-        width: 240px;
+.craft-item {
+  margin: 5px 10px 5px 0;
+  padding: 5px 10px 5px 5px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  width: 202px;
 
-        &__icon {
-          flex: 1 0 32px;
-          width: 32px;
-          height: 32px;
-          margin-right: 5px;
-        }
+  &__icon {
+    flex: 1 0 42px;
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+  }
 
-        &__title {
-          font-weight: 600;
-          font-size: 16px;
-          flex: 1 1 100%;
-        }
+  &__title {
+    font-weight: 600;
+    font-size: 16px;
+    flex: 1 1 100%;
+  }
 
-        &__quantity {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 22px;
-          font-weight: 700;
-        }
-      }
-    }
+  &__quantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: 700;
   }
 }
 

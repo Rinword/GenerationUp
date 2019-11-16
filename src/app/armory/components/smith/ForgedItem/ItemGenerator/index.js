@@ -117,7 +117,7 @@ function calculatePositiveStats (type, subtype, options, lvl) {
 }
 
 function createItem(options, lvl) {
-    const { type, subtype, name, id } = options;
+    const { type, subtype, name, id, rare } = options;
 
     if(isEmpty(options)) {
         return {};
@@ -128,6 +128,7 @@ function createItem(options, lvl) {
 
     let resultProps = {
         name,
+        rare,
         itemClass: { type, subtype },
         lvl,
         stat1,

@@ -7,6 +7,7 @@ import { generateItems } from './helpers';
 import ForgedItem from './ForgedItem';
 
 import './styles.scss';
+import { createItem } from './ForgedItem/ItemGenerator/index'
 
 class ShowRoom extends React.PureComponent {
     constructor(props) {
@@ -34,7 +35,7 @@ class ShowRoom extends React.PureComponent {
         return (
             <Column className={cx('show-room', this.props.className)} padding="10px">
                 <Row className="show-room__content">
-                    {data.map(item => <ForgedItem key={item.lvl} {...item} />)}
+                    {data.map(item => <ForgedItem key={item.lvl} item={createItem(item.options, item.lvl)} />)}
                 </Row>
             </Column>
         );

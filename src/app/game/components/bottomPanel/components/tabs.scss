@@ -50,3 +50,14 @@
 .react-tabs__tab-panel--selected {
   display: block;
 }
+
+.react-tabs {
+  &_size {
+    &_small {
+      font-weight: 500;
+      * {
+        font-size: 14px !important;
+      }
+    }
+  }
+}

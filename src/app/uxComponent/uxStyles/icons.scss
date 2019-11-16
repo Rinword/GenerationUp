@@ -277,26 +277,26 @@ $dark-grey: #4f4f4f;
   background-image: url("~static/icons/classes/skills/_skills_hunt_1.jpg");
 }
 
-[data-rare='0'] {
+[data-rare='0'], [data-rare='usual'] {
   border: 2px solid white;
 }
 
-.icon_rare_unusual, [data-rare='1'] {
+.icon_rare_unusual, [data-rare='1'], [data-rare='unusual'] {
   border: 2px solid $color-unusual;
   box-shadow: 0 0 8px 2px $color-unusual;
 }
 
-.icon_rare_rare, [data-rare='2'] {
+.icon_rare_rare, [data-rare='2'], [data-rare='rare'] {
   border: 2px solid $color-rare;
   box-shadow: 0 0 8px 2px $color-rare;
 }
 
-.icon_rare_epic, [data-rare='3'] {
+.icon_rare_epic, [data-rare='3'], [data-rare='epic'] {
   border: 2px solid $color-epic;
   box-shadow: 0 0 8px 2px #6d1695;
 }
 
-.icon_rare_legendary, [data-rare='4'] {
+.icon_rare_legendary, [data-rare='4'], [data-rare='legendary'] {
   border: 2px solid $color-legendary;
   box-shadow: 0 0 8px 2px $color-legendary;
 }
