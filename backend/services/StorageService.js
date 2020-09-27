@@ -2,8 +2,7 @@ const firebaseAdmin = require('firebase-admin');
 // const db = firebaseAdmin.firestore();
 const db = firebaseAdmin.database();
 // const userCollection = db.collection('users');
-const storageRef = db.ref('users').child('player3').child('storage');
-const itemsRef = storageRef.child('items');
+const itemsRef = db.ref('user/player3/storage/items');
 const uuidv4 = require('uuid/v4');
 
 class BlueprintService {

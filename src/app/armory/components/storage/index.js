@@ -16,7 +16,7 @@ class Storage extends React.PureComponent {
         this.state = { storage: [] };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const { storage } = this.state;
         axios.get('/api/v1/storage/items').then(res => {
             if(res.data.data) {
